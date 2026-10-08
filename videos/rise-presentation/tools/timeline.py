@@ -131,11 +131,11 @@ def _plan():
     E["letters"] = E["collapse"] + 0.3
     E["logo_land"] = E["letters"] + 0.55
     V["l2"] = after("l1", E["logo_land"] + 0.12)
-    E["hook_out"] = max(E["logo_land"] + 0.6, wt("l2", 1) + 0.3)
+    E["hook_out"] = max(E["logo_land"] + 0.55, wt("l2", 2) - 0.4)  # "Partage" rises on "partage"
     E["share"] = E["hook_out"] + 0.3
 
     # 2. share: posts fly out of the phone on the stressed words
-    E["card_tem"] = max(wt("l2", 2), E["share"] + 0.25)  # partage
+    E["card_tem"] = max(wt("l2", 2), E["share"] + 0.1)  # partage
     E["card_ver"] = max(wt("l2", 5), E["card_tem"] + 0.4)  # Dieu
     E["card_pho"] = max(wt("l2", 9), E["card_ver"] + 0.4)  # vie
     E["screen_publish"] = min(E["card_ver"] + 0.2, E["hook_out"] + 3.4)
@@ -201,7 +201,7 @@ def _plan():
     E["end"] = E["quiz"] + math.ceil((E["quiz_out"] + 0.3 - E["quiz"]) / grid - 1e-6) * grid  # on the beat
 
     # 8. end card: "RISE" is said as the letters rise
-    V["l8"] = after("l7", E["end"] + 0.15)
+    V["l8"] = after("l7", E["end"] + 0.4)  # "RISE" on the logo's landing
     E["end_letters"] = E["end"] + 0.15
     E["end_land"] = max(wt("l8", 0) + 0.1, E["end_letters"] + 0.45)
     E["slogan1"], E["slogan2"], E["stores"] = wt("l8", 1), wt("l8", 2), wt("l8", 3)
