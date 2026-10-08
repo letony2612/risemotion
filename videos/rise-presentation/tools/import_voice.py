@@ -2,8 +2,9 @@
 
 The take is split at the pauses between lines: among all the silences, the cuts
 whose share of the spoken time best matches each line's share of the syllables
-win. Inside a line, pauses longer than MAX_PAUSE are shortened, and a slow read
-is brought up to an ad pace (at most TEMPO_MAX faster, pitch kept).
+win. Inside a line, pauses longer than MAX_PAUSE are shortened, a slow read is
+brought up to an ad pace (at most TEMPO_MAX faster, pitch kept), and the voice
+gets a light broadcast polish so it sits on top of the music.
 Usage: python3 tools/import_voice.py path/to/voice.mp3
 Then: python3 tools/build.py  (and check the scene windows it prints)
 """
@@ -135,12 +136,21 @@ def fade_edges(seg):
     return seg
 
 
+def polish(segs):
+    """Broadcast polish: low rumble out, gentle compression, a little presence; one gain for every line."""
+    from pedalboard import Compressor, HighpassFilter, PeakFilter, Pedalboard
+    chain = Pedalboard([HighpassFilter(80), Compressor(threshold_db=-22, ratio=3, attack_ms=4, release_ms=90),
+                        PeakFilter(3200, 2.5, 0.8)])
+    out = {k: chain(s.astype(np.float32)[None, :], SR)[0].astype(np.float64) for k, s in segs.items()}
+    peak = max(np.max(np.abs(s)) for s in out.values()) or 1
+    return {k: s / peak * 0.89 for k, s in out.items()}
+
+
 def main(path):
     x = load(path)
     keys = list(T.LINES)
     weights = [sum(syllables(w) for w in T.LINES[k][0].split()) for k in keys]
     parts = split(x, len(keys), weights)
-    peak = np.max(np.abs(x)) or 1
     segs, natural = {}, {}
     for k, (a, b) in zip(keys, parts):
         seg, lead = trim(x[int(a * SR) : int(b * SR)])
@@ -152,10 +162,11 @@ def main(path):
     if tempo > 1.001:
         from pedalboard import time_stretch
         segs = {k: time_stretch(s.astype(np.float32)[None, :], SR, stretch_factor=tempo)[0] for k, s in segs.items()}
+    segs = polish(segs)
     (ROOT / "assets" / "vo").mkdir(parents=True, exist_ok=True)
     take, t = {}, 0.0
     for i, k in enumerate(keys):
-        seg = fade_edges(np.asarray(segs[k], dtype=np.float64) / peak * 0.89)
+        seg = fade_edges(np.asarray(segs[k], dtype=np.float64))
         sf.write(ROOT / "assets" / "vo" / f"{k}.wav", seg, SR)
         if i:
             t += (natural[k][0] - natural[keys[i - 1]][1]) / tempo  # the take's own breath, at the new pace

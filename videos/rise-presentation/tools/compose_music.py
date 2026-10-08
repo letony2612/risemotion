@@ -305,9 +305,16 @@ from import_music import INFO, fit, load, track  # noqa: E402
 
 track = track()
 OUT.parent.mkdir(parents=True, exist_ok=True)
+
+
+def ducked(y, depth_db=-6):
+    """The bed dips while the voice speaks (on top of the spectral carve build.py adds)."""
+    return y * (1 - (1 - 10 ** (depth_db / 20)) * T.voice_activity(y.shape[1], SR))
+
+
 if track and INFO.exists():  # an imported track (tools/import_music.py), fitted to this edit
-    sf.write(OUT, fit(load(track), json.loads(INFO.read_text()), drop, end, T.DURATION).T, SR)
+    sf.write(OUT, ducked(fit(load(track), json.loads(INFO.read_text()), drop, end, T.DURATION)).T, SR)
     print("music: using", track.name)
 else:
-    sf.write(OUT, master.T, SR)
+    sf.write(OUT, ducked(master).T, SR)
     print("music: synthesized bed written", OUT.name)

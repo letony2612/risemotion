@@ -83,9 +83,9 @@ def audio_tags():
         tags.append(f'      <audio id="vo-{key}" src="assets/vo/{key}.wav" data-start="{start}" data-duration="{dur}" '
                     f'data-track-index="10" data-volume="1"></audio>')
     tags.append(f'      <audio id="music" src="assets/audio/music.wav" data-start="0" data-duration="{T.DURATION}" '
-                f'data-track-index="11" data-volume="0.62"></audio>')
+                f'data-track-index="11" data-volume="0.45"></audio>')
     tags.append(f'      <audio id="sfx" src="assets/audio/sfx.wav" data-start="0" data-duration="{T.DURATION}" '
-                f'data-track-index="12" data-volume="0.9"></audio>')
+                f'data-track-index="12" data-volume="0.75"></audio>')
     return "\n".join(tags)
 
 
@@ -125,9 +125,10 @@ def main():
     carve = ROOT.parent.parent / ".claude" / "skills" / "hyperframes-audio" / "scripts" / "carve.mjs"
     if carve.exists():
         voices = sum((["--voice", f"vo-{k}"] for k in T.LINES), [])
-        subprocess.run(["node", str(carve), "--comp", str(ROOT / "index.html"), "--bed", "music", "--strength", "0.65", *voices],
-                       check=True, capture_output=True)
-        print("music carved under the voice-over")
+        for bed, strength in (("music", "0.6"), ("sfx", "0.6")):
+            subprocess.run(["node", str(carve), "--comp", str(ROOT / "index.html"), "--bed", bed, "--strength", strength, *voices],
+                           check=True, capture_output=True)
+        print("music and effects carved under the voice-over")
 
 
 if __name__ == "__main__":

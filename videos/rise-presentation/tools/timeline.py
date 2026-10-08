@@ -15,6 +15,7 @@ import math
 import sys
 from pathlib import Path
 
+import numpy as np
 import soundfile as sf
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -196,6 +197,16 @@ S = {k: E[k] for k in ("hook", "share", "pray", "answer", "groups", "verse", "qu
 
 def words():
     return W
+
+
+def voice_activity(n, sr, attack=0.08, release=0.3):
+    """0..1 over n samples at sr: 1 while the voice-over speaks, with a soft attack and release."""
+    t = np.arange(n) / sr
+    on = np.zeros(n)
+    for k, start in VO_START.items():
+        on[(t >= start - attack) & (t < start + VO_DUR[k] + release)] = 1.0
+    w = max(1, int(attack * sr))
+    return np.convolve(on, np.ones(w) / w, mode="same")
 
 
 def events(_W=None):
