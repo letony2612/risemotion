@@ -53,7 +53,7 @@
       .title { position: absolute; left: 0; width: 1080px; display: flex; flex-direction: column; align-items: center; text-align: center; }
       .ln { display: block; overflow: hidden; padding: 24px 24px 10px; margin-top: -24px; }
       .ser { display: block; font-family: "Newsreader", serif; font-weight: 500; line-height: 1.0; letter-spacing: -0.02em; color: var(--ink); white-space: nowrap; }
-      .it { font-style: italic; font-weight: 400; color: #c76a05; letter-spacing: -0.01em; }
+      .it { font-style: italic; font-weight: 400; color: #c06505; letter-spacing: -0.01em; }
       .ch { display: inline-block; }
       .card { position: absolute; display: block; border-radius: 30px; overflow: hidden; box-shadow: var(--shadow); background: var(--snow); }
       .card > img { display: block; width: 100%; height: 100%; }
@@ -138,18 +138,7 @@
       .row5 img { display: block; width: 100%; height: 100%; }
       .hl5 { position: absolute; left: 0; width: 880px; height: 135px; border-radius: 28px; border: 5px solid var(--amber); opacity: 0; }
 
-      /* ---------- 6. chat ---------- */
-      #t6 { top: 150px; }
-      #t6a .ser { font-size: 200px; }
-      #t6b .ser { font-size: 150px; }
-      #chat { position: absolute; left: 70px; top: 590px; width: 940px; height: 750px; border-radius: 52px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
-      #chatHead { position: absolute; left: 0; top: 0; width: 940px; height: 112px; border-bottom: 2px solid #ece8e2; display: flex; align-items: center; justify-content: center; gap: 18px;
-        font-weight: 700; font-size: 36px; color: var(--ink); background: var(--paper); }
-      #chatHead .av { display: block; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #2bd4a4, #11a37f); }
-      #msgs { position: absolute; left: 0; top: 0; width: 940px; height: 750px; }
-      .bub { position: absolute; display: block; opacity: 0; }
-
-      /* ---------- 7. verse ---------- */
+      /* ---------- 6. verse ---------- */
       #ey7 { top: 190px; }
       #t7 { top: 240px; }
       #t7a .ser { font-size: 130px; }
@@ -162,7 +151,7 @@
       #verseShine { position: absolute; top: 0; left: 0; width: 45%; height: 100%;
         background: linear-gradient(100deg, rgba(255, 210, 140, 0) 0%, rgba(255, 210, 140, 0.25) 50%, rgba(255, 210, 140, 0) 100%); opacity: 0; }
 
-      /* ---------- 8. quiz ---------- */
+      /* ---------- 7. quiz ---------- */
       #t8 { top: 160px; }
       #t8a .ser { font-size: 140px; }
       #t8b .ser { font-size: 140px; }
@@ -175,11 +164,8 @@
       .ans img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
       #exact8 { left: 90px; top: 935px; width: 900px; height: 385px; border-radius: 44px 44px 48px 48px; opacity: 0; }
       #sans8 { position: absolute; left: 0; top: 400px; width: 1080px; text-align: center; font-weight: 800; font-size: 96px; letter-spacing: -0.02em; color: var(--ink); opacity: 0; }
-      .tile8 { position: absolute; top: 560px; width: 270px; height: 220px; border-radius: 34px; overflow: hidden; opacity: 0; box-shadow: 0 24px 50px rgba(26, 23, 20, 0.14); }
-      .tile8 img { display: block; width: 100%; height: 100%; }
-      #stats8 { left: 160px; top: 826px; width: 760px; height: 431px; border-radius: 36px; opacity: 0; }
 
-      /* ---------- 9. end ---------- */
+      /* ---------- 8. end ---------- */
       #t9 { top: 880px; }
       #t9a .ser, #t9b .ser { font-size: 150px; }
       #rule9 { position: absolute; left: 470px; top: 1236px; width: 140px; height: 6px; border-radius: 3px; background: var(--amber); }
@@ -206,7 +192,6 @@
         <filter id="mbA" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur id="mbAb" stdDeviation="0 0" /></filter>
         <filter id="mbB" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur id="mbBb" stdDeviation="0 0" /></filter>
         <filter id="mbC" x="-30%" y="-20%" width="160%" height="140%"><feGaussianBlur id="mbCb" stdDeviation="0 0" /></filter>
-        <filter id="mbD" x="-30%" y="-20%" width="160%" height="140%"><feGaussianBlur id="mbDb" stdDeviation="0 0" /></filter>
         <symbol id="starShape" viewBox="0 0 24 24"><path fill="#F5B000" d="M12 1.8l3.1 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.6l-6.4 3.6 1.5-7.1L1.7 9.2l7.2-.8z" /></symbol>
       </svg>
 
@@ -312,24 +297,7 @@
           </div>
         </div>
 
-        <!-- ===================== 6. CHAT ===================== -->
-        <div id="s6" class="scene">
-          <div id="t6" class="title">
-            <span id="t6a" class="ln"><span class="ser">Reste</span></span>
-            <span id="t6b" class="ln"><span class="ser it">proche.</span></span>
-          </div>
-          <div id="chat">
-            <div id="msgs">
-              <img id="bb1" class="bub" src="assets/ui/bubble_b1.png" alt="" style="left: 18px; top: 238px; width: 826.5px; height: 147.3px" />
-              <img id="bb2" class="bub" src="assets/ui/bubble_b2.png" alt="" style="left: 132.5px; top: 403px; width: 789.5px; height: 97.9px" />
-              <img id="bb3" class="bub" src="assets/ui/bubble_b5.png" alt="" style="left: 18px; top: 519px; width: 826.5px; height: 96px" />
-              <img id="bb4" class="bub" src="assets/ui/bubble_b6.png" alt="" style="left: 450.8px; top: 633px; width: 471.2px; height: 96.9px" />
-            </div>
-            <div id="chatHead"><span class="av"></span>Jonathan Mbala</div>
-          </div>
-        </div>
-
-        <!-- ===================== 7. VERSE ===================== -->
+        <!-- ===================== 6. VERSE ===================== -->
         <div id="s7" class="scene">
           <div id="ey7" class="title"><span class="eyebrow">Verset du jour</span></div>
           <div id="t7" class="title">
@@ -343,7 +311,7 @@
           </div>
         </div>
 
-        <!-- ===================== 8. QUIZ ===================== -->
+        <!-- ===================== 7. QUIZ ===================== -->
         <div id="s8" class="scene">
           <div id="t8" class="title">
             <span id="t8a" class="ln"><span class="ser">Un an dans</span></span>
@@ -366,13 +334,9 @@
           <span id="st3" class="star" style="left: 660px; top: 230px; width: 130px; height: 130px"><svg><use href="#starShape" /></svg></span>
           <div id="conf8">@@CONFETTI8@@</div>
           <div id="sans8">Sans faute !</div>
-          <div class="tile8" id="tl1" style="left: 75px"><img src="assets/ui/quiz_tile_1.png" alt="" /></div>
-          <div class="tile8" id="tl2" style="left: 405px"><img src="assets/ui/quiz_tile_2.png" alt="" /></div>
-          <div class="tile8" id="tl3" style="left: 735px"><img src="assets/ui/quiz_tile_3.png" alt="" /></div>
-          <div id="stats8" class="card"><img src="assets/ui/quiz_stats.png" alt="" /></div>
         </div>
 
-        <!-- ===================== 9. END ===================== -->
+        <!-- ===================== 8. END ===================== -->
         <div id="s9" class="scene">
           <span id="glow9" class="glow" style="left: 205px; top: 356px; width: 500px; height: 500px"></span>
           <span id="ring9" class="ring" style="left: 405px; top: 556px; width: 100px; height: 100px"></span>
@@ -467,7 +431,7 @@
       tl.fromTo("#blobA", { x: 0, y: 0 }, { x: 220, y: 160, duration: D, ease: "none" }, 0);
       tl.fromTo("#blobB", { x: 0, y: 0 }, { x: -260, y: -220, duration: D, ease: "none" }, 0);
 
-      // ================================================================ 1. HOOK (0 - 4)
+      // ================================================================ 1. HOOK
       // the flame: base position is its seat on the logo; offsets carry it around
       const FX = 540 - 455.35;
       tl.set("#flame1", { x: FX, y: 170 }, 0);
@@ -515,7 +479,7 @@
       tl.to(["#logo1", "#flame1", "#glow1"], { y: -1300, duration: 0.42, ease: "power3.in" }, E.hook_out);
       show("#s1", 0, E.share + 0.42);
 
-      // ================================================================ 2. SHARE (4 - 10)
+      // ================================================================ 2. SHARE
       show("#s2", E.hook_out, E.share_out + 0.5);
       tl.fromTo("#phone2", { y: 1500, rotationY: -26, rotationX: 22, transformPerspective: 1800, scale: 0.9 },
         { y: 0, rotationY: -16, rotationX: 7, transformPerspective: 1800, scale: 1, duration: 0.85, ease: "expo.out" }, E.hook_out + 0.05);
@@ -545,7 +509,7 @@
       tl.to(["#c2a", "#c2b", "#c2c", "#pub"], { y: -1500, duration: 0.42, ease: "power3.in", stagger: 0.03 }, E.share_out);
       tl.to(["#phone2", "#t2"], { y: -1700, duration: 0.45, ease: "power3.in" }, E.share_out + 0.06);
 
-      // ================================================================ 3. PRAY (10 - 14)
+      // ================================================================ 3. PRAY
       show("#s3", E.share_out + 0.2, E.flip + 0.55);
       slam("#t3a .ser", E.w_prie, 2.0);
       shake(E.w_prie, 6);
@@ -577,11 +541,11 @@
       tl.to("#card3", { rotationY: -90, duration: 0.24, ease: "power2.in" }, E.flip);
       tl.to("#t3", { y: -80, opacity: 0, duration: 0.28, ease: "power3.in" }, E.flip);
 
-      // ================================================================ 4. ANSWERED (14 - 18)
+      // ================================================================ 4. ANSWERED
       show("#s4", E.flip + 0.22, E.answer_out + 0.5);
       tl.fromTo("#card4", { rotationY: 90, transformPerspective: P, scale: 0.94 }, { rotationY: 0, transformPerspective: P, scale: 1, duration: 0.42, ease: "back.out(1.4)" }, E.flip + 0.24);
-      riseIn("#t4a .ser", E.answer, 0);
-      tl.fromTo("#t4b .ser", { x: 300, opacity: 0 }, { x: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, E.answer + 0.25);
+      riseIn("#t4a .ser", E.w_dieu - 0.08, 0);
+      tl.fromTo("#t4b .ser", { x: 300, opacity: 0 }, { x: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, E.w_repond - 0.06);
       tl.fromTo("#notif4", { y: -260, opacity: 0, scale: 0.96 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.6)" }, E.notif);
       tl.to("#notif4", { y: -260, opacity: 0, duration: 0.35, ease: "power3.in" }, Math.min(E.notif + 1.3, E.answer_out - 0.35));
       const com = (sel, t, rot) => tl.fromTo(sel, { scale: 0.55, opacity: 0, rotation: rot * 3 }, { scale: 1, opacity: 1, rotation: rot, duration: 0.5, ease: "back.out(2.2)" }, t);
@@ -599,7 +563,7 @@
       tl.to("#s4", { scale: 2.6, opacity: 0, filter: "blur(12px)", duration: 0.45, ease: "power3.in", transformOrigin: "50% 55%" }, E.answer_out);
       tl.to("#flash", { keyframes: [{ opacity: 0.85, duration: 0.3, ease: "power2.in" }, { opacity: 0, duration: 0.4, ease: "power2.out" }] }, E.answer_out + 0.15);
 
-      // ================================================================ 5. GROUPS (18 - 22)
+      // ================================================================ 5. GROUPS
       show("#s5", E.answer_out + 0.35, E.groups_out + 0.5);
       tl.fromTo("#s5", { scale: 0.7, filter: "blur(10px)" }, { scale: 1, filter: "blur(0px)", duration: 0.55, ease: "power3.out" }, E.answer_out + 0.36);
       riseIn("#t5a .ser", E.groups + 0.02, 0);
@@ -614,33 +578,13 @@
       hl("#r1", "#h1", E.hl1, E.hl2);
       hl("#r2", "#h2", E.hl2, E.hl3);
       hl("#r4", "#h4", E.hl3);
-      // out: whip to the left
-      filterOn("#s5", "mbC", E.groups_out - 0.01, E.chat + 0.3);
+      // out: whip to the left, into the sunrise
+      filterOn("#s5", "mbC", E.groups_out - 0.01, E.verse + 0.3);
       blur("mbCb", "x", E.groups_out, 30, 0.2, 0.15);
       tl.to("#s5", { x: -1300, duration: 0.42, ease: "power3.in" }, E.groups_out);
 
-      // ================================================================ 6. CHAT (22 - 24)
-      show("#s6", E.groups_out + 0.15, E.chat_out + 0.5);
-      filterOn("#s6", "mbD", E.groups_out + 0.15, E.chat + 0.4);
-      blur("mbDb", "x", E.groups_out + 0.2, 30, 0.05, 0.4);
-      tl.fromTo("#s6", { x: 1300 }, { x: 0, duration: 0.5, ease: "power4.out" }, E.groups_out + 0.22);
-      riseIn("#t6a .ser", E.chat + 0.02, 0);
-      snapIn("#t6b .ser", E.chat + 0.28, 300);
-      // messages arrive from the bottom and push the thread up
-      const H = [147.3, 97.9, 96, 96.9], G = 18;
-      const off = (k) => H.slice(k + 1).reduce((s, h) => s + h + G, 0);
-      tl.fromTo("#msgs", { y: off(0) }, { y: off(0), duration: 0.01 }, 0);
-      [["#bb1", E.b1, "0% 100%"], ["#bb2", E.b2, "100% 100%"], ["#bb3", E.b3, "0% 100%"], ["#bb4", E.b4, "100% 100%"]].forEach(([id, t, o], k) => {
-        if (k > 0) tl.to("#msgs", { y: off(k), duration: 0.35, ease: "back.out(1.3)" }, t);
-        tl.fromTo(id, { scale: 0.5, opacity: 0, transformOrigin: o }, { scale: 1, opacity: 1, transformOrigin: o, duration: 0.4, ease: "back.out(2)" }, t);
-      });
-      // out: the thread rises away as the sun comes up
-      filterOn("#s6", "mbA", E.chat_out - 0.01, E.verse + 0.45);
-      blur("mbAb", "y", E.chat_out + 0.05, 26, 0.2, 0.2);
-      tl.to("#s6", { y: -1700, duration: 0.5, ease: "power3.in" }, E.chat_out);
-
-      // ================================================================ 7. VERSE (24 - 28)
-      show("#s7", E.chat_out + 0.2, E.quiz - 0.03);
+      // ================================================================ 6. VERSE
+      show("#s7", E.groups_out + 0.2, E.quiz - 0.03);
       tl.fromTo("#sun", { y: 900, opacity: 0, scale: 0.8 }, { y: 0, opacity: 1, scale: 1, duration: 1.6, ease: "power2.out" }, E.sunrise);
       tl.fromTo("#warm", { opacity: 0 }, { opacity: 1, duration: 1.4, ease: "power1.out" }, E.sunrise);
       tl.fromTo("#rays", { opacity: 0 }, { opacity: 0.8, duration: 1.4, ease: "power1.out" }, E.sunrise + 0.2);
@@ -658,7 +602,7 @@
       tl.to("#flash", { keyframes: [{ opacity: 1, duration: 0.3, ease: "power2.in" }, { opacity: 0, duration: 0.55, ease: "power2.out" }] }, E.verse_out + 0.08);
       tl.to(["#sun", "#warm", "#rays"], { opacity: 0, duration: 0.01 }, E.quiz - 0.02);
 
-      // ================================================================ 8. QUIZ (28 - 34)
+      // ================================================================ 7. QUIZ
       show("#s8", E.quiz - 0.02, E.quiz_out + 0.5);
       tl.fromTo("#sky", { opacity: 0 }, { opacity: 1, duration: 0.01 }, E.quiz - 0.02);
       tl.fromTo("#clouds", { x: 0, y: 40 }, { x: 150, y: -40, duration: 7, ease: "none" }, E.quiz - 0.5);
@@ -687,17 +631,13 @@
         tl.fromTo(id, { scale: 0, rotation: -90, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.55, ease: "back.out(2.6)" }, E.stars + d));
       burst("#conf8 .conf", E.stars + 0.05, 540, 300, 600, 520);
       tl.fromTo("#sans8", { scale: 1.6, opacity: 0, filter: "blur(10px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power4.out" }, E.stars + 0.35);
-      tl.to(["#panel8", "#exact8"], { y: 160, opacity: 0, scale: 0.92, duration: 0.35, ease: "power3.in" }, E.tiles - 0.25);
-      ["#tl1", "#tl2", "#tl3"].forEach((id, i) =>
-        tl.fromTo(id, { y: 160, scale: 0.6, opacity: 0, rotation: (i - 1) * 8 }, { y: 0, scale: 1, opacity: 1, rotation: 0, duration: 0.5, ease: "back.out(2)" }, E.tiles + i * 0.15));
-      tl.fromTo("#stats8", { y: 420, opacity: 0, rotationX: 30, transformPerspective: P }, { y: 0, opacity: 1, rotationX: 0, transformPerspective: P, duration: 0.6, ease: "expo.out" }, E.tiles + 0.45);
       // out: everything rises, the sky gives way to paper
       filterOn("#s8", "mbA", E.quiz_out - 0.01, E.end + 0.45);
       blur("mbAb", "y", E.quiz_out + 0.05, 28, 0.2, 0.2);
-      tl.to(["#st1", "#st2", "#st3", "#sans8", "#tl1", "#tl2", "#tl3", "#stats8"], { y: -1700, duration: 0.45, ease: "power3.in", stagger: 0.025 }, E.quiz_out);
+      tl.to(["#st1", "#st2", "#st3", "#sans8", "#panel8", "#exact8"], { y: -1700, duration: 0.45, ease: "power3.in", stagger: 0.025 }, E.quiz_out);
       tl.to("#sky", { opacity: 0, duration: 0.6, ease: "power1.inOut" }, E.quiz_out + 0.15);
 
-      // ================================================================ 9. END (34 - 40)
+      // ================================================================ 8. END
       show("#s9", E.quiz_out + 0.3);
       tl.fromTo("#flame9", { x: FX, y: 1250, scale: 1.6 }, { x: FX * 0.5, y: -160, scale: 1.5, duration: 0.45, ease: "power2.out" }, E.end_land - 0.67);
       tl.to("#flame9", { x: 0, y: 0, scale: 1, duration: 0.22, ease: "power3.in" }, E.end_land - 0.22);

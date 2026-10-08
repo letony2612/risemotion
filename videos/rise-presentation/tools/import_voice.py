@@ -1,7 +1,9 @@
-"""Import a full voice-over take (one file, the 9 lines read in order) into assets/vo/.
+"""Import a full voice-over take (one file, the lines read in order) into assets/vo/.
 
-The take is split at the pauses between lines: among all the silences, the 8
-cuts that best match the expected length of each line (by syllables) win.
+The take is split at the pauses between lines: among all the silences, the cuts
+whose share of the spoken time best matches each line's share of the syllables
+win. Inside a line, pauses longer than MAX_PAUSE are shortened, and a slow read
+is brought up to an ad pace (at most TEMPO_MAX faster, pitch kept).
 Usage: python3 tools/import_voice.py path/to/voice.mp3
 Then: python3 tools/build.py  (and check the scene windows it prints)
 """
@@ -20,6 +22,10 @@ from align import syllables  # noqa: E402
 
 ROOT = T.ROOT
 SR = 44100
+HOP = 0.01
+MAX_PAUSE = 0.4  # longest pause kept inside a line (s)
+TARGET_RATE = 5.2  # syllables per second of an ad read
+TEMPO_MAX = 1.12
 
 
 def load(path):
@@ -30,12 +36,15 @@ def load(path):
     return x
 
 
-def silences(x, hop=0.01, min_len=0.07):
+def voicing(x, floor=38):
     win = int(0.03 * SR)
-    st = int(hop * SR)
-    n = (len(x) - win) // st
+    st = int(HOP * SR)
+    n = max(1, (len(x) - win) // st)
     db = np.array([20 * np.log10(np.sqrt(np.mean(x[i * st : i * st + win] ** 2)) + 1e-9) for i in range(n)])
-    voiced = db > db.max() - 38
+    return db > db.max() - floor
+
+
+def silences(voiced, min_len=0.07):
     idx = np.where(voiced)[0]
     first, last = idx[0], idx[-1]
     out, i = [], first
@@ -44,33 +53,35 @@ def silences(x, hop=0.01, min_len=0.07):
             j = i
             while j <= last and not voiced[j]:
                 j += 1
-            if (j - i) * hop >= min_len:
-                out.append((i * hop, j * hop))
+            if (j - i) * HOP >= min_len:
+                out.append((i * HOP, j * HOP))
             i = j
         else:
             i += 1
-    return out, first * hop, (last + 1) * hop
+    return out, first * HOP, (last + 1) * HOP
 
 
 def split(x, n_lines, weights):
-    sil, t0, t1 = silences(x)
-    total = sum(weights)
-    target = np.cumsum(weights)[:-1] / total  # expected cut positions (fraction of speech)
-    cands = [((a + b) / 2, b - a) for a, b in sil]
+    voiced = voicing(x)
+    sil, t0, t1 = silences(voiced)
     K = n_lines - 1
-    if len(cands) < K:
-        raise SystemExit(f"only {len(cands)} pauses found, need {K}: is this the full take?")
-    pos = [(c - t0) / (t1 - t0) for c, _ in cands]
-    # dynamic programming: choose K increasing candidates minimising position error, rewarding long pauses
+    if len(sil) < K:
+        raise SystemExit(f"only {len(sil)} pauses found, need {K}: is this the full take?")
+    target = np.cumsum(weights)[:-1] / sum(weights)  # each cut's share of the syllables
+    spoken = np.cumsum(voiced)
+    cands = [((a + b) / 2, b - a) for a, b in sil]
+    pos = [spoken[min(len(spoken) - 1, int(c / HOP))] / spoken[-1] for c, _ in cands]  # share of the spoken time
+    # dynamic programming: K increasing cuts, close to their target, preferring real pauses
     INF = 1e9
     M = len(cands)
+    score = lambda j, k: abs(pos[j] - target[k]) * 30 - min(cands[j][1], 0.6)
     cost = [[INF] * M for _ in range(K)]
     back = [[-1] * M for _ in range(K)]
     for j in range(M):
-        cost[0][j] = abs(pos[j] - target[0]) * 10 - cands[j][1]
+        cost[0][j] = score(j, 0)
     for k in range(1, K):
         for j in range(M):
-            c = abs(pos[j] - target[k]) * 10 - cands[j][1]
+            c = score(j, k)
             for i in range(j):
                 if cost[k - 1][i] + c < cost[k][j]:
                     cost[k][j] = cost[k - 1][i] + c
@@ -80,8 +91,7 @@ def split(x, n_lines, weights):
     for k in range(K - 1, 0, -1):
         j = back[k][j]
         picks.append(j)
-    picks = sorted(picks)
-    cuts = [cands[p][0] for p in picks]
+    cuts = [cands[p][0] for p in sorted(picks)]
     bounds = [t0] + cuts + [t1]
     return [(bounds[i], bounds[i + 1]) for i in range(n_lines)]
 
@@ -94,11 +104,35 @@ def trim(seg, pad=0.04):
     v = np.where(db > db.max() - 40)[0]
     a = max(0, v[0] * st - int(pad * SR))
     b = min(len(seg), v[-1] * st + win + int(pad * SR))
-    out = seg[a:b].copy()
+    return seg[a:b].copy(), a / SR
+
+
+def tighten(seg):
+    """Shorten the pauses inside a line to MAX_PAUSE (short crossfade at each join)."""
+    sil, _, _ = silences(voicing(seg, floor=40), min_len=MAX_PAUSE + 0.05)
+    if not sil:
+        return seg
+    f = int(0.012 * SR)
+    out, pos = [], 0
+    for a, b in sil:
+        keep = MAX_PAUSE / 2
+        cut0, cut1 = int((a + keep) * SR), int((b - keep) * SR)
+        out.append(seg[pos:cut0])
+        pos = cut1
+    out.append(seg[pos:])
+    y = out[0]
+    for part in out[1:]:
+        fade = np.linspace(0, 1, min(f, len(y), len(part)))
+        n = len(fade)
+        y = np.concatenate([y[:-n], y[-n:] * (1 - fade) + part[:n] * fade, part[n:]])
+    return y
+
+
+def fade_edges(seg):
     f = int(0.01 * SR)
-    out[:f] *= np.linspace(0, 1, f)
-    out[-f:] *= np.linspace(1, 0, f)
-    return out, a / SR
+    seg[:f] *= np.linspace(0, 1, f)
+    seg[-f:] *= np.linspace(1, 0, f)
+    return seg
 
 
 def main(path):
@@ -106,18 +140,31 @@ def main(path):
     keys = list(T.LINES)
     weights = [sum(syllables(w) for w in T.LINES[k][0].split()) for k in keys]
     parts = split(x, len(keys), weights)
-    (ROOT / "assets" / "vo" / "raw").mkdir(parents=True, exist_ok=True)
     peak = np.max(np.abs(x)) or 1
-    take = {}
+    segs, natural = {}, {}
     for k, (a, b) in zip(keys, parts):
         seg, lead = trim(x[int(a * SR) : int(b * SR)])
-        seg = seg / peak * 0.89
+        natural[k] = (a + lead, a + lead + len(seg) / SR)
+        segs[k] = tighten(seg)
+    rate = sum(weights) / sum(len(s) / SR for s in segs.values())
+    tempo = float(np.clip(TARGET_RATE / rate, 1.0, TEMPO_MAX))
+    print(f"read at {rate:.1f} syll/s -> tempo x{tempo:.2f}")
+    if tempo > 1.001:
+        from pedalboard import time_stretch
+        segs = {k: time_stretch(s.astype(np.float32)[None, :], SR, stretch_factor=tempo)[0] for k, s in segs.items()}
+    (ROOT / "assets" / "vo").mkdir(parents=True, exist_ok=True)
+    take, t = {}, 0.0
+    for i, k in enumerate(keys):
+        seg = fade_edges(np.asarray(segs[k], dtype=np.float64) / peak * 0.89)
         sf.write(ROOT / "assets" / "vo" / f"{k}.wav", seg, SR)
-        take[k] = {"start": round(a + lead, 3), "end": round(a + lead + len(seg) / SR, 3)}
-        rate = sum(syllables(w) for w in T.LINES[k][0].split()) / (len(seg) / SR)
-        print(f"{k}: {len(seg) / SR:5.2f}s  {rate:4.1f} syll/s  {T.LINES[k][1][:56]}")
+        if i:
+            t += (natural[k][0] - natural[keys[i - 1]][1]) / tempo  # the take's own breath, at the new pace
+        take[k] = {"start": round(t, 3), "end": round(t + len(seg) / SR, 3)}
+        t += len(seg) / SR
+        r = weights[i] / (len(seg) / SR)
+        print(f"{k}: {len(seg) / SR:5.2f}s  {r:4.1f} syll/s  {T.LINES[k][1][:56]}")
     (ROOT / "assets" / "vo" / "take.json").write_text(json.dumps(take, indent=1))
-    print("natural positions written to assets/vo/take.json (rebuild to re-time the edit)")
+    print("line positions written to assets/vo/take.json (rebuild to re-time the edit)")
 
 
 if __name__ == "__main__":

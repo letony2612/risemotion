@@ -1,8 +1,9 @@
 """Single source of truth for the RISE video timing.
 
 The voice-over drives the edit: each scene starts when its line starts, lines
-follow each other with their natural breath (taken from the full take when
-assets/vo/take.json exists), and a scene only waits when its picture needs a
+follow each other with a short breath (the take's own, capped so the read never
+stalls), the next line may begin while the picture is still leaving (the voice
+leads the cut, as in an ad), and a scene only waits when its picture needs a
 beat more. build.py injects these times into index.html, sfx.py renders the
 sound design from cues() and compose_music.py follows the same sections, so
 picture, sound effects and music cannot drift apart.
@@ -20,45 +21,41 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).parent))
 BPM = 120
 BEAT = 60 / BPM
+MAX_GAP = 0.3  # longest breath kept between two lines
 
 # Voice-over lines: (text as spoken, text shown in the captions). Same number of words in both.
 LINES = {
     "l1": ("La foi, ça se vit ensemble !", "La foi, ça se vit ensemble !"),
-    "l2": ("Sur RISE, partage ce que Dieu fait dans ta vie : un témoignage, un verset, une photo.",
-           "Sur RISE, partage ce que Dieu fait dans ta vie : un témoignage, un verset, une photo."),
-    "l3": ("Confie une demande : tes frères et sœurs prient pour toi,",
-           "Confie une demande : tes frères et sœurs prient pour toi,"),
-    "l4": ("et vous célébrez ensemble quand elle est exaucée !", "et vous célébrez ensemble quand elle est exaucée !"),
-    "l5": ("Rejoins des groupes de louange, d'étude biblique, de jeunes,",
-           "Rejoins des groupes de louange, d’étude biblique, de jeunes,"),
-    "l6": ("et reste proche de ceux qui comptent.", "et reste proche de ceux qui comptent."),
-    "l7": ("Chaque matin, une Parole pour ta journée.", "Chaque matin, une Parole pour ta journée."),
-    "l8": ("Et chaque jour, un niveau du kwiz biblique pour parcourir toute la Bible en un an !",
-           "Et chaque jour, un niveau du quiz biblique pour parcourir toute la Bible en un an !"),
-    "l9": ("RISE. Élève-toi. Ensemble ! Disponible sur iPhone et Android.",
-           "RISE. Élève-toi. Ensemble ! Disponible sur iPhone et Android."),
+    "l2": ("Sur RISE, partage ce que Dieu fait dans ta vie !", "Sur RISE, partage ce que Dieu fait dans ta vie !"),
+    "l3": ("Un coup dur ? Tes frères et sœurs prient pour toi.", "Un coup dur ? Tes frères et sœurs prient pour toi."),
+    "l4": ("Et quand Dieu répond, on célèbre ensemble !", "Et quand Dieu répond, on célèbre ensemble !"),
+    "l5": ("Trouve ton groupe : louange, étude biblique, jeunes !",
+           "Trouve ton groupe : louange, étude biblique, jeunes !"),
+    "l6": ("Chaque matin, ta Parole du jour.", "Chaque matin, ta Parole du jour."),
+    "l7": ("Et chaque jour, un niveau de kwiz : toute la Bible en un an !",
+           "Et chaque jour, un niveau de quiz : toute la Bible en un an !"),
+    "l8": ("RISE. Élève-toi. Ensemble ! Dispo sur iPhone et Android.",
+           "RISE. Élève-toi. Ensemble ! Dispo sur iPhone et Android."),
 }
 
-# Caption chunks: word index ranges (inclusive) per line; l1 and l9 are carried by the big type.
+# Caption chunks: word index ranges (inclusive) per line; l1 and l8 are carried by the big type.
 CHUNKS = {
-    "l2": [(0, 2), (3, 5), (6, 9), (10, 13), (14, 15)],
+    "l2": [(0, 2), (3, 6), (7, 9)],
     "l3": [(0, 2), (3, 6), (7, 9)],
-    "l4": [(0, 2), (3, 3), (4, 7)],
-    "l5": [(0, 2), (3, 4), (5, 6), (7, 8)],
-    "l6": [(0, 2), (3, 6)],
-    "l7": [(0, 1), (2, 3), (4, 6)],
-    "l8": [(0, 2), (3, 5), (6, 7), (8, 9), (10, 15)],
+    "l4": [(0, 3), (4, 6)],
+    "l5": [(0, 2), (3, 3), (4, 5), (6, 6)],
+    "l6": [(0, 1), (2, 5)],
+    "l7": [(0, 2), (3, 6), (7, 9), (10, 12)],
 }
 # Words shown in amber inside the captions (compared without punctuation, lower case).
-KEYWORDS = {"témoignage", "verset", "photo", "prient", "exaucée", "louange", "biblique", "jeunes", "proche",
-            "parole", "bible"}
+KEYWORDS = {"dieu", "vie", "prient", "répond", "célèbre", "louange", "biblique", "jeunes", "parole", "quiz", "bible"}
 
 
 def _tokens(text):
     out = []
     for tok in text.split():
         if out and tok in (":", ";", "!", "?", "»"):
-            out[-1] += " " + tok
+            out[-1] += " " + tok
         else:
             out.append(tok)
     return out
@@ -67,11 +64,12 @@ def _tokens(text):
 def _natural_gaps():
     take = ROOT / "assets" / "vo" / "take.json"
     keys = list(LINES)
-    gaps = {k: 0.3 for k in keys}
+    gaps = {k: 0.25 for k in keys}
     if take.exists():
         t = json.loads(take.read_text())
-        for a, b in zip(keys, keys[1:]):
-            gaps[a] = max(0.08, t[b]["start"] - t[a]["end"])
+        if all(k in t for k in keys):
+            for a, b in zip(keys, keys[1:]):
+                gaps[a] = min(MAX_GAP, max(0.08, t[b]["start"] - t[a]["end"]))
     return gaps
 
 
@@ -93,8 +91,9 @@ def _plan():
     V, E = {}, {}
     wt = lambda k, i: V[k] + rel[k][i][1]
     end = lambda k: V[k] + dur[k]
+    after = lambda k, t: max(t, end(k) + gap[k])  # next line: once the previous one has breathed
 
-    # 1. hook: the flame, the words, the logo (its own choreography)
+    # 1. hook: the flame, the words, the logo; "Sur RISE" is said on the logo
     V["l1"] = 0.35
     E["hook"] = 0.0
     E["spark"] = 0.05
@@ -102,83 +101,81 @@ def _plan():
     E["collapse"] = max(E["w_ensemble"] + 0.7, 2.1)
     E["letters"] = E["collapse"] + 0.3
     E["logo_land"] = E["letters"] + 0.55
-    E["hook_out"] = E["logo_land"] + 0.7
+    V["l2"] = after("l1", E["logo_land"] + 0.12)
+    E["hook_out"] = max(E["logo_land"] + 0.6, wt("l2", 1) + 0.3)
     E["share"] = E["hook_out"] + 0.3
 
-    # 2. share: posts fly out of the phone on the words
-    V["l2"] = E["share"] + 0.35
-    E["card_tem"], E["card_ver"], E["card_pho"] = wt("l2", 11), wt("l2", 13), wt("l2", 15)
-    E["screen_publish"] = min(E["card_tem"] + 0.4, E["hook_out"] + 3.4)
+    # 2. share: posts fly out of the phone on the stressed words
+    E["card_tem"] = max(wt("l2", 2), E["share"] + 0.25)  # partage
+    E["card_ver"] = max(wt("l2", 5), E["card_tem"] + 0.4)  # Dieu
+    E["card_pho"] = max(wt("l2", 9), E["card_ver"] + 0.4)  # vie
+    E["screen_publish"] = min(E["card_ver"] + 0.2, E["hook_out"] + 3.4)
     E["publish_in"] = E["card_pho"] + 0.15
     E["publish_tap"] = E["card_pho"] + 0.45
     E["share_out"] = max(E["publish_tap"] + 0.2, end("l2") + 0.05)
     E["pray"] = E["share_out"] + 0.35
 
-    # 3. pray: entrust a request, the community prays
-    V["l3"] = max(E["pray"] + 0.1, end("l2") + gap["l2"])
+    # 3. pray: a hard time, the community prays
+    V["l3"] = after("l2", E["share_out"] + 0.05)
     E["w_prie"], E["w_porte"] = E["pray"], E["pray"] + 0.4
-    E["chips"] = wt("l3", 0) + 0.02
-    E["chip_pick"] = max(wt("l3", 2), E["chips"] + 0.35)
+    E["chips"] = max(wt("l3", 0), E["pray"] + 0.1) + 0.02
+    E["chip_pick"] = max(wt("l3", 2), E["chips"] + 0.35)  # dur ?
     E["confier_tap"] = E["chip_pick"] + 0.3
     E["card_maman"] = E["confier_tap"] + 0.12
-    E["jeprie_tap"] = max(E["card_maman"] + 0.45, wt("l3", 3))
-    E["upd1"] = E["jeprie_tap"] + 0.35
-    E["upd2"] = E["jeprie_tap"] + 0.75
+    E["jeprie_tap"] = max(E["card_maman"] + 0.4, wt("l3", 7))  # prient
+    E["upd1"] = E["jeprie_tap"] + 0.3
+    E["upd2"] = E["jeprie_tap"] + 0.62
     E["count_end"] = max(end("l3"), E["upd2"]) + 0.05
-    E["flip"] = max(E["upd2"] + 0.35, end("l3"))
+    E["flip"] = max(E["upd2"] + 0.3, end("l3"))
     E["answer"] = E["flip"] + 0.4
 
-    # 4. answered: notification, celebration, the stamp on "exaucée"
-    V["l4"] = max(E["answer"] + 0.12, end("l3") + gap["l3"])
-    E["notif"] = E["answer"] + 0.3
-    E["celebrate"] = wt("l4", 2)
-    E["stamp"] = wt("l4", 7)
-    E["answer_out"] = max(E["stamp"] + 0.6, end("l4") + 0.05, E["notif"] + 1.3)
+    # 4. answered: "Dieu répond" lands the stamp, "on célèbre" brings the comments
+    V["l4"] = after("l3", E["flip"] + 0.1)
+    E["notif"] = E["answer"] + 0.15
+    E["w_dieu"] = max(wt("l4", 2), E["answer"])
+    E["w_repond"] = max(wt("l4", 3), E["w_dieu"] + 0.2)
+    E["stamp"] = max(E["w_repond"] + 0.12, E["answer"] + 0.5)
+    E["celebrate"] = max(wt("l4", 5), E["stamp"] + 0.3)
+    E["answer_out"] = max(E["celebrate"] + 0.95, end("l4") + 0.05, E["notif"] + 1.2)
     E["groups"] = E["answer_out"] + 0.45
 
     # 5. groups: rows light up when named
-    V["l5"] = max(E["groups"] + 0.2, end("l4") + gap["l4"])
-    E["rows"] = wt("l5", 0)
-    E["hl1"], E["hl2"], E["hl3"] = wt("l5", 4), wt("l5", 5), wt("l5", 8)
-    E["groups_out"] = max(E["hl3"] + 0.4, end("l5") - 0.05)
-    E["chat"] = E["groups_out"] + 0.4
+    V["l5"] = after("l4", E["answer_out"] + 0.1)
+    E["rows"] = max(wt("l5", 0), E["groups"] + 0.05)
+    E["hl1"] = max(wt("l5", 3), E["rows"] + 0.45)  # louange
+    E["hl2"] = max(wt("l5", 4), E["hl1"] + 0.3)  # étude biblique
+    E["hl3"] = max(wt("l5", 6), E["hl2"] + 0.3)  # jeunes
+    E["groups_out"] = max(E["hl3"] + 0.45, end("l5") - 0.05)
+    E["verse"] = E["groups_out"] + 0.4
 
-    # 6. chat: messages arrive
-    V["l6"] = max(E["chat"] + 0.05, end("l5") + gap["l5"])
-    E["b1"] = E["chat"] + 0.05
-    E["b2"], E["b3"], E["b4"] = E["b1"] + 0.36, E["b1"] + 0.72, E["b1"] + 1.08
-    E["chat_out"] = max(E["b4"] + 0.45, end("l6"))
-    E["verse"] = E["chat_out"] + 0.35
-
-    # 7. verse of the day: sunrise
+    # 6. verse of the day: sunrise
     E["sunrise"] = E["verse"] - 0.2
-    V["l7"] = max(E["verse"] + 0.35, end("l6") + gap["l6"])
-    E["verse_card"] = wt("l7", 2) - 0.25
-    E["verse_text"] = wt("l7", 3)
+    V["l6"] = after("l5", E["verse"])
+    E["verse_card"] = max(wt("l6", 2) - 0.25, E["verse"] + 0.3)
+    E["verse_text"] = max(wt("l6", 3), E["verse_card"] + 0.3)
     E["verse_ref"] = E["verse_text"] + 0.8
-    E["verse_out"] = max(end("l7") + 0.25, E["verse_ref"] + 0.35)
-    E["quiz"] = _ceil_beat(E["verse_out"] + 0.4)  # the drop lands on a beat
+    E["verse_out"] = max(end("l6") + 0.2, E["verse_ref"] + 0.35)
+    E["quiz"] = _ceil_beat(E["verse_out"] + 0.35)  # the drop lands on a beat
 
-    # 8. quiz on the sky
-    V["l8"] = max(E["quiz"] + 0.25, end("l7") + gap["l7"])
+    # 7. quiz on the sky
+    V["l7"] = after("l6", E["quiz"] + 0.15)
     E["count"] = E["quiz"]
-    E["quiz_title"] = wt("l8", 1)
-    E["panel"] = max(E["quiz"] + 1.3, wt("l8", 3))
-    E["tap"] = E["panel"] + 1.0
+    E["quiz_title"] = max(wt("l7", 1), E["quiz"] + 0.3)
+    E["panel"] = max(E["quiz"] + 1.15, wt("l7", 4))  # niveau
+    E["tap"] = E["panel"] + 0.7
     E["correct"] = E["tap"] + 0.45
-    E["exact"] = E["correct"] + 0.3
-    E["stars"] = E["exact"] + 0.5
-    E["tiles"] = E["stars"] + 0.55
-    E["quiz_out"] = max(E["tiles"] + 0.8, end("l8") + 0.2)
-    E["end"] = _ceil_beat(E["quiz_out"] + 0.4)
+    E["exact"] = E["correct"] + 0.25
+    E["stars"] = E["exact"] + 0.4
+    E["quiz_out"] = max(E["stars"] + 0.7, end("l7") + 0.2)
+    E["end"] = _ceil_beat(E["quiz_out"] + 0.3)
 
-    # 9. end card
-    V["l9"] = E["end"] + 0.4
+    # 8. end card: "RISE" is said as the letters rise
+    V["l8"] = after("l7", E["end"] + 0.15)
     E["end_letters"] = E["end"] + 0.15
-    E["end_land"] = max(wt("l9", 0) + 0.1, E["end_letters"] + 0.45)
-    E["slogan1"], E["slogan2"], E["stores"] = wt("l9", 1), wt("l9", 2), wt("l9", 3)
+    E["end_land"] = max(wt("l8", 0) + 0.1, E["end_letters"] + 0.45)
+    E["slogan1"], E["slogan2"], E["stores"] = wt("l8", 1), wt("l8", 2), wt("l8", 3)
     E["phones"] = E["stores"] + 0.5
-    duration = math.ceil(max(end("l9") + 1.8, E["phones"] + 1.8) * 2) / 2
+    duration = math.ceil(max(end("l8") + 1.3, E["phones"] + 1.5) * 2) / 2
 
     W = {k: [{"w": sw, "t": round(float(V[k] + a), 3), "e": round(float(V[k] + b), 3)} for sw, a, b in rel[k]] for k in LINES}
     E = {k: round(float(v), 3) for k, v in E.items()}
@@ -187,7 +184,7 @@ def _plan():
 
 
 E, VO_START, W, DURATION, VO_DUR = _plan()
-S = {k: E[k] for k in ("hook", "share", "pray", "answer", "groups", "chat", "verse", "quiz", "end")}
+S = {k: E[k] for k in ("hook", "share", "pray", "answer", "groups", "verse", "quiz", "end")}
 
 
 def words():
@@ -225,11 +222,12 @@ def cues(E=E, W=W):
         c.append((E["jeprie_tap"] + 0.1 + i * 0.1, "pop3" if i % 2 else "pop", 0.3))
     c += [(E["jeprie_tap"] + 0.1, "count_roll", 0.5), (E["upd1"], "ding", 0.55), (E["upd2"], "ding2", 0.55),
           (E["flip"], "flip", 0.8)]
-    # answer
+    # answer: the stamp on "répond", the comments on "célèbre"
     c += [
-        (E["answer"] + 0.05, "swish", 0.55), (E["notif"], "ding", 0.6), (E["celebrate"], "confetti", 0.5),
-        (E["celebrate"] + 0.05, "pop", 0.55), (E["celebrate"] + 0.35, "pop2", 0.55), (E["celebrate"] + 0.65, "pop3", 0.55),
+        (E["answer"] + 0.05, "swish", 0.55), (E["notif"], "ding", 0.6),
         (E["stamp"], "stamp", 1.0), (E["stamp"] + 0.04, "shimmer", 0.6), (E["stamp"] + 0.02, "confetti", 0.6),
+        (E["celebrate"], "confetti", 0.5),
+        (E["celebrate"] + 0.05, "pop", 0.55), (E["celebrate"] + 0.35, "pop2", 0.55), (E["celebrate"] + 0.65, "pop3", 0.55),
         (E["answer_out"] - 0.1, "whoosh_long", 0.8), (E["groups"], "impact_soft", 0.6),
     ]
     # groups
@@ -238,9 +236,6 @@ def cues(E=E, W=W):
         c.append((E["rows"] + i * 0.09, "tick", 0.45))
     c += [(E["hl1"], "pop", 0.65), (E["hl2"], "pop2", 0.65), (E["hl3"], "pop3", 0.65),
           (E["groups_out"], "whoosh_fast", 0.85)]
-    # chat
-    c += [(E["chat"] + 0.03, "swish", 0.5), (E["b1"], "msg_in", 0.7), (E["b2"], "msg_out", 0.7),
-          (E["b3"], "msg_in", 0.7), (E["b4"], "msg_out", 0.7), (E["chat_out"], "whoosh_up", 0.7)]
     # verse
     c += [(E["sunrise"] + 0.2, "shimmer", 0.45), (E["verse"] + 0.4, "swish", 0.45), (E["verse_card"], "whoosh", 0.55),
           (E["verse_text"], "shimmer", 0.35), (E["verse_ref"], "chime", 0.3), (E["verse_out"], "whoosh_long", 0.6)]
@@ -251,9 +246,7 @@ def cues(E=E, W=W):
         c.append((E["panel"] + 0.15 + i * 0.09, "tick", 0.45))
     c += [(E["tap"], "click", 0.9), (E["correct"], "success", 0.7), (E["exact"], "whoosh_up", 0.55),
           (E["stars"], "pop", 0.6), (E["stars"] + 0.15, "pop2", 0.6), (E["stars"] + 0.3, "pop3", 0.65),
-          (E["stars"] + 0.05, "confetti", 0.55), (E["tiles"] - 0.1, "whoosh", 0.5),
-          (E["tiles"], "pop", 0.55), (E["tiles"] + 0.15, "pop2", 0.55), (E["tiles"] + 0.3, "pop3", 0.55),
-          (E["quiz_out"], "whoosh_up", 0.9)]
+          (E["stars"] + 0.05, "confetti", 0.55), (E["quiz_out"], "whoosh_up", 0.9)]
     # end
     c += [(E["end_letters"], "whoosh", 0.5), (E["end_land"], "impact", 0.9), (E["end_land"] + 0.02, "chime", 0.5),
           (E["slogan1"] - 0.03, "swish", 0.45), (E["slogan2"] - 0.03, "swish", 0.45), (E["slogan2"] + 0.1, "shimmer", 0.4),
