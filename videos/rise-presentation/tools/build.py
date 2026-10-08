@@ -54,13 +54,13 @@ def captions(W):
         words = W[line]
         for ci, (a, b) in enumerate(chunks):
             seg = words[a : b + 1]
-            start = round(seg[0]["t"] - 0.08, 3)
-            # hold until the next chunk (or a short tail after the last word)
+            start = round(seg[0]["t"] - 0.06, 3)
+            # hold until the next chunk takes its place (or a short tail after the last word)
             if ci + 1 < len(chunks):
-                end = words[chunks[ci + 1][0]]["t"] - 0.1
+                end = words[chunks[ci + 1][0]]["t"] - 0.07
             else:
-                end = seg[-1]["e"] + 0.35
-            dur = round(max(0.5, end - start), 3)
+                end = seg[-1]["e"] + 0.4
+            dur = round(max(0.2, end - start), 3)
             spans = "".join(
                 f'<span class="cw{" k" if keyword(w["w"]) else ""}" data-t="{w["t"]}">{html.escape(w["w"])}</span>'
                 for w in seg)

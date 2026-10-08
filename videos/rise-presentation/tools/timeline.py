@@ -43,13 +43,15 @@ LINES = {
 }
 
 # Caption chunks: word index ranges (inclusive) per line; l1 and l8 are carried by the big type.
+# Each chunk ends where the voice pauses, so its last word stays up; the widest pill is 737 px,
+# clear of the platform buttons on the right.
 CHUNKS = {
-    "l2": [(0, 2), (3, 6), (7, 9)],
+    "l2": [(0, 2), (3, 9)],
     "l3": [(0, 2), (3, 6), (7, 9)],
     "l4": [(0, 3), (4, 6)],
     "l5": [(0, 2), (3, 3), (4, 5), (6, 6)],
     "l6": [(0, 1), (2, 5)],
-    "l7": [(0, 2), (3, 6), (7, 9), (10, 12)],
+    "l7": [(0, 2), (3, 6), (7, 12)],
 }
 # Words shown in amber inside the captions (compared without punctuation, lower case).
 KEYWORDS = {"dieu", "vie", "prient", "répond", "célèbre", "louange", "biblique", "jeunes", "parole", "quiz", "bible"}
