@@ -1,0 +1,385 @@
+{
+ "l1": {
+  "text": "La foi, ça se vit ensemble !",
+  "audio": "b67408d00ac74258c1097d1c7add4541d23417ab",
+  "words": [
+   {
+    "w": "La",
+    "start": 0.115,
+    "end": 0.33
+   },
+   {
+    "w": "foi,",
+    "start": 0.41,
+    "end": 0.66
+   },
+   {
+    "w": "ça",
+    "start": 0.88,
+    "end": 0.99
+   },
+   {
+    "w": "se",
+    "start": 1.04,
+    "end": 1.11
+   },
+   {
+    "w": "vit",
+    "start": 1.14,
+    "end": 1.3
+   },
+   {
+    "w": "ensemble !",
+    "start": 1.32,
+    "end": 1.88
+   }
+  ]
+ },
+ "l2": {
+  "text": "Sur RISE, partage ce que Dieu fait dans ta vie !",
+  "audio": "a67cc2cb373a4ce365e0a0f6b9e57289e5e37cea",
+  "words": [
+   {
+    "w": "Sur",
+    "start": 0.14,
+    "end": 0.33
+   },
+   {
+    "w": "RISE,",
+    "start": 0.38,
+    "end": 0.795
+   },
+   {
+    "w": "partage",
+    "start": 0.9,
+    "end": 1.31
+   },
+   {
+    "w": "ce",
+    "start": 1.32,
+    "end": 1.37
+   },
+   {
+    "w": "que",
+    "start": 1.41,
+    "end": 1.51
+   },
+   {
+    "w": "Dieu",
+    "start": 1.56,
+    "end": 1.72
+   },
+   {
+    "w": "fait",
+    "start": 1.77,
+    "end": 1.86
+   },
+   {
+    "w": "dans",
+    "start": 1.88,
+    "end": 1.98
+   },
+   {
+    "w": "ta",
+    "start": 2.02,
+    "end": 2.1
+   },
+   {
+    "w": "vie !",
+    "start": 2.14,
+    "end": 2.24
+   }
+  ]
+ },
+ "l3": {
+  "text": "Un coup dur ? Tes frères et sœurs prient pour toi.",
+  "audio": "12e01ee4d14f5376b6e257900754a733dca28644",
+  "words": [
+   {
+    "w": "Un",
+    "start": 0.05,
+    "end": 0.13
+   },
+   {
+    "w": "coup",
+    "start": 0.17,
+    "end": 0.24
+   },
+   {
+    "w": "dur ?",
+    "start": 0.27,
+    "end": 0.537
+   },
+   {
+    "w": "Tes",
+    "start": 0.74,
+    "end": 0.85
+   },
+   {
+    "w": "frères",
+    "start": 0.91,
+    "end": 1.16
+   },
+   {
+    "w": "et",
+    "start": 1.19,
+    "end": 1.24
+   },
+   {
+    "w": "sœurs",
+    "start": 1.3,
+    "end": 1.51
+   },
+   {
+    "w": "prient",
+    "start": 1.56,
+    "end": 1.74
+   },
+   {
+    "w": "pour",
+    "start": 1.79,
+    "end": 1.91
+   },
+   {
+    "w": "toi.",
+    "start": 1.95,
+    "end": 2.24
+   }
+  ]
+ },
+ "l4": {
+  "text": "Et quand Dieu répond, on célèbre ensemble !",
+  "audio": "823d4398702e7c9f25aeefcbf4b5cd6fea6821d4",
+  "words": [
+   {
+    "w": "Et",
+    "start": 0.11,
+    "end": 0.173
+   },
+   {
+    "w": "quand",
+    "start": 0.24,
+    "end": 0.44
+   },
+   {
+    "w": "Dieu",
+    "start": 0.48,
+    "end": 0.665
+   },
+   {
+    "w": "répond,",
+    "start": 0.78,
+    "end": 1.175
+   },
+   {
+    "w": "on",
+    "start": 1.35,
+    "end": 1.515
+   },
+   {
+    "w": "célèbre",
+    "start": 1.62,
+    "end": 2.1
+   },
+   {
+    "w": "ensemble !",
+    "start": 2.15,
+    "end": 2.72
+   }
+  ]
+ },
+ "l5": {
+  "text": "Trouve ton groupe : louange, étude biblique, jeunes !",
+  "audio": "5573eefc6f74c7d22210a35f2303a967badb90a8",
+  "words": [
+   {
+    "w": "Trouve",
+    "start": 0.07,
+    "end": 0.25
+   },
+   {
+    "w": "ton",
+    "start": 0.28,
+    "end": 0.39
+   },
+   {
+    "w": "groupe :",
+    "start": 0.4,
+    "end": 0.78
+   },
+   {
+    "w": "louange,",
+    "start": 1.02,
+    "end": 1.34
+   },
+   {
+    "w": "étude",
+    "start": 1.47,
+    "end": 1.64
+   },
+   {
+    "w": "biblique,",
+    "start": 1.69,
+    "end": 2.04
+   },
+   {
+    "w": "jeunes !",
+    "start": 2.06,
+    "end": 2.12
+   }
+  ]
+ },
+ "l6": {
+  "text": "Chaque matin, ta Parole du jour.",
+  "audio": "994f774bc9d0a2d1f157b781badaaf189b965e0b",
+  "words": [
+   {
+    "w": "Chaque",
+    "start": 0.15,
+    "end": 0.32
+   },
+   {
+    "w": "matin,",
+    "start": 0.37,
+    "end": 0.86
+   },
+   {
+    "w": "ta",
+    "start": 0.89,
+    "end": 0.96
+   },
+   {
+    "w": "Parole",
+    "start": 1.01,
+    "end": 1.14
+   },
+   {
+    "w": "du",
+    "start": 1.14,
+    "end": 1.18
+   },
+   {
+    "w": "jour.",
+    "start": 1.19,
+    "end": 1.38
+   }
+  ]
+ },
+ "l7": {
+  "text": "Et chaque jour, un niveau de kwiz : toute la Bible en un an !",
+  "audio": "02172ebe35263aebd975644745b54d595183285d",
+  "words": [
+   {
+    "w": "Et",
+    "start": 0.12,
+    "end": 0.19
+   },
+   {
+    "w": "chaque",
+    "start": 0.29,
+    "end": 0.58
+   },
+   {
+    "w": "jour,",
+    "start": 0.65,
+    "end": 0.97
+   },
+   {
+    "w": "un",
+    "start": 1.25,
+    "end": 1.31
+   },
+   {
+    "w": "niveau",
+    "start": 1.34,
+    "end": 1.45
+   },
+   {
+    "w": "de",
+    "start": 1.47,
+    "end": 1.53
+   },
+   {
+    "w": "kwiz :",
+    "start": 1.53,
+    "end": 1.905
+   },
+   {
+    "w": "toute",
+    "start": 1.97,
+    "end": 2.14
+   },
+   {
+    "w": "la",
+    "start": 2.17,
+    "end": 2.27
+   },
+   {
+    "w": "Bible",
+    "start": 2.32,
+    "end": 2.53
+   },
+   {
+    "w": "en",
+    "start": 2.58,
+    "end": 2.66
+   },
+   {
+    "w": "un",
+    "start": 2.71,
+    "end": 2.86
+   },
+   {
+    "w": "an !",
+    "start": 2.88,
+    "end": 2.99
+   }
+  ]
+ },
+ "l8": {
+  "text": "RISE. Élève-toi. Ensemble ! Dispo sur iPhone et Android.",
+  "audio": "9480203a3a6bbe4eea08332610d0b610d8712a16",
+  "words": [
+   {
+    "w": "RISE.",
+    "start": 0.2,
+    "end": 0.86
+   },
+   {
+    "w": "Élève-toi.",
+    "start": 0.94,
+    "end": 1.675
+   },
+   {
+    "w": "Ensemble !",
+    "start": 1.88,
+    "end": 2.475
+   },
+   {
+    "w": "Dispo",
+    "start": 2.71,
+    "end": 2.97
+   },
+   {
+    "w": "sur",
+    "start": 3.01,
+    "end": 3.16
+   },
+   {
+    "w": "iPhone",
+    "start": 3.19,
+    "end": 3.43
+   },
+   {
+    "w": "et",
+    "start": 3.46,
+    "end": 3.5
+   },
+   {
+    "w": "Android.",
+    "start": 3.51,
+    "end": 3.84
+   }
+  ]
+ }
+}

@@ -2,9 +2,10 @@
 
 The voice-over drives the edit: each scene starts when its line starts, lines
 follow each other with a short breath (the take's own, capped so the read never
-stalls), the next line may begin while the picture is still leaving (the voice
-leads the cut, as in an ad), and a scene only waits when its picture needs a
-beat more. build.py injects these times into index.html, sfx.py renders the
+stalls), the next line may begin a beat before its picture (the voice leads the
+cut, as in an ad), and a scene only waits when its picture needs a beat more.
+Word times come from dtw_align.py (cached in assets/vo/words.json), so captions
+and kinetic beats land on the words. build.py injects these times into index.html, sfx.py renders the
 sound design from cues() and compose_music.py follows the same sections, so
 picture, sound effects and music cannot drift apart.
 
@@ -23,6 +24,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 BPM = 120
 BEAT = 60 / BPM
 MAX_GAP = 0.3  # longest breath kept between two lines
+MAX_DURATION = 30.0  # the brief: 15 to 30 s
 MUSIC = ROOT / "assets" / "audio" / "music_track.json"  # an imported track (tools/import_music.py)
 
 # Voice-over lines: (text as spoken, text shown in the captions). Same number of words in both.
@@ -79,16 +81,37 @@ def _ceil_beat(t):
     return math.ceil(t / BEAT - 1e-6) * BEAT
 
 
+def _align(k, spoken, f, cache):
+    """Word timings of a line: warped from a reference reading (dtw_align), cached per text and audio;
+    the loudness-and-syllables estimate (align.py) only if that fails."""
+    import hashlib
+    sha = hashlib.sha1(f.read_bytes()).hexdigest()
+    hit = cache.get(k)
+    if hit and hit["text"] == spoken and hit["audio"] == sha:
+        return hit["words"]
+    try:
+        from dtw_align import align
+        words = align(f, spoken)[0]
+    except Exception as e:  # noqa: BLE001 - any failure falls back to the rough estimate
+        print(f"{k}: reference alignment failed ({e}), rough estimate used")
+        from align import align
+        return align(str(f), spoken)[0]
+    cache[k] = {"text": spoken, "audio": sha, "words": words}
+    return words
+
+
 def _plan():
-    from align import align
     dur, rel = {}, {}
+    cache_file = ROOT / "assets" / "vo" / "words.json"
+    cache = json.loads(cache_file.read_text()) if cache_file.exists() else {}
     for k, (spoken, shown) in LINES.items():
         f = ROOT / "assets" / "vo" / f"{k}.wav"
         dur[k] = sf.info(str(f)).duration
-        words, _, _ = align(str(f), spoken)
+        words = _align(k, spoken, f, cache)
         shown_words = _tokens(shown)
         assert len(words) == len(shown_words), (k, len(words), len(shown_words))
         rel[k] = [(sw, w["start"], w["end"]) for sw, w in zip(shown_words, words)]
+    cache_file.write_text(json.dumps(cache, ensure_ascii=False, indent=1))
     gap = _natural_gaps()
     music = json.loads(MUSIC.read_text()) if MUSIC.exists() else None
     grid = music["period"] if music else BEAT
@@ -120,7 +143,7 @@ def _plan():
     E["pray"] = E["share_out"] + 0.35
 
     # 3. pray: a hard time, the community prays
-    V["l3"] = after("l2", E["share_out"] + 0.05)
+    V["l3"] = after("l2", E["pray"] - 0.1)
     E["w_prie"], E["w_porte"] = E["pray"], E["pray"] + 0.4
     E["chips"] = max(wt("l3", 0), E["pray"] + 0.1) + 0.02
     E["chip_pick"] = max(wt("l3", 2), E["chips"] + 0.35)  # dur ?
@@ -134,7 +157,7 @@ def _plan():
     E["answer"] = E["flip"] + 0.4
 
     # 4. answered: "Dieu répond" lands the stamp, "on célèbre" brings the comments
-    V["l4"] = after("l3", E["flip"] + 0.1)
+    V["l4"] = after("l3", E["flip"] + 0.2)
     E["notif"] = E["answer"] + 0.15
     E["w_dieu"] = max(wt("l4", 2), E["answer"])
     E["w_repond"] = max(wt("l4", 3), E["w_dieu"] + 0.2)
@@ -144,7 +167,7 @@ def _plan():
     E["groups"] = E["answer_out"] + 0.45
 
     # 5. groups: rows light up when named
-    V["l5"] = after("l4", E["answer_out"] + 0.1)
+    V["l5"] = after("l4", E["answer_out"] + 0.3)
     E["rows"] = max(wt("l5", 0), E["groups"] + 0.05)
     E["hl1"] = max(wt("l5", 3), E["rows"] + 0.45)  # louange
     E["hl2"] = max(wt("l5", 4), E["hl1"] + 0.3)  # étude biblique
@@ -183,7 +206,8 @@ def _plan():
     duration = math.ceil(max(end("l8") + 1.3, E["phones"] + 1.5) * 2) / 2
     if music:  # a little longer, so the track ends on its own last hit
         from import_music import ending
-        duration = ending(music, E["quiz"], duration)
+        landed = ending(music, E["quiz"], duration)
+        duration = landed if landed <= MAX_DURATION else duration
 
     W = {k: [{"w": sw, "t": round(float(V[k] + a), 3), "e": round(float(V[k] + b), 3)} for sw, a, b in rel[k]] for k in LINES}
     E = {k: round(float(v), 3) for k, v in E.items()}
