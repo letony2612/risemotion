@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Inter"; font-weight: 400; src: url("assets/fonts/inter-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 500; src: url("assets/fonts/inter-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 600; src: url("assets/fonts/inter-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 700; src: url("assets/fonts/inter-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Inter"; font-weight: 800; src: url("assets/fonts/inter-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Newsreader"; font-weight: 400; src: url("assets/fonts/newsreader-latin-400-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Newsreader"; font-weight: 500; src: url("assets/fonts/newsreader-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Newsreader"; font-style: italic; font-weight: 400; src: url("assets/fonts/newsreader-latin-400-italic.woff2") format("woff2"); }
+
+      :root {
+        --ink: #1a1714;
+        --paper: #faf8f5;
+        --snow: #fffafa;
+        --amber: #f59e0b;
+        --amber-text: #d97706;
+        --gold: #f5b000;
+        --sky: #cfeaf6;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--paper); }
+      #root {
+        position: relative; width: 100%; height: 100%; overflow: hidden;
+        background: var(--paper); color: var(--ink);
+        font-family: "Inter", sans-serif;
+      }
+
+      /* ---------- backgrounds ---------- */
+      .layer { position: absolute; inset: 0; }
+      #paper {
+        background:
+          radial-gradient(1200px 900px at 50% -10%, #fffdf9 0%, rgba(255, 253, 249, 0) 70%),
+          radial-gradient(900px 700px at 50% 110%, #f3eee7 0%, rgba(243, 238, 231, 0) 70%),
+          var(--paper);
+      }
+      #glow {
+        opacity: 0;
+        background: radial-gradient(900px 760px at 50% 18%, rgba(245, 158, 11, 0.42) 0%, rgba(245, 165, 36, 0.16) 45%, rgba(250, 248, 245, 0) 75%);
+      }
+      #sky {
+        opacity: 0;
+        background: linear-gradient(180deg, #bfe3f3 0%, var(--sky) 45%, #e6f4fa 100%);
+      }
+      .cloud {
+        position: absolute; display: block; border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+      }
+      #cloud1 { width: 760px; height: 300px; left: -160px; top: 120px; }
+      #cloud2 { width: 620px; height: 260px; left: 560px; top: 420px; }
+      #cloud3 { width: 900px; height: 340px; left: -80px; top: 1180px; }
+      #cloud4 { width: 680px; height: 280px; left: 520px; top: 1520px; }
+
+      /* ---------- phone ---------- */
+      #phone {
+        position: absolute; left: 210px; top: 610px; width: 660px; height: 1428px;
+        padding: 16px; border-radius: 78px; background: var(--ink);
+        box-shadow: 0 50px 90px rgba(26, 23, 20, 0.22), 0 12px 24px rgba(26, 23, 20, 0.12), inset 0 0 0 2px #3a332c;
+      }
+      #screen {
+        position: relative; width: 628px; height: 1396px; border-radius: 62px;
+        overflow: hidden; background: var(--paper);
+      }
+      #cam { position: absolute; left: 0; top: 0; width: 628px; height: 1396px; }
+      .scr { position: absolute; left: 0; top: 0; width: 628px; height: 1396px; object-fit: cover; display: block; }
+      #scrim { position: absolute; inset: 0; background: rgba(250, 248, 245, 0.7); opacity: 0; }
+      .ripple {
+        position: absolute; display: block; width: 160px; height: 160px; margin: -80px 0 0 -80px;
+        border-radius: 50%; border: 6px solid var(--amber); opacity: 0;
+      }
+      .ripple-fill {
+        position: absolute; display: block; width: 90px; height: 90px; margin: -45px 0 0 -45px;
+        border-radius: 50%; background: rgba(245, 158, 11, 0.35); opacity: 0;
+      }
+      .star {
+        position: absolute; display: block; width: 46px; height: 46px; margin: -23px 0 0 -23px; opacity: 0;
+      }
+      .star svg { width: 100%; height: 100%; display: block; }
+
+      /* lifted prayer card (pops out of the phone) */
+      #lift {
+        position: absolute; left: 243px; top: 821px; width: 593px; height: 398px;
+        border-radius: 34px; overflow: hidden; opacity: 0;
+        box-shadow: 0 40px 80px rgba(26, 23, 20, 0.25), 0 0 0 0 rgba(245, 176, 0, 0);
+      }
+      #lift img { display: block; width: 100%; height: 100%; }
+      #sweep {
+        position: absolute; top: -20%; left: 0; width: 46%; height: 140%;
+        background: linear-gradient(100deg, rgba(255, 220, 140, 0) 0%, rgba(255, 214, 120, 0.65) 50%, rgba(255, 220, 140, 0) 100%);
+      }
+      #badgeGlow {
+        position: absolute; display: block; left: 745px; top: 825px; width: 220px; height: 220px; margin: -110px 0 0 -110px;
+        border-radius: 50%; background: radial-gradient(closest-side, rgba(245, 176, 0, 0.55), rgba(245, 176, 0, 0)); opacity: 0;
+      }
+
+      /* ---------- titles ---------- */
+      .title {
+        position: absolute; left: 0; top: 130px; width: 1080px; height: 460px;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .wrap { display: flex; flex-direction: column; align-items: center; width: 820px; text-align: center; }
+      .eb {
+        font-weight: 700; font-size: 34px; letter-spacing: 0.2em; color: var(--amber-text);
+        text-transform: uppercase; margin-bottom: 18px;
+      }
+      #t8 .eb { color: #a95207; }
+      .ln { display: block; overflow: hidden; padding: 22px 10px 8px; margin-top: -22px; }
+      .in {
+        display: block; font-family: "Newsreader", serif; font-weight: 500; font-size: 104px;
+        line-height: 1.02; letter-spacing: -0.015em; color: var(--ink);
+      }
+      .chips { display: flex; gap: 14px; margin-top: 30px; justify-content: center; }
+      .chip {
+        column-gap: 12px;
+        display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 26px;
+        border-radius: 32px; background: rgba(255, 250, 250, 0.8);
+        border: 1.5px solid rgba(26, 23, 20, 0.08);
+        box-shadow: 0 8px 22px rgba(26, 23, 20, 0.07);
+        font-weight: 600; font-size: 34px; color: var(--ink); white-space: nowrap;
+      }
+      .dot { display: block; width: 14px; height: 14px; border-radius: 50%; background: var(--amber); }
+
+      /* ---------- hook ---------- */
+      #hook { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+      #hookWrap { display: flex; flex-direction: column; align-items: center; }
+      #hook .in { font-size: 150px; line-height: 1.04; }
+      #hook .amber { color: var(--amber-text); font-style: italic; font-weight: 400; }
+
+      .logoBox { position: absolute; left: 0; width: 1080px; display: flex; justify-content: center; }
+      .logoInner { position: relative; width: 620px; height: 213px; }
+      .logoInner img { position: absolute; left: 0; top: 0; width: 620px; height: 213px; display: block; }
+      .flame {
+        position: absolute; display: block; left: 234px; top: 44px; width: 150px; height: 150px; margin: -75px 0 0 -75px;
+        border-radius: 50%; background: radial-gradient(closest-side, rgba(245, 158, 11, 0.6), rgba(245, 158, 11, 0)); opacity: 0;
+      }
+      #logoHook .logoBox { top: 850px; }
+
+      /* ---------- end card ---------- */
+      #endWrap { position: absolute; left: 0; top: 520px; width: 1080px; display: flex; flex-direction: column; align-items: center; }
+      #endWrap .logoBox { position: relative; }
+      #slogan { margin-top: 70px; display: flex; flex-direction: column; align-items: center; }
+      #slogan .in { font-size: 118px; }
+      #stores { margin-top: 64px; font-weight: 600; font-size: 48px; color: rgba(26, 23, 20, 0.72); }
+      #storeRule { display: block; width: 120px; height: 4px; border-radius: 2px; background: var(--amber); margin-top: 52px; }
+
+      /* ---------- captions ---------- */
+      .cap {
+        position: absolute; left: 0; top: 1364px; width: 1080px; height: 170px;
+        display: flex; align-items: flex-start; justify-content: center;
+      }
+      .pill {
+        max-width: 780px; padding: 20px 34px; border-radius: 34px; text-align: center;
+        background: rgba(255, 250, 250, 0.84);
+        border: 1.5px solid rgba(255, 255, 255, 0.9);
+        box-shadow: 0 16px 40px rgba(26, 23, 20, 0.14);
+        backdrop-filter: blur(22px) saturate(1.4);
+        -webkit-backdrop-filter: blur(22px) saturate(1.4);
+        font-weight: 600; font-size: 48px; line-height: 1.24; color: var(--ink);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="39.5" data-width="1080" data-height="1920">
+      <!-- backgrounds (persistent) -->
+      <div id="paper" class="layer"></div>
+      <div id="glow" class="layer"></div>
+      <div id="sky" class="layer">
+        <div id="cloud1" class="cloud"></div>
+        <div id="cloud2" class="cloud"></div>
+        <div id="cloud3" class="cloud"></div>
+        <div id="cloud4" class="cloud"></div>
+      </div>
+
+      <!-- phone (persistent, driven by the main timeline) -->
+      <div id="phone">
+        <div id="screen">
+          <div id="cam">
+            <video id="v-fil" class="clip scr" src="assets/clips/01_fil.mp4" muted playsinline data-start="4" data-duration="3.6" data-media-start="3.9" data-track-index="1"></video>
+            <img id="i-publier" class="clip scr" src="assets/img/04_publier.png" alt="" data-start="7.6" data-duration="1.4" data-track-index="1" />
+            <img id="i-verset" class="clip scr" src="assets/img/05_choisir_un_verset.png" alt="" data-start="9" data-duration="1.5" data-track-index="1" />
+            <video id="v-priere" class="clip scr" src="assets/clips/02_priere.mp4" muted playsinline data-start="10.5" data-duration="3.5" data-media-start="0.3" data-track-index="1"></video>
+            <img id="i-exaucee" class="clip scr" src="assets/img/08_priere_exaucee.png" alt="" data-start="14" data-duration="3.5" data-track-index="1" />
+            <video id="v-groupe-a" class="clip scr" src="assets/clips/03_groupe.mp4" muted playsinline data-start="17.5" data-duration="1.8" data-media-start="0.8" data-track-index="1"></video>
+            <video id="v-groupe-b" class="clip scr" src="assets/clips/03_groupe.mp4" muted playsinline data-start="19.3" data-duration="2.2" data-media-start="6.6" data-track-index="1"></video>
+            <video id="v-messages" class="clip scr" src="assets/clips/04_messages.mp4" muted playsinline data-start="21.5" data-duration="2.5" data-media-start="2" data-track-index="1"></video>
+            <video id="v-explorer" class="clip scr" src="assets/clips/05_explorer.mp4" muted playsinline data-start="24" data-duration="3.5" data-media-start="0" data-track-index="1"></video>
+            <video id="v-parcours" class="clip scr" src="assets/clips/06_quiz_parcours.mp4" muted playsinline data-start="27.5" data-duration="3.5" data-media-start="1.5" data-track-index="1"></video>
+            <video id="v-question" class="clip scr" src="assets/clips/07_quiz_question.mp4" muted playsinline data-start="31" data-duration="4" data-media-start="5.5" data-track-index="1"></video>
+            <div id="scrim"></div>
+            <span id="rip1" class="ripple" style="left: 88px; top: 503px"></span>
+            <span id="ripf1" class="ripple-fill" style="left: 88px; top: 503px"></span>
+            <span id="rip2" class="ripple" style="left: 314px; top: 405px"></span>
+            <span id="s1" class="star" style="left: 82px; top: 1040px"><svg viewBox="0 0 24 24"><path fill="#F5B000" d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" /></svg></span>
+            <span id="s2" class="star" style="left: 82px; top: 1040px"><svg viewBox="0 0 24 24"><path fill="#F5B000" d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" /></svg></span>
+            <span id="s3" class="star" style="left: 82px; top: 1040px"><svg viewBox="0 0 24 24"><path fill="#F5B000" d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" /></svg></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- scene 4: the answered prayer lifts out of the phone -->
+      <span id="badgeGlow"></span>
+      <div id="lift"><img src="assets/img/card_exaucee.png" alt="" /><div id="sweep"></div></div>
+
+      <!-- scene 1: hook -->
+      <div id="hook" class="clip" data-start="0" data-duration="2.9" data-track-index="2">
+        <div id="hookWrap">
+          <span class="ln"><span class="in">La foi,</span></span>
+          <span class="ln"><span class="in">ça se vit</span></span>
+          <span class="ln"><span class="in amber">ensemble.</span></span>
+        </div>
+      </div>
+      <div id="logoHook" class="clip" data-start="2.3" data-duration="2" data-track-index="3">
+        <div class="logoBox"><div class="logoInner"><span class="flame"></span><img src="assets/img/logo.png" alt="RISE" /></div></div>
+      </div>
+
+      <!-- scene titles -->
+      <div id="t2" class="clip title" data-start="4" data-duration="6.5" data-track-index="2">
+        <div class="wrap">
+          <div class="eb">Le fil</div>
+          <span class="ln"><span class="in">Partage ta foi</span></span>
+          <div class="chips">
+            <div class="chip" id="c21"><span class="dot"></span>Témoignage</div>
+            <div class="chip" id="c22"><span class="dot"></span>Verset</div>
+            <div class="chip" id="c23"><span class="dot"></span>Photo</div>
+          </div>
+        </div>
+      </div>
+      <div id="t3" class="clip title" data-start="10.5" data-duration="3.5" data-track-index="2">
+        <div class="wrap">
+          <div class="eb">Prière</div>
+          <span class="ln"><span class="in">Prie.</span></span>
+          <span class="ln"><span class="in">Sois porté.</span></span>
+        </div>
+      </div>
+      <div id="t4" class="clip title" data-start="14" data-duration="3.5" data-track-index="2">
+        <div class="wrap">
+          <div class="eb">Prière exaucée</div>
+          <span class="ln"><span class="in">Dieu répond</span></span>
+        </div>
+      </div>
+      <div id="t5" class="clip title" data-start="17.5" data-duration="4" data-track-index="2">
+        <div class="wrap">
+          <div class="eb">Groupes</div>
+          <span class="ln"><span class="in">Grandis en groupe</span></span>
+          <div class="chips">
+            <div class="chip" id="c51"><span class="dot"></span>Louange</div>
+            <div class="chip" id="c52"><span class="dot"></span>Étude biblique</div>
+            <div class="chip" id="c53"><span class="dot"></span>Jeunes</div>
+          </div>
+        </div>
+      </div>
+      <div id="t6" class="clip title" data-start="21.5" data-duration="2.5" data-track-index="2">
+        <div class="wrap">
+          <div class="eb">Messages</div>
+          <span class="ln"><span class="in">Reste proche</span></span>
+        </div>
+      </div>
+      <div id="t7" class="clip title" data-start="24" data-duration="3.5" data-track-index="2">
+        <div class="wrap">
+          <div class="eb">Verset du jour</div>
+          <span class="ln"><span class="in">Une Parole</span></span>
+          <span class="ln"><span class="in">chaque matin</span></span>
+        </div>
+      </div>
+      <div id="t8" class="clip title" data-start="27.5" data-duration="6.5" data-track-index="2">
+        <div class="wrap">
+          <div class="eb">Quiz biblique</div>
+          <span class="ln"><span class="in">Un an dans la Bible</span></span>
+          <div class="chips">
+            <div class="chip" id="c81"><span class="dot"></span><span id="count">364</span><span>niveaux</span></div>
+            <div class="chip" id="c82"><span class="dot"></span>Un par jour</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- scene 9: end card -->
+      <div id="end" class="clip" data-start="34.2" data-duration="5.3" data-track-index="2">
+        <div id="endWrap">
+          <div class="logoBox" id="endLogo"><div class="logoInner"><span class="flame" id="endFlame"></span><img src="assets/img/logo.png" alt="RISE" /></div></div>
+          <div id="slogan">
+            <span class="ln"><span class="in">Élève-toi.</span></span>
+            <span class="ln"><span class="in">Ensemble.</span></span>
+          </div>
+          <span id="storeRule"></span>
+          <div id="stores">Disponible sur iPhone et Android</div>
+        </div>
+      </div>
+
+      <!-- captions (burned-in subtitles) -->
+      <div id="cap1" class="clip cap" data-start="4.3" data-duration="2.4" data-track-index="4"><div class="pill">Sur RISE, partage ce que Dieu fait dans ta vie :</div></div>
+      <div id="cap2" class="clip cap" data-start="6.7" data-duration="2.7" data-track-index="4"><div class="pill">un témoignage, un verset, une photo.</div></div>
+      <div id="cap3" class="clip cap" data-start="10.6" data-duration="3.2" data-track-index="4"><div class="pill">Confie une demande : tes frères et sœurs prient pour toi…</div></div>
+      <div id="cap4" class="clip cap" data-start="14.1" data-duration="2.9" data-track-index="4"><div class="pill">…et vous célébrez ensemble quand elle est exaucée.</div></div>
+      <div id="cap5" class="clip cap" data-start="17.6" data-duration="3.4" data-track-index="4"><div class="pill">Rejoins des groupes de louange, d’étude biblique, de jeunes…</div></div>
+      <div id="cap6" class="clip cap" data-start="21.6" data-duration="2.1" data-track-index="4"><div class="pill">…et reste proche de ceux qui comptent.</div></div>
+      <div id="cap7" class="clip cap" data-start="24.2" data-duration="2.5" data-track-index="4"><div class="pill">Chaque matin, une Parole pour ta journée.</div></div>
+      <div id="cap8" class="clip cap" data-start="27.8" data-duration="2.1" data-track-index="4"><div class="pill">Et chaque jour, un niveau du quiz biblique,</div></div>
+      <div id="cap9" class="clip cap" data-start="29.9" data-duration="2.5" data-track-index="4"><div class="pill">pour parcourir toute la Bible en un an.</div></div>
+
+      <!-- voice-over (provisional synthetic voice, one file per line) -->
+      <audio id="vo1" src="assets/vo/l1.wav" data-duration="1.621" data-start="0.4" data-track-index="5" data-volume="1"></audio>
+      <audio id="vo2" src="assets/vo/l2.wav" data-duration="4.779" data-start="4.3" data-track-index="5" data-volume="1"></audio>
+      <audio id="vo3" src="assets/vo/l3.wav" data-duration="2.859" data-start="10.6" data-track-index="5" data-volume="1"></audio>
+      <audio id="vo4" src="assets/vo/l4.wav" data-duration="2.517" data-start="14.1" data-track-index="5" data-volume="1"></audio>
+      <audio id="vo5" src="assets/vo/l5.wav" data-duration="3.008" data-start="17.6" data-track-index="5" data-volume="1"></audio>
+      <audio id="vo6" src="assets/vo/l6.wav" data-duration="1.707" data-start="21.6" data-track-index="5" data-volume="1"></audio>
+      <audio id="vo7" src="assets/vo/l7.wav" data-duration="2.091" data-start="24.2" data-track-index="5" data-volume="1"></audio>
+      <audio id="vo8" src="assets/vo/l8.wav" data-duration="4.309" data-start="27.8" data-track-index="5" data-volume="1"></audio>
+      <audio id="vo9" src="assets/vo/l9.wav" data-duration="3.84" data-start="34.6" data-track-index="5" data-volume="1"></audio>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      // ---------- camera inside the phone screen ----------
+      const W = 628, H = 1396, VIS = 1290, CX = 314, CY = 430;
+      const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+      const camAt = (fx, fy, s) => ({
+        scale: s,
+        x: clamp(CX - fx * W * s, W - W * s, 0),
+        y: clamp(CY - fy * H * s, VIS - H * s, 0),
+      });
+      const focus = (t, fx, fy, s, d, ease = "power3.inOut") => tl.to("#cam", { ...camAt(fx, fy, s), duration: d, ease }, t);
+      const camSet = (t, fx = 0, fy = 0, s = 1) => tl.set("#cam", camAt(fx, fy, s), t);
+      tl.set("#cam", { transformOrigin: "0 0", x: 0, y: 0, scale: 1 }, 0);
+
+      // ---------- shared helpers ----------
+      const titleIn = (id, t) => {
+        tl.fromTo(`${id} .eb`, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+        tl.fromTo(`${id} .in`, { yPercent: 115 }, { yPercent: 0, duration: 0.7, ease: "expo.out", stagger: 0.09 }, t + 0.06);
+      };
+      const titleOut = (id, t) => tl.to(`${id} .wrap`, { opacity: 0, y: -40, duration: 0.28, ease: "power2.in" }, t);
+      const chipIn = (id, t) => tl.fromTo(id, { opacity: 0, scale: 0.6, y: 20 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(2.2)" }, t);
+      const capIn = (id, start, dur) => {
+        tl.fromTo(`${id} .pill`, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" }, start);
+        tl.to(`${id} .pill`, { opacity: 0, duration: 0.18, ease: "power1.in" }, start + dur - 0.2);
+      };
+      const bump = (t) => tl.to("#phone", { y: -22, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1 }, t);
+
+      // ---------- background drift ----------
+      tl.fromTo("#cloud1", { x: 0 }, { x: 120, duration: 8, ease: "none" }, 27.3);
+      tl.fromTo("#cloud2", { x: 0 }, { x: -90, duration: 8, ease: "none" }, 27.3);
+      tl.fromTo("#cloud3", { x: 0 }, { x: 70, duration: 8, ease: "none" }, 27.3);
+      tl.fromTo("#cloud4", { x: 0 }, { x: -110, duration: 8, ease: "none" }, 27.3);
+
+      // ---------- 1. hook (0 - 4) ----------
+      tl.fromTo("#hook .in", { yPercent: 115 }, { yPercent: 0, duration: 0.75, ease: "expo.out", stagger: 0.5 }, 0.35);
+      tl.to("#hookWrap", { y: -60, opacity: 0, duration: 0.4, ease: "power2.in" }, 2.35);
+      tl.fromTo("#logoHook .logoInner", { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.8, ease: "expo.out" }, 2.5);
+      tl.fromTo("#logoHook .flame", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1.25, duration: 0.6, ease: "power2.out" }, 2.85);
+      tl.to("#logoHook .logoInner", { y: -520, scale: 0.55, opacity: 0, duration: 0.6, ease: "power3.in" }, 3.65);
+
+      // ---------- 2. feed (4 - 10.5) ----------
+      tl.fromTo("#phone", { y: 1450, rotation: 4 }, { y: 0, rotation: 0, duration: 1.0, ease: "expo.out" }, 3.7);
+      titleIn("#t2", 4.0);
+      focus(4.0, 0.5, 0.3, 1.08, 3.6, "none");
+      chipIn("#c21", 7.3);
+      chipIn("#c22", 8.0);
+      chipIn("#c23", 8.6);
+      camSet(7.6);
+      focus(7.6, 0.5, 0.25, 1.1, 1.4, "none");
+      camSet(9.0);
+      focus(9.0, 0.5, 0.2, 1.1, 1.5, "none");
+      bump(7.6);
+      bump(9.0);
+      titleOut("#t2", 10.2);
+
+      // ---------- 3. prayer (10.5 - 14) ----------
+      camSet(10.5);
+      bump(10.5);
+      titleIn("#t3", 10.5);
+      focus(10.9, 0.14, 0.36, 1.5, 0.55);
+      tl.fromTo("#ripf1", { opacity: 0.9, scale: 0.3 }, { opacity: 0, scale: 1.4, duration: 0.6, ease: "power2.out", immediateRender: false }, 11.5);
+      tl.fromTo("#rip1", { opacity: 1, scale: 0.3 }, { opacity: 0, scale: 1.9, duration: 0.8, ease: "power2.out", immediateRender: false }, 11.5);
+      focus(12.35, 0.7, 0.36, 1.5, 0.7);
+      focus(13.4, 0.5, 0.3, 1.0, 0.55);
+      titleOut("#t3", 13.72);
+
+      // ---------- 4. answered prayer (14 - 17.5) ----------
+      camSet(14.0);
+      titleIn("#t4", 14.0);
+      tl.fromTo("#scrim", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 14.15);
+      tl.fromTo("#lift", { opacity: 0, scale: 1, y: 0 }, { opacity: 1, scale: 1.16, y: -40, duration: 0.7, ease: "expo.out" }, 14.15);
+      tl.fromTo("#badgeGlow", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1.3, duration: 0.5, ease: "power2.out" }, 14.75);
+      tl.to("#badgeGlow", { opacity: 0, scale: 1.7, duration: 0.6, ease: "power1.in" }, 15.3);
+      tl.fromTo("#sweep", { xPercent: -120 }, { xPercent: 260, duration: 0.9, ease: "power2.inOut" }, 15.0);
+      tl.to("#lift", { scale: 1.2, duration: 1.6, ease: "none" }, 15.0);
+      tl.to("#lift", { opacity: 0, y: 60, scale: 1.05, duration: 0.35, ease: "power2.in" }, 17.1);
+      tl.to("#scrim", { opacity: 0, duration: 0.3, ease: "power1.in" }, 17.15);
+      titleOut("#t4", 17.2);
+
+      // ---------- 5. groups (17.5 - 21.5) ----------
+      camSet(17.5);
+      bump(17.5);
+      titleIn("#t5", 17.5);
+      focus(17.5, 0.5, 0.3, 1.05, 1.8, "none");
+      chipIn("#c51", 19.0);
+      chipIn("#c52", 19.7);
+      chipIn("#c53", 20.3);
+      camSet(19.3);
+      focus(19.9, 0.72, 0.5, 1.35, 0.6);
+      titleOut("#t5", 21.2);
+
+      // ---------- 6. messages (21.5 - 24) ----------
+      camSet(21.5);
+      bump(21.5);
+      titleIn("#t6", 21.5);
+      focus(21.5, 0.5, 0.25, 1.08, 2.5, "none");
+      titleOut("#t6", 23.72);
+
+      // ---------- 7. verse of the day: a sunrise (24 - 27.5) ----------
+      camSet(24.0);
+      tl.fromTo("#glow", { opacity: 0 }, { opacity: 1, duration: 1.2, ease: "power2.out" }, 23.8);
+      titleIn("#t7", 24.0);
+      focus(24.2, 0.5, 0.15, 1.1, 1.1);
+      focus(25.4, 0.5, 0.17, 1.16, 1.9, "none");
+      tl.to("#glow", { opacity: 0, duration: 0.6, ease: "power1.in" }, 27.2);
+      titleOut("#t7", 27.22);
+
+      // ---------- 8. bible quiz on the sky (27.5 - 34) ----------
+      camSet(27.5);
+      bump(27.5);
+      tl.fromTo("#sky", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power2.out" }, 27.3);
+      titleIn("#t8", 27.5);
+      chipIn("#c81", 28.4);
+      const counter = { v: 0 };
+      tl.fromTo(counter, { v: 0 }, {
+        v: 364, duration: 1.3, ease: "power2.out",
+        onUpdate: () => { document.getElementById("count").textContent = Math.round(counter.v); },
+      }, 28.4);
+      chipIn("#c82", 29.6);
+      focus(27.5, 0.5, 0.3, 1.06, 3.5, "none");
+      camSet(31.0);
+      focus(31.05, 0.5, 0.26, 1.12, 0.5);
+      tl.fromTo("#rip2", { opacity: 1, scale: 0.3 }, { opacity: 0, scale: 2.2, duration: 0.7, ease: "power2.out", immediateRender: false }, 31.5);
+      focus(32.8, 0, 0, 1, 0.5);
+      tl.to("#phone", { y: -430, duration: 0.6, ease: "power3.inOut" }, 32.8);
+      [["#s1", -70, -80], ["#s2", 0, -110], ["#s3", 70, -80]].forEach(([id, dx, dy], i) => {
+        tl.fromTo(id, { opacity: 0, scale: 0.2, x: 0, y: 0, rotation: -40 }, { opacity: 1, scale: 1.3, x: dx + 240, y: dy, rotation: 0, duration: 0.5, ease: "back.out(2)" }, 33.2 + i * 0.08);
+        tl.to(id, { opacity: 0, duration: 0.25 }, 33.9);
+      });
+      titleOut("#t8", 32.7);
+
+      // ---------- 9. end card (34 - 39.5) ----------
+      tl.to("#phone", { y: 1500, rotation: -3, duration: 0.6, ease: "power3.in" }, 34.0);
+      tl.to("#sky", { opacity: 0, duration: 0.8, ease: "power1.inOut" }, 34.0);
+      tl.fromTo("#endLogo .logoInner", { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.8, ease: "expo.out" }, 34.35);
+      tl.fromTo("#endFlame", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1.25, duration: 0.6, ease: "power2.out" }, 34.7);
+      tl.to("#endFlame", { scale: 1.05, opacity: 0.75, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 7 }, 35.3);
+      tl.fromTo("#slogan .in", { yPercent: 115 }, { yPercent: 0, duration: 0.75, ease: "expo.out", stagger: 0.6 }, 35.15);
+      tl.fromTo("#storeRule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 36.5);
+      tl.fromTo("#stores", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 36.6);
+      tl.fromTo("#glow", { opacity: 0 }, { opacity: 0.45, duration: 1.5, ease: "power2.out", immediateRender: false }, 34.5);
+
+      // ---------- captions ----------
+      [["#cap1", 4.3, 2.4], ["#cap2", 6.7, 2.7], ["#cap3", 10.6, 3.2], ["#cap4", 14.1, 2.9], ["#cap5", 17.6, 3.4],
+       ["#cap6", 21.6, 2.1], ["#cap7", 24.2, 2.5], ["#cap8", 27.8, 2.1], ["#cap9", 29.9, 2.5]].forEach(([id, s, d]) => capIn(id, s, d));
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

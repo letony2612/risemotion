@@ -1,4 +1,6 @@
-# RISE : storyboard v1 (à valider)
+# RISE : storyboard v1
+
+> Mise à jour après retour : on reste **100 % en tons clairs** (pas de passage en nuit). La scène 6 utilise le clip `04_messages.mp4` en clair, et la scène 7 garde le « lever de soleil » ambre sur fond papier. La composition est dans `videos/rise-presentation/index.html`.
 
 Master vertical 9:16 (1080×1920), 30 i/s, environ 40 s. La musique est calée sur 120 BPM : 1 temps = 0,5 s et 1 mesure = 2 s. Toutes les coupes tombent sur un temps.
 
