@@ -394,7 +394,7 @@
     </div>
 
     <script>
-      const E = {"hook": 0.0, "spark": 0.05, "w_foi": 0.465, "w_vit": 1.23, "w_ensemble": 1.67, "collapse": 2.37, "letters": 2.67, "logo_land": 3.22, "hook_out": 4.02, "share": 4.32, "card_tem": 4.57, "card_ver": 4.97, "card_pho": 5.48, "screen_publish": 5.17, "publish_in": 5.63, "publish_tap": 5.93, "share_out": 6.13, "pray": 6.48, "w_prie": 6.48, "w_porte": 6.88, "chips": 6.6, "chip_pick": 6.95, "confier_tap": 7.25, "card_maman": 7.37, "jeprie_tap": 7.94, "upd1": 8.24, "upd2": 8.56, "count_end": 8.694, "flip": 8.86, "answer": 9.26, "notif": 9.41, "w_dieu": 9.54, "w_repond": 9.84, "stamp": 9.96, "celebrate": 10.68, "answer_out": 11.869, "groups": 12.319, "rows": 12.369, "hl1": 13.189, "hl2": 13.639, "hl3": 14.229, "groups_out": 14.679, "verse": 15.079, "sunrise": 14.879, "verse_card": 15.719, "verse_text": 16.089, "verse_ref": 16.889, "verse_out": 17.239, "quiz": 17.589, "count": 17.589, "quiz_title": 18.029, "panel": 19.079, "tap": 19.779, "correct": 20.229, "exact": 20.479, "stars": 20.879, "quiz_out": 21.579, "end": 21.944, "end_letters": 22.094, "end_land": 22.544, "slogan1": 23.034, "slogan2": 23.974, "stores": 24.804, "phones": 25.304}; const D = 28.6;
+      const E = {"hook": 0.0, "spark": 0.05, "w_foi": 0.465, "w_vit": 1.23, "w_ensemble": 1.67, "collapse": 2.37, "letters": 2.67, "logo_land": 3.22, "hook_out": 4.02, "share": 4.32, "card_tem": 4.57, "card_ver": 4.97, "card_pho": 5.48, "screen_publish": 5.17, "publish_in": 5.63, "publish_tap": 5.93, "share_out": 6.13, "pray": 6.48, "w_prie": 6.48, "w_porte": 6.88, "chips": 6.6, "chip_pick": 6.95, "confier_tap": 7.25, "card_maman": 7.37, "jeprie_tap": 7.94, "upd1": 8.24, "upd2": 8.56, "count_end": 8.694, "flip": 8.86, "answer": 9.26, "notif": 9.41, "w_dieu": 9.54, "w_repond": 9.84, "stamp": 9.96, "celebrate": 10.68, "answer_out": 11.869, "groups": 12.319, "rows": 12.369, "hl1": 13.189, "hl2": 13.639, "hl3": 14.229, "groups_out": 14.679, "verse": 15.079, "sunrise": 14.879, "w_matin": 15.179, "verse_card": 15.719, "verse_text": 16.089, "verse_ref": 16.889, "verse_out": 17.239, "quiz": 17.589, "count": 17.589, "quiz_title": 18.029, "panel": 19.079, "tap": 19.779, "correct": 20.229, "exact": 20.479, "stars": 20.879, "quiz_out": 21.579, "end": 21.944, "end_letters": 22.094, "end_land": 22.544, "slogan1": 23.034, "slogan2": 23.974, "stores": 24.804, "phones": 25.304}; const D = 28.6;
       const tl = gsap.timeline({ paused: true });
       const P = 1600; // perspective for 3D moves
 
@@ -615,8 +615,8 @@
       tl.fromTo("#warm", { opacity: 0 }, { opacity: 1, duration: 1.4, ease: "power1.out" }, E.sunrise);
       tl.fromTo("#rays", { opacity: 0 }, { opacity: 0.8, duration: 1.4, ease: "power1.out" }, E.sunrise + 0.2);
       tl.fromTo("#rays", { rotation: -8 }, { rotation: 4, duration: Math.max(1, E.quiz - E.sunrise), ease: "none" }, E.sunrise);
-      tl.fromTo("#ey7 .eyebrow", { opacity: 0, y: 24, scaleX: 1.25 }, { opacity: 1, y: 0, scaleX: 1, duration: 0.7, ease: "expo.out" }, E.verse + 0.15);
-      tl.fromTo("#t7a .ser", { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: "expo.out" }, E.verse + 0.4);
+      tl.fromTo("#ey7 .eyebrow", { opacity: 0, y: 24, scaleX: 1.25 }, { opacity: 1, y: 0, scaleX: 1, duration: 0.7, ease: "expo.out" }, E.verse);
+      tl.fromTo("#t7a .ser", { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: "expo.out" }, E.w_matin);
       riseIn("#t7b .ser", E.verse_text - 0.15, 0);
       tl.fromTo("#verse", { y: 520, rotationX: 38, transformPerspective: P, opacity: 0 }, { y: 0, rotationX: 0, transformPerspective: P, opacity: 1, duration: 0.85, ease: "expo.out" }, E.verse_card);
       tl.fromTo(".vw", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", stagger: 0.05 }, E.verse_text);

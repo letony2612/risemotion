@@ -589,8 +589,8 @@
       tl.fromTo("#warm", { opacity: 0 }, { opacity: 1, duration: 1.4, ease: "power1.out" }, E.sunrise);
       tl.fromTo("#rays", { opacity: 0 }, { opacity: 0.8, duration: 1.4, ease: "power1.out" }, E.sunrise + 0.2);
       tl.fromTo("#rays", { rotation: -8 }, { rotation: 4, duration: Math.max(1, E.quiz - E.sunrise), ease: "none" }, E.sunrise);
-      tl.fromTo("#ey7 .eyebrow", { opacity: 0, y: 24, scaleX: 1.25 }, { opacity: 1, y: 0, scaleX: 1, duration: 0.7, ease: "expo.out" }, E.verse + 0.15);
-      tl.fromTo("#t7a .ser", { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: "expo.out" }, E.verse + 0.4);
+      tl.fromTo("#ey7 .eyebrow", { opacity: 0, y: 24, scaleX: 1.25 }, { opacity: 1, y: 0, scaleX: 1, duration: 0.7, ease: "expo.out" }, E.verse);
+      tl.fromTo("#t7a .ser", { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: "expo.out" }, E.w_matin);
       riseIn("#t7b .ser", E.verse_text - 0.15, 0);
       tl.fromTo("#verse", { y: 520, rotationX: 38, transformPerspective: P, opacity: 0 }, { y: 0, rotationX: 0, transformPerspective: P, opacity: 1, duration: 0.85, ease: "expo.out" }, E.verse_card);
       tl.fromTo(".vw", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", stagger: 0.05 }, E.verse_text);

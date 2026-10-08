@@ -178,6 +178,7 @@ def _plan():
     # 6. verse of the day: sunrise
     E["sunrise"] = E["verse"] - 0.2
     V["l6"] = after("l5", E["verse"])
+    E["w_matin"] = max(wt("l6", 0) - 0.05, E["verse"] + 0.1)  # "Chaque matin," rises with the words
     E["verse_card"] = max(wt("l6", 2) - 0.25, E["verse"] + 0.3)
     E["verse_text"] = max(wt("l6", 3), E["verse_card"] + 0.3)
     E["verse_ref"] = E["verse_text"] + 0.8
