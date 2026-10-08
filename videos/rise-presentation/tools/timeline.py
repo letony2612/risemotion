@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 BPM = 120
 BEAT = 60 / BPM
 MAX_GAP = 0.3  # longest breath kept between two lines
+MUSIC = ROOT / "assets" / "audio" / "music_track.json"  # an imported track (tools/import_music.py)
 
 # Voice-over lines: (text as spoken, text shown in the captions). Same number of words in both.
 LINES = {
@@ -88,6 +89,8 @@ def _plan():
         assert len(words) == len(shown_words), (k, len(words), len(shown_words))
         rel[k] = [(sw, w["start"], w["end"]) for sw, w in zip(shown_words, words)]
     gap = _natural_gaps()
+    music = json.loads(MUSIC.read_text()) if MUSIC.exists() else None
+    grid = music["period"] if music else BEAT
     V, E = {}, {}
     wt = lambda k, i: V[k] + rel[k][i][1]
     end = lambda k: V[k] + dur[k]
@@ -155,7 +158,8 @@ def _plan():
     E["verse_text"] = max(wt("l6", 3), E["verse_card"] + 0.3)
     E["verse_ref"] = E["verse_text"] + 0.8
     E["verse_out"] = max(end("l6") + 0.2, E["verse_ref"] + 0.35)
-    E["quiz"] = _ceil_beat(E["verse_out"] + 0.35)  # the drop lands on a beat
+    # the drop lands on a beat of the synthesized bed (an imported track is cut to fit it)
+    E["quiz"] = round(E["verse_out"] + 0.35, 3) if music else _ceil_beat(E["verse_out"] + 0.35)
 
     # 7. quiz on the sky
     V["l7"] = after("l6", E["quiz"] + 0.15)
@@ -167,7 +171,7 @@ def _plan():
     E["exact"] = E["correct"] + 0.25
     E["stars"] = E["exact"] + 0.4
     E["quiz_out"] = max(E["stars"] + 0.7, end("l7") + 0.2)
-    E["end"] = _ceil_beat(E["quiz_out"] + 0.3)
+    E["end"] = E["quiz"] + math.ceil((E["quiz_out"] + 0.3 - E["quiz"]) / grid - 1e-6) * grid  # on the beat
 
     # 8. end card: "RISE" is said as the letters rise
     V["l8"] = after("l7", E["end"] + 0.15)
@@ -176,6 +180,9 @@ def _plan():
     E["slogan1"], E["slogan2"], E["stores"] = wt("l8", 1), wt("l8", 2), wt("l8", 3)
     E["phones"] = E["stores"] + 0.5
     duration = math.ceil(max(end("l8") + 1.3, E["phones"] + 1.5) * 2) / 2
+    if music:  # a little longer, so the track ends on its own last hit
+        from import_music import ending
+        duration = ending(music, E["quiz"], duration)
 
     W = {k: [{"w": sw, "t": round(float(V[k] + a), 3), "e": round(float(V[k] + b), 3)} for sw, a, b in rel[k]] for k in LINES}
     E = {k: round(float(v), 3) for k, v in E.items()}

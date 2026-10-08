@@ -4,6 +4,7 @@
 or generated track) it is used instead, trimmed/faded to the video length.
 Usage: python3 tools/compose_music.py -> assets/audio/music.wav
 """
+import json
 import sys
 from pathlib import Path
 
@@ -300,11 +301,12 @@ master = Pedalboard([HighpassFilter(28), Compressor(threshold_db=-16, ratio=2.5,
 master = master[:, : int(T.DURATION * SR)]
 master = master / np.max(np.abs(master)) * 0.89
 
-track = ROOT / "assets" / "audio" / "music_track.wav"
+from import_music import INFO, fit, load, track  # noqa: E402
+
+track = track()
 OUT.parent.mkdir(parents=True, exist_ok=True)
-if track.exists():  # an imported track (tools/import_music.py), fitted to this edit
-    from import_music import fit, load
-    sf.write(OUT, fit(load(track), drop, T.DURATION).T, SR)
+if track and INFO.exists():  # an imported track (tools/import_music.py), fitted to this edit
+    sf.write(OUT, fit(load(track), json.loads(INFO.read_text()), drop, end, T.DURATION).T, SR)
     print("music: using", track.name)
 else:
     sf.write(OUT, master.T, SR)
