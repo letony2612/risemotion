@@ -300,17 +300,12 @@ master = Pedalboard([HighpassFilter(28), Compressor(threshold_db=-16, ratio=2.5,
 master = master[:, : int(T.DURATION * SR)]
 master = master / np.max(np.abs(master)) * 0.89
 
-src = ROOT / "assets" / "audio" / "music_source.wav"
+track = ROOT / "assets" / "audio" / "music_track.wav"
 OUT.parent.mkdir(parents=True, exist_ok=True)
-if src.exists():
-    x, sr = sf.read(src, always_2d=True)
-    n = int(T.DURATION * sr)
-    x = x[:n]
-    if len(x) < n:
-        x = np.pad(x, ((0, n - len(x)), (0, 0)))
-    f = np.interp(np.arange(n) / sr, [0, T.DURATION - 1.5, T.DURATION], [1, 1, 0])
-    sf.write(OUT, x * f[:, None], sr)
-    print("music: using", src.name)
+if track.exists():  # an imported track (tools/import_music.py), fitted to this edit
+    from import_music import fit, load
+    sf.write(OUT, fit(load(track), drop, T.DURATION).T, SR)
+    print("music: using", track.name)
 else:
     sf.write(OUT, master.T, SR)
     print("music: synthesized bed written", OUT.name)

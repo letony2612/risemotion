@@ -1,77 +1,118 @@
-"""Import a music track (e.g. the Lyria piece from FLORA) as the video's music bed.
+"""Use a music track (e.g. the Lyria piece from FLORA) as the video's music bed.
 
-Analyses tempo, beats and energy, prints the loudest/quietest bars so the edit
-can be matched to the track, and writes assets/audio/music_source.wav fitted to
-the video length: trimmed with a fade, or extended by repeating whole bars from
-the middle of the track when it is too short.
-Usage: python3 tools/import_music.py path/to/music.mp3 [--report]
+Import:  python3 tools/import_music.py path/to/music.mp3
+  -> assets/audio/music_track.wav (the track, untouched) and a report of its tempo and drop.
+Every build (compose_music.py) then fits it to the edit: whole bars are taken out of
+(or repeated in) the groove before the drop so that the drop lands on the quiz, the
+track starts inside its first bar to absorb the remainder, and it fades out with the film.
 """
+import subprocess
 import sys
 from pathlib import Path
 
-import librosa
 import numpy as np
 import soundfile as sf
 
-sys.path.insert(0, str(Path(__file__).parent))
-import timeline as T  # noqa: E402
-
-ROOT = T.ROOT
+ROOT = Path(__file__).resolve().parents[1]
 SR = 44100
+TRACK = ROOT / "assets" / "audio" / "music_track.wav"
+XFADE = 0.03
 
 
-def analyse(path):
-    y, sr = librosa.load(path, sr=SR, mono=False)
-    if y.ndim == 1:
-        y = np.stack([y, y])
+def analyse(y):
+    import librosa
     mono = y.mean(axis=0)
-    tempo, beats = librosa.beat.beat_track(y=mono, sr=sr, units="time")
-    tempo = float(np.atleast_1d(tempo)[0])
-    rms = librosa.feature.rms(y=mono, frame_length=2048, hop_length=512)[0]
-    times = librosa.frames_to_time(np.arange(len(rms)), sr=sr, hop_length=512)
-    return y, mono, tempo, beats, rms, times
-
-
-def report(path):
-    y, mono, tempo, beats, rms, times = analyse(path)
     dur = y.shape[1] / SR
-    print(f"duration {dur:.2f}s  tempo {tempo:.1f} BPM  beats {len(beats)}  first beat {beats[0]:.2f}s")
-    bar = 4 * 60 / tempo
-    print("energy per 2 s (dB):")
-    for t0 in np.arange(0, dur, 2.0):
-        m = (times >= t0) & (times < t0 + 2)
-        if m.any():
-            db = 20 * np.log10(rms[m].mean() + 1e-9)
-            print(f"  {t0:5.1f}-{t0 + 2:5.1f}s  {db:6.1f}  " + "#" * max(0, int(db + 40)))
-    return y, tempo, beats, bar
+    tempo, tracked = librosa.beat.beat_track(y=mono, sr=SR, units="time")
+    # a steady grid over the whole track (the tracker skips quiet passages): the tracked
+    # tempo, snapped to a whole BPM when it is that close, and the phase that sits on the onsets
+    p0 = 60 / float(np.atleast_1d(tempo)[0])
+    period = np.polyfit(np.round((tracked - tracked[0]) / p0), tracked, 1)[0]
+    if abs(60 / period - round(60 / period)) < 0.6:
+        period = 60 / round(60 / period)
+    onset = librosa.onset.onset_strength(y=mono, sr=SR, hop_length=512)
+    ot = librosa.times_like(onset, sr=SR, hop_length=512)
+    grid = lambda ph: ph + period * np.arange(int((dur - ph) / period) + 1)
+    phase = max(np.arange(0, period, 0.004), key=lambda ph: np.interp(grid(ph), ot, onset).sum())
+    beats = grid(phase)
+    tempo, bar = 60 / period, 4 * period
+    rms = librosa.feature.rms(y=mono, frame_length=2048, hop_length=512)[0]
+    times = librosa.frames_to_time(np.arange(len(rms)), sr=SR, hop_length=512)
+    energy = lambda a, b: float(rms[(times >= a) & (times < b)].mean())
+    # the drop: the beat after which two bars are loudest compared with the bar before
+    ref = np.percentile(rms, 95)
+    best, drop = 0.0, None
+    for i, b in enumerate(beats):
+        if b < 0.3 * dur or b + 2 * bar > dur:
+            continue
+        jump = (energy(b, b + 2 * bar) - energy(b - bar, b)) / ref
+        if jump > best:
+            best, drop = jump, i
+    if best < 0.25:  # no clear drop: the track is used as it comes
+        drop = None
+    return tempo, beats, bar, drop, best
 
 
-def fit(path, target=T.DURATION):
-    y, tempo, beats, bar = report(path)
-    n_target = int(target * SR)
-    if y.shape[1] >= n_target:
-        out = y[:, :n_target]
+def splice(a, b):
+    n = min(int(XFADE * SR), a.shape[1], b.shape[1])
+    w = np.sqrt(np.linspace(0, 1, n))
+    return np.concatenate([a[:, :-n], a[:, -n:] * w[::-1] + b[:, :n] * w, b[:, n:]], axis=1)
+
+
+def fit(y, drop_at, duration):
+    """Return the track cut so that its drop lands at drop_at (s), duration long, faded out."""
+    tempo, beats, bar, d, score = analyse(y)
+    s = lambda t: int(round(t * SR))
+    if d is None:
+        out, note = y, "no clear drop, used from the start"
     else:
-        # repeat whole bars from the middle of the track until it is long enough
-        b0 = beats[0]
-        mid = b0 + bar * max(1, int((y.shape[1] / SR - b0) / bar / 2) - 1)
-        loop = y[:, int(mid * SR) : int((mid + 2 * bar) * SR)]
-        head, tail = y[:, : int(mid * SR)], y[:, int(mid * SR) :]
-        parts = [head]
-        while sum(p.shape[1] for p in parts) + tail.shape[1] < n_target:
-            parts.append(loop)
-        out = np.concatenate(parts + [tail], axis=1)[:, :n_target]
-        print(f"extended: repeated {len(parts) - 1} x 2 bars from {mid:.2f}s")
-    fade = np.interp(np.arange(out.shape[1]) / SR, [0, target - 1.5, target], [1, 1, 0])
-    out = out * fade
-    out = out / (np.max(np.abs(out)) or 1) * 0.89
-    dest = ROOT / "assets" / "audio" / "music_source.wav"
-    sf.write(dest, out.T, SR)
-    print("written", dest.relative_to(ROOT))
+        drop = beats[d]
+        p = max(4, d - 8)  # keep the two bars of build-up before the drop
+        shift = drop - drop_at
+        if shift >= 0:  # too late: take whole bars out of the groove before the build-up
+            k = 0
+            while p - 4 * (k + 1) >= 4 and beats[p] - beats[p - 4 * (k + 1)] <= shift:
+                k += 1
+            c = p - 4 * k
+            s0 = shift - (beats[p] - beats[c])
+            if k and s0 < beats[c] - bar:
+                out = splice(y[:, s(s0) : s(beats[c])], y[:, s(beats[p]) :])
+            else:  # no groove to spare: start the track later instead
+                k, s0, out = 0, shift, y[:, s(shift) :]
+            note = f"drop {drop:.2f}s -> {drop_at:.2f}s: {k} bar(s) out of the groove, start {s0:.2f}s in"
+        else:  # too early: repeat whole bars of the groove before the build-up
+            k = int(np.ceil(-shift / bar))
+            c = max(0, p - 4 * k)
+            extra = beats[p] - beats[c]
+            s0 = max(0.0, drop + extra - drop_at)
+            head = splice(y[:, s(s0) : s(beats[p])], y[:, s(beats[c]) : s(beats[p])])
+            out = splice(head, y[:, s(beats[p]) :])
+            note = f"drop {drop:.2f}s -> {drop_at:.2f}s: {k} bar(s) repeated, start {s0:.2f}s in"
+    n = s(duration)
+    out = out[:, :n]
+    if out.shape[1] < n:
+        out = np.pad(out, ((0, 0), (0, n - out.shape[1])))
+    t = np.arange(n) / SR
+    out = out * np.interp(t, [0, 0.02, duration - 1.5, duration], [0, 1, 1, 0])
+    print(f"music: {tempo:.1f} BPM, {note}")
+    return out
+
+
+def load(path):
+    y, sr = sf.read(path, always_2d=True)
+    assert sr == SR, sr
+    return y.T
+
+
+def main(path):
+    TRACK.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(path), "-ac", "2", "-ar", str(SR), str(TRACK)], check=True)
+    y = load(TRACK)
+    tempo, beats, bar, d, score = analyse(y)
+    print(f"{TRACK.relative_to(ROOT)}: {y.shape[1] / SR:.1f}s, {tempo:.1f} BPM, first beat {beats[0]:.2f}s")
+    print(f"drop at {beats[d]:.2f}s (strength {score:.2f})" if d is not None else "no clear drop found")
+    print("rebuild (python3 tools/build.py) to fit it to the edit")
 
 
 if __name__ == "__main__":
-    if "--report" in sys.argv:
-        report(sys.argv[1])
-    else:
-        fit(sys.argv[1])
+    main(sys.argv[1])
