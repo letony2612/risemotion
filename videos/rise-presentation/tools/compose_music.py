@@ -133,7 +133,7 @@ def supersaw(notes, dur, detune=0.14, voices=5):
 # ------------------------------------------------------------------ arrangement
 E = T.events(T.words())
 land, stamp, drop, end = E["logo_land"], E["stamp"], T.S["quiz"], T.S["end"]
-groove_a = (4.0, 24.0)
+groove_a = (E["share"], E["verse"])
 breakdown = (24.0, drop)
 drop_sec = (drop, end)
 
@@ -157,12 +157,13 @@ for i in range(int(L / BEAT)):
         kick_times.append(t)
         if i % 2 == 1:
             put(clap_buf, t, C, 0.85 if in_drop else 0.7)
-        put(hat_buf, t + BEAT / 2, HO if (in_drop or t >= 18) else HC, 0.5 if in_drop else 0.38)
-        if t >= 18 or in_drop:
+        put(hat_buf, t + BEAT / 2, HO if (in_drop or t >= E["groups"]) else HC, 0.5 if in_drop else 0.38)
+        if t >= E["groups"] or in_drop:
             put(hat_buf, t + BEAT / 4, HC, 0.18)
             put(hat_buf, t + 3 * BEAT / 4, HC, 0.18)
 # fills (snare rolls) into section changes
-for t0, t1 in ((3.5, 4.0), (9.5, 10.0), (17.5, 18.0), (27.0, 27.75), (33.5, 34.0)):
+for t0, t1 in ((E["share"] - 0.5, E["share"]), (E["pray"] - 0.5, E["pray"]), (E["groups"] - 0.5, E["groups"]),
+               (drop - 1.0, drop - 0.25), (end - 0.5, end)):
     steps = int((t1 - t0) / (BEAT / 4))
     for k in range(steps):
         put(clap_buf, t0 + k * BEAT / 4, C, 0.2 + 0.5 * k / max(1, steps - 1))
@@ -171,7 +172,7 @@ for t in (land, stamp, drop, end):
     put(kick_buf, t, K, 1.0)
     kick_times.append(t)
     put(fx, t, crash(2.8), 0.7)
-for t0, t1 in ((1.2, land), (stamp - 0.9, stamp), (25.6, drop - 0.22), (32.4, end)):
+for t0, t1 in ((1.2, land), (stamp - 0.9, stamp), (drop - 2.4, drop - 0.22), (end - 1.6, end)):
     put(fx, t0, riser(t1 - t0), 0.5)
 
 # bass: 8ths in groove, octave bounce in the drop
@@ -264,8 +265,9 @@ for t in kick_times:
     side[i:j] = np.minimum(side[i:j], (1 - 0.65 * np.exp(-tt * 10))[: j - i])
 
 tt = np.arange(N) / SR
-bright = np.interp(tt, [0, 3.0, 4.0, 23.6, 24.2, 27.0, 27.75, 28.0, 34.0, L], [0.15, 0.4, 1, 1, 0.25, 0.55, 0.0, 1, 1, 0.6])
-gap = np.interp(tt, [27.70, 27.74, 27.97, 28.0], [1, 0, 0, 1])  # breath before the drop
+bright = np.interp(tt, [0, land, E["share"], E["verse"] - 0.4, E["verse"] + 0.2, drop - 1.0, drop - 0.25, drop, end, L],
+                   [0.15, 0.4, 1, 1, 0.25, 0.55, 0.0, 1, 1, 0.6])
+gap = np.interp(tt, [drop - 0.3, drop - 0.26, drop - 0.03, drop], [1, 0, 0, 1])  # breath before the drop
 
 
 def norm(x):

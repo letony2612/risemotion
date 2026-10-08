@@ -62,16 +62,22 @@ def captions(W):
                 end = seg[-1]["e"] + 0.35
             dur = round(max(0.5, end - start), 3)
             spans = "".join(
-                f'<span class="cw{" k" if w["w"] in T.KEYWORDS else ""}" data-t="{w["t"]}">{html.escape(w["w"])}</span>'
+                f'<span class="cw{" k" if keyword(w["w"]) else ""}" data-t="{w["t"]}">{html.escape(w["w"])}</span>'
                 for w in seg)
             out.append(f'      <div id="cap-{line}-{ci}" class="clip cap" data-start="{start}" data-duration="{dur}" '
                        f'data-track-index="{track}"><div class="pill">{spans}</div></div>')
     return "\n".join(out)
 
 
+def keyword(word):
+    import re
+    return re.sub(r"[^\w’'-]", "", word.lower()) in T.KEYWORDS
+
+
 def audio_tags():
     tags = []
-    for key, (start, _, _) in T.VO.items():
+    for key in T.LINES:
+        start = T.VO_START[key]
         f = ROOT / "assets" / "vo" / f"{key}.wav"
         dur = round(sf.info(str(f)).duration, 3)
         tags.append(f'      <audio id="vo-{key}" src="assets/vo/{key}.wav" data-start="{start}" data-duration="{dur}" '
@@ -97,14 +103,19 @@ def main():
         "@@VERSE_WORDS@@": verse_words(),
         "@@CAPTIONS@@": captions(W),
         "@@AUDIO@@": audio_tags(),
-        "/*@@DATA@@*/": "const E = " + json.dumps(E) + ";",
+        "/*@@DATA@@*/": "const E = " + json.dumps(E) + f"; const D = {T.DURATION};",
+        "@@DURATION@@": str(T.DURATION),
+        "@@FIL_START@@": str(E["hook_out"]),
+        "@@FIL_DUR@@": str(round(E["screen_publish"] - E["hook_out"], 3)),
+        "@@PUB_START@@": str(E["screen_publish"]),
+        "@@PUB_DUR@@": str(round(E["share_out"] + 0.6 - E["screen_publish"], 3)),
     }
     for k, v in rep.items():
         assert k in tpl, k
         tpl = tpl.replace(k, v)
     (ROOT / "index.html").write_text(tpl)
     (ROOT / "tools" / "events.json").write_text(json.dumps({"events": E, "words": W}, ensure_ascii=False, indent=1))
-    print("index.html written,", len(E), "events")
+    print(f"index.html written: {T.DURATION}s, {len(E)} events")
     if "--no-audio" not in sys.argv:
         import subprocess
         subprocess.run([sys.executable, str(ROOT / "tools" / "sfx.py")], check=True)
@@ -113,7 +124,7 @@ def main():
     import subprocess
     carve = ROOT.parent.parent / ".claude" / "skills" / "hyperframes-audio" / "scripts" / "carve.mjs"
     if carve.exists():
-        voices = sum((["--voice", f"vo-{k}"] for k in T.VO), [])
+        voices = sum((["--voice", f"vo-{k}"] for k in T.LINES), [])
         subprocess.run(["node", str(carve), "--comp", str(ROOT / "index.html"), "--bed", "music", "--strength", "0.65", *voices],
                        check=True, capture_output=True)
         print("music carved under the voice-over")

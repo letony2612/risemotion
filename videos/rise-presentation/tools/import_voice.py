@@ -5,6 +5,7 @@ cuts that best match the expected length of each line (by syllables) win.
 Usage: python3 tools/import_voice.py path/to/voice.mp3
 Then: python3 tools/build.py  (and check the scene windows it prints)
 """
+import json
 import subprocess
 import sys
 import tempfile
@@ -29,7 +30,7 @@ def load(path):
     return x
 
 
-def silences(x, hop=0.01, min_len=0.18):
+def silences(x, hop=0.01, min_len=0.07):
     win = int(0.03 * SR)
     st = int(hop * SR)
     n = (len(x) - win) // st
@@ -97,21 +98,26 @@ def trim(seg, pad=0.04):
     f = int(0.01 * SR)
     out[:f] *= np.linspace(0, 1, f)
     out[-f:] *= np.linspace(1, 0, f)
-    return out
+    return out, a / SR
 
 
 def main(path):
     x = load(path)
-    keys = list(T.VO)
-    weights = [sum(syllables(w) for w in T.VO[k][1].split()) for k in keys]
+    keys = list(T.LINES)
+    weights = [sum(syllables(w) for w in T.LINES[k][0].split()) for k in keys]
     parts = split(x, len(keys), weights)
     (ROOT / "assets" / "vo" / "raw").mkdir(parents=True, exist_ok=True)
     peak = np.max(np.abs(x)) or 1
+    take = {}
     for k, (a, b) in zip(keys, parts):
-        seg = trim(x[int(a * SR) : int(b * SR)]) / peak * 0.89
+        seg, lead = trim(x[int(a * SR) : int(b * SR)])
+        seg = seg / peak * 0.89
         sf.write(ROOT / "assets" / "vo" / f"{k}.wav", seg, SR)
-        start = T.VO[k][0]
-        print(f"{k}: {len(seg) / SR:5.2f}s  (starts {start:5.2f} -> ends {start + len(seg) / SR:5.2f})  {T.VO[k][2][:48]}")
+        take[k] = {"start": round(a + lead, 3), "end": round(a + lead + len(seg) / SR, 3)}
+        rate = sum(syllables(w) for w in T.LINES[k][0].split()) / (len(seg) / SR)
+        print(f"{k}: {len(seg) / SR:5.2f}s  {rate:4.1f} syll/s  {T.LINES[k][1][:56]}")
+    (ROOT / "assets" / "vo" / "take.json").write_text(json.dumps(take, indent=1))
+    print("natural positions written to assets/vo/take.json (rebuild to re-time the edit)")
 
 
 if __name__ == "__main__":
