@@ -15,16 +15,24 @@ OUT = ROOT / "assets" / "lift"
 PAGE = (250, 248, 245)
 
 LIFTS = {
-    # feed: Sarah's testimony ("Dieu est fidèle"), the + button painted out
+    # intro, floating: the composer (sharing), the messages (meeting), the quiz streak is in assets/ui
+    "composer": ("04_publier.png", (0, 180, 1080, 975), None),
+    "messages": ("12_messages.png", (0, 395, 1080, 1365), None),
+    # feed: the prompt ("une question"), Sarah's testimony (the + button painted out)
+    "feed_prompt": ("02_accueil.png", (0, 330, 1080, 470), None),
     "post_sarah": ("02_accueil.png", (0, 1596, 1080, 2000), (880, 340, 1080, 404)),
-    # prayers: Rebecca's request for her mother
-    "prayer_maman": ("06_priere.png", (40, 349, 1036, 945), None),
-    # answered: Sarah's job ("Exaucée")
-    "answered": ("08_priere_exaucee.png", (30, 335, 1050, 1020), None),
-    # groups named in the voice-over
+    # groups, and what their members say (floating beside the phone)
     "group_1": ("10_groupes.png", (0, 410, 1080, 576), None),
     "group_2": ("10_groupes.png", (0, 608, 1080, 774), None),
+    "group_3": ("10_groupes.png", (0, 803, 1080, 970), None),
     "group_4": ("10_groupes.png", (0, 1001, 1080, 1168), None),
+    "chat_caleb": ("11_groupe_discussion.png", (20, 700, 800, 960), None),
+    "chat_deborah": ("11_groupe_discussion.png", (20, 975, 800, 1175), None),
+    "chat_me": ("11_groupe_discussion.png", (300, 1190, 1060, 1360), None),
+    "chat_jonathan": ("11_groupe_discussion.png", (20, 1410, 800, 1610), None),
+    # prayers: Rebecca's request for her mother, the sheet to share a request
+    "prayer_maman": ("06_priere.png", (40, 349, 1036, 945), None),
+    "confier_sheet": ("09_confier_une_priere.png", (0, 720, 1080, 2400), None),
     # explorer: the verse of the day
     "verse": ("14_explorer.png", (40, 215, 1040, 905), None),
     # quiz: the first answer (its states are stacked from assets/ui), the "Exact !" sheet

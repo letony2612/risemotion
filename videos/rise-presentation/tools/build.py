@@ -34,14 +34,6 @@ def bokeh():
     return "".join(out)
 
 
-def week():
-    check = ('<svg class="ck" viewBox="0 0 40 36"><path d="M5 19 L15 29 L35 7" fill="none" stroke="#fff" stroke-width="7" '
-             'stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="60" stroke-dashoffset="60" /></svg>')
-    return "".join(f'<div class="day" id="d{i}"><span class="hl"></span><img class="dfl" src="assets/ui/flame.png" alt="" />'
-                   f'<span class="dl">{c}</span><span class="dc"><span class="fill"></span>{check}</span></div>'
-                   for i, c in enumerate("LMMJVSD"))
-
-
 def hearts(n=6):
     return "".join('<span class="heart" style="left: 86px; top: 191px"><svg><use href="#heartShape" /></svg></span>'
                    for _ in range(n))
@@ -130,10 +122,9 @@ def main():
     if "--until" in sys.argv:
         duration = min(duration, float(sys.argv[sys.argv.index("--until") + 1]))
     tpl = (ROOT / "tools" / "template.html").read_text()
-    splash_end = min(duration, E["week_out"] + 0.6)
+    splash_end = min(duration, E["phone_in"] + 0.5)
     rep = {
         "@@BOKEH@@": bokeh(),
-        "@@WEEK@@": week(),
         "@@HEARTS@@": hearts(),
         "@@CONFETTI@@": confetti(),
         "@@BEATS@@": beats(W, duration),

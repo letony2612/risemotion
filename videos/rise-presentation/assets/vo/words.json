@@ -1,369 +1,734 @@
 {
  "l1": {
-  "text": "Ta foi, tu la vis que le dimanche ?",
-  "audio": "7540e03ac0965eb510c04c43910bb380e866871d",
-  "words": [
-   {
-    "w": "Ta",
-    "start": 0.0,
-    "end": 0.23
-   },
-   {
-    "w": "foi,",
-    "start": 0.24,
-    "end": 0.57
-   },
-   {
-    "w": "tu",
-    "start": 0.72,
-    "end": 0.84
-   },
-   {
-    "w": "la",
-    "start": 0.84,
-    "end": 1.01
-   },
-   {
-    "w": "vis",
-    "start": 1.01,
-    "end": 1.205
-   },
-   {
-    "w": "que",
-    "start": 1.26,
-    "end": 1.34
-   },
-   {
-    "w": "le",
-    "start": 1.35,
-    "end": 1.46
-   },
-   {
-    "w": "dimanche ?",
-    "start": 1.46,
-    "end": 1.87
-   }
-  ]
- },
- "l2": {
-  "text": "Avec RISE, tu la vis tous les jours.",
-  "audio": "410195efe86ad5f29c732d424fda3af89c97136e",
-  "words": [
-   {
-    "w": "Avec",
-    "start": 0.0,
-    "end": 0.51
-   },
-   {
-    "w": "RISE,",
-    "start": 0.51,
-    "end": 0.935
-   },
-   {
-    "w": "tu",
-    "start": 0.97,
-    "end": 1.09
-   },
-   {
-    "w": "la",
-    "start": 1.09,
-    "end": 1.2
-   },
-   {
-    "w": "vis",
-    "start": 1.2,
-    "end": 1.37
-   },
-   {
-    "w": "tous",
-    "start": 1.51,
-    "end": 1.59
-   },
-   {
-    "w": "les",
-    "start": 1.59,
-    "end": 1.83
-   },
-   {
-    "w": "jours.",
-    "start": 1.83,
-    "end": 2.1
-   }
-  ]
- },
- "l3": {
-  "text": "Tu partages ce que Dieu fait dans ta vie.",
-  "audio": "691a36d32df5516b8f27d38a0e00a7979ca2c305",
+  "text": "Tu cherches un endroit pour partager ta foi, rencontrer d'autres chrétiens et grandir ?",
+  "audio": "7277acdd918852e1415e9a34251e0775614e9e6e",
   "words": [
    {
     "w": "Tu",
     "start": 0.0,
-    "end": 0.18
+    "end": 0.13
    },
    {
-    "w": "partages",
-    "start": 0.18,
-    "end": 0.69
+    "w": "cherches",
+    "start": 0.13,
+    "end": 0.34
    },
    {
-    "w": "ce",
-    "start": 0.69,
-    "end": 0.84
+    "w": "un",
+    "start": 0.34,
+    "end": 0.52
    },
    {
-    "w": "que",
-    "start": 0.84,
-    "end": 0.98
+    "w": "endroit",
+    "start": 0.53,
+    "end": 0.88
    },
    {
-    "w": "Dieu",
-    "start": 0.98,
-    "end": 1.1
+    "w": "pour",
+    "start": 0.88,
+    "end": 1.06
    },
    {
-    "w": "fait",
-    "start": 1.11,
-    "end": 1.2
-   },
-   {
-    "w": "dans",
-    "start": 1.2,
-    "end": 1.36
+    "w": "partager",
+    "start": 1.06,
+    "end": 1.49
    },
    {
     "w": "ta",
-    "start": 1.36,
-    "end": 1.64
+    "start": 1.49,
+    "end": 1.72
    },
    {
-    "w": "vie.",
-    "start": 1.64,
-    "end": 1.86
+    "w": "foi,",
+    "start": 1.73,
+    "end": 2.12
+   },
+   {
+    "w": "rencontrer",
+    "start": 2.13,
+    "end": 2.71
+   },
+   {
+    "w": "d'autres",
+    "start": 2.71,
+    "end": 3.04
+   },
+   {
+    "w": "chrétiens",
+    "start": 3.04,
+    "end": 3.45
+   },
+   {
+    "w": "et",
+    "start": 3.45,
+    "end": 3.59
+   },
+   {
+    "w": "grandir ?",
+    "start": 3.59,
+    "end": 4.1
+   }
+  ]
+ },
+ "l2": {
+  "text": "Et si je te présentais RISE ?",
+  "audio": "9badf75dba429ece7d981aa7f97f7b3b818c1a94",
+  "words": [
+   {
+    "w": "Et",
+    "start": 0.006,
+    "end": 0.16
+   },
+   {
+    "w": "si",
+    "start": 0.16,
+    "end": 0.26
+   },
+   {
+    "w": "je",
+    "start": 0.26,
+    "end": 0.4
+   },
+   {
+    "w": "te",
+    "start": 0.4,
+    "end": 0.54
+   },
+   {
+    "w": "présentais",
+    "start": 0.54,
+    "end": 1.01
+   },
+   {
+    "w": "RISE ?",
+    "start": 1.01,
+    "end": 1.54
+   }
+  ]
+ },
+ "l3": {
+  "text": "Ici, tout commence sur le fil d'actu : une question, un témoignage, une réflexion… et on s'encourage dans la foi !",
+  "audio": "bb905bd9b4e2f971d275243ae8f32f1b6c63d4fe",
+  "words": [
+   {
+    "w": "Ici,",
+    "start": 0.037,
+    "end": 0.615
+   },
+   {
+    "w": "tout",
+    "start": 0.66,
+    "end": 0.8
+   },
+   {
+    "w": "commence",
+    "start": 0.81,
+    "end": 1.19
+   },
+   {
+    "w": "sur",
+    "start": 1.19,
+    "end": 1.415
+   },
+   {
+    "w": "le",
+    "start": 1.415,
+    "end": 1.47
+   },
+   {
+    "w": "fil",
+    "start": 1.47,
+    "end": 1.66
+   },
+   {
+    "w": "d'actu :",
+    "start": 1.84,
+    "end": 2.225
+   },
+   {
+    "w": "une",
+    "start": 2.37,
+    "end": 2.53
+   },
+   {
+    "w": "question,",
+    "start": 2.53,
+    "end": 3.22
+   },
+   {
+    "w": "un",
+    "start": 3.23,
+    "end": 3.38
+   },
+   {
+    "w": "témoignage,",
+    "start": 3.38,
+    "end": 4.12
+   },
+   {
+    "w": "une",
+    "start": 4.13,
+    "end": 4.27
+   },
+   {
+    "w": "réflexion…",
+    "start": 4.27,
+    "end": 5.065
+   },
+   {
+    "w": "et",
+    "start": 4.98,
+    "end": 5.26
+   },
+   {
+    "w": "on",
+    "start": 5.16,
+    "end": 5.45
+   },
+   {
+    "w": "s'encourage",
+    "start": 5.45,
+    "end": 6.0
+   },
+   {
+    "w": "dans",
+    "start": 6.0,
+    "end": 6.14
+   },
+   {
+    "w": "la",
+    "start": 6.14,
+    "end": 6.28
+   },
+   {
+    "w": "foi !",
+    "start": 6.28,
+    "end": 6.55
    }
   ]
  },
  "l4": {
-  "text": "Un coup dur ? Tes frères et sœurs prient pour toi.",
-  "audio": "7c20c6fa73ba43e81d8f4a91c3d86f9fb16a5b32",
+  "text": "Et quand un sujet te touche, va plus loin : rejoins des groupes avec des chrétiens qui ont les mêmes passions que toi.",
+  "audio": "9b5f32197af7a19ce37a921c3caf5f5687191fa0",
   "words": [
    {
-    "w": "Un",
-    "start": 0.0,
-    "end": 0.16
+    "w": "Et",
+    "start": 0.05,
+    "end": 0.14
    },
    {
-    "w": "coup",
-    "start": 0.16,
-    "end": 0.28
+    "w": "quand",
+    "start": 0.14,
+    "end": 0.31
    },
    {
-    "w": "dur ?",
-    "start": 0.28,
-    "end": 0.605
+    "w": "un",
+    "start": 0.31,
+    "end": 0.5
    },
    {
-    "w": "Tes",
-    "start": 0.69,
-    "end": 0.86
+    "w": "sujet",
+    "start": 0.5,
+    "end": 0.74
    },
    {
-    "w": "frères",
-    "start": 0.86,
-    "end": 1.03
+    "w": "te",
+    "start": 0.74,
+    "end": 0.9
    },
    {
-    "w": "et",
-    "start": 1.03,
-    "end": 1.17
+    "w": "touche,",
+    "start": 0.9,
+    "end": 1.35
    },
    {
-    "w": "sœurs",
-    "start": 1.18,
-    "end": 1.41
+    "w": "va",
+    "start": 1.37,
+    "end": 1.61
    },
    {
-    "w": "prient",
-    "start": 1.42,
-    "end": 1.66
+    "w": "plus",
+    "start": 1.62,
+    "end": 1.81
    },
    {
-    "w": "pour",
-    "start": 1.66,
-    "end": 1.83
+    "w": "loin :",
+    "start": 1.81,
+    "end": 2.215
+   },
+   {
+    "w": "rejoins",
+    "start": 2.38,
+    "end": 2.73
+   },
+   {
+    "w": "des",
+    "start": 2.73,
+    "end": 2.89
+   },
+   {
+    "w": "groupes",
+    "start": 2.89,
+    "end": 3.09
+   },
+   {
+    "w": "avec",
+    "start": 3.09,
+    "end": 3.37
+   },
+   {
+    "w": "des",
+    "start": 3.37,
+    "end": 3.5
+   },
+   {
+    "w": "chrétiens",
+    "start": 3.5,
+    "end": 3.94
+   },
+   {
+    "w": "qui",
+    "start": 3.95,
+    "end": 4.02
+   },
+   {
+    "w": "ont",
+    "start": 4.02,
+    "end": 4.1
+   },
+   {
+    "w": "les",
+    "start": 4.1,
+    "end": 4.22
+   },
+   {
+    "w": "mêmes",
+    "start": 4.22,
+    "end": 4.53
+   },
+   {
+    "w": "passions",
+    "start": 4.53,
+    "end": 4.86
+   },
+   {
+    "w": "que",
+    "start": 4.87,
+    "end": 5.02
    },
    {
     "w": "toi.",
-    "start": 1.83,
-    "end": 2.12
+    "start": 5.03,
+    "end": 5.21
    }
   ]
  },
  "l5": {
-  "text": "Et quand Dieu répond… tout le monde célèbre !",
-  "audio": "d1a5bdeb46c4053e13993d30b02f27cb93a4eaf8",
+  "text": "Et parce qu'une communauté, c'est aussi se porter les uns les autres… partage tes sujets de prière, prie pour ceux des autres : on n'est pas appelés à avancer seuls.",
+  "audio": "e910c4a40562ad78dae58fc8619abbac01dc52c6",
   "words": [
    {
     "w": "Et",
-    "start": 0.0,
-    "end": 0.281
+    "start": 0.05,
+    "end": 0.15
    },
    {
-    "w": "quand",
-    "start": 0.281,
-    "end": 0.505
+    "w": "parce",
+    "start": 0.15,
+    "end": 0.35
    },
    {
-    "w": "Dieu",
-    "start": 0.505,
-    "end": 0.695
+    "w": "qu'une",
+    "start": 0.36,
+    "end": 0.55
    },
    {
-    "w": "répond…",
-    "start": 0.695,
-    "end": 1.078
+    "w": "communauté,",
+    "start": 0.55,
+    "end": 1.32
    },
    {
-    "w": "tout",
-    "start": 1.078,
-    "end": 1.295
+    "w": "c'est",
+    "start": 1.33,
+    "end": 1.5
    },
    {
-    "w": "le",
-    "start": 1.295,
-    "end": 1.38
+    "w": "aussi",
+    "start": 1.5,
+    "end": 1.8
    },
    {
-    "w": "monde",
-    "start": 1.345,
-    "end": 1.68
+    "w": "se",
+    "start": 1.8,
+    "end": 1.99
    },
    {
-    "w": "célèbre !",
-    "start": 1.68,
-    "end": 2.26
+    "w": "porter",
+    "start": 1.99,
+    "end": 2.31
+   },
+   {
+    "w": "les",
+    "start": 2.31,
+    "end": 2.47
+   },
+   {
+    "w": "uns",
+    "start": 2.48,
+    "end": 2.62
+   },
+   {
+    "w": "les",
+    "start": 2.62,
+    "end": 2.75
+   },
+   {
+    "w": "autres…",
+    "start": 2.76,
+    "end": 3.248
+   },
+   {
+    "w": "partage",
+    "start": 3.34,
+    "end": 3.71
+   },
+   {
+    "w": "tes",
+    "start": 3.71,
+    "end": 3.89
+   },
+   {
+    "w": "sujets",
+    "start": 3.89,
+    "end": 4.1
+   },
+   {
+    "w": "de",
+    "start": 4.1,
+    "end": 4.22
+   },
+   {
+    "w": "prière,",
+    "start": 4.2,
+    "end": 4.903
+   },
+   {
+    "w": "prie",
+    "start": 4.95,
+    "end": 5.18
+   },
+   {
+    "w": "pour",
+    "start": 5.18,
+    "end": 5.29
+   },
+   {
+    "w": "ceux",
+    "start": 5.29,
+    "end": 5.47
+   },
+   {
+    "w": "des",
+    "start": 5.47,
+    "end": 5.64
+   },
+   {
+    "w": "autres :",
+    "start": 5.64,
+    "end": 6.04
+   },
+   {
+    "w": "on",
+    "start": 6.24,
+    "end": 6.32
+   },
+   {
+    "w": "n'est",
+    "start": 6.32,
+    "end": 6.47
+   },
+   {
+    "w": "pas",
+    "start": 6.47,
+    "end": 6.6
+   },
+   {
+    "w": "appelés",
+    "start": 6.61,
+    "end": 6.9
+   },
+   {
+    "w": "à",
+    "start": 6.9,
+    "end": 7.0
+   },
+   {
+    "w": "avancer",
+    "start": 7.0,
+    "end": 7.44
+   },
+   {
+    "w": "seuls.",
+    "start": 7.44,
+    "end": 7.74
    }
   ]
  },
  "l6": {
-  "text": "Trouve ton groupe : louange, étude biblique, jeunes.",
-  "audio": "4dc5e2de1f17569bb4c4d31596280844fba9502a",
+  "text": "Et pour grandir chaque jour dans la Parole, teste ce que tu sais avec les kwiz… et découvre la Bible autrement !",
+  "audio": "995a422b6086ac1db7ce6ecbb53c4708037e8057",
   "words": [
    {
-    "w": "Trouve",
-    "start": 0.0,
-    "end": 0.43
+    "w": "Et",
+    "start": 0.05,
+    "end": 0.16
    },
    {
-    "w": "ton",
-    "start": 0.43,
-    "end": 0.58
+    "w": "pour",
+    "start": 0.16,
+    "end": 0.34
    },
    {
-    "w": "groupe :",
-    "start": 0.58,
-    "end": 0.882
+    "w": "grandir",
+    "start": 0.34,
+    "end": 0.72
    },
    {
-    "w": "louange,",
-    "start": 1.01,
-    "end": 1.609
+    "w": "chaque",
+    "start": 0.72,
+    "end": 0.96
    },
    {
-    "w": "étude",
-    "start": 1.62,
-    "end": 1.93
+    "w": "jour",
+    "start": 0.97,
+    "end": 1.22
    },
    {
-    "w": "biblique,",
-    "start": 1.93,
-    "end": 2.38
+    "w": "dans",
+    "start": 1.22,
+    "end": 1.32
    },
    {
-    "w": "jeunes.",
-    "start": 2.4,
-    "end": 2.91
+    "w": "la",
+    "start": 1.32,
+    "end": 1.47
+   },
+   {
+    "w": "Parole,",
+    "start": 1.47,
+    "end": 2.035
+   },
+   {
+    "w": "teste",
+    "start": 2.09,
+    "end": 2.41
+   },
+   {
+    "w": "ce",
+    "start": 2.41,
+    "end": 2.48
+   },
+   {
+    "w": "que",
+    "start": 2.48,
+    "end": 2.63
+   },
+   {
+    "w": "tu",
+    "start": 2.63,
+    "end": 2.83
+   },
+   {
+    "w": "sais",
+    "start": 2.83,
+    "end": 2.98
+   },
+   {
+    "w": "avec",
+    "start": 2.98,
+    "end": 3.11
+   },
+   {
+    "w": "les",
+    "start": 3.11,
+    "end": 3.29
+   },
+   {
+    "w": "kwiz…",
+    "start": 3.3,
+    "end": 3.805
+   },
+   {
+    "w": "et",
+    "start": 3.86,
+    "end": 4.01
+   },
+   {
+    "w": "découvre",
+    "start": 4.01,
+    "end": 4.45
+   },
+   {
+    "w": "la",
+    "start": 4.45,
+    "end": 4.64
+   },
+   {
+    "w": "Bible",
+    "start": 4.64,
+    "end": 4.89
+   },
+   {
+    "w": "autrement !",
+    "start": 4.89,
+    "end": 5.45
    }
   ]
  },
  "l7": {
-  "text": "Chaque matin, ta Parole du jour.",
-  "audio": "8c973df803d5f8748cf6b1fadee68426174a1aea",
+  "text": "Partager, échanger, prier, apprendre… et grandir ensemble : c'est ça, RISE, le réseau social pensé pour les chrétiens !",
+  "audio": "8273bd4337b788455689dbaf70c2c316973f57c0",
   "words": [
    {
-    "w": "Chaque",
-    "start": 0.0,
-    "end": 0.44
+    "w": "Partager,",
+    "start": 0.05,
+    "end": 0.83
    },
    {
-    "w": "matin,",
-    "start": 0.45,
-    "end": 0.852
+    "w": "échanger,",
+    "start": 0.84,
+    "end": 1.64
    },
    {
-    "w": "ta",
-    "start": 0.99,
-    "end": 1.17
+    "w": "prier,",
+    "start": 1.64,
+    "end": 2.29
    },
    {
-    "w": "Parole",
-    "start": 1.2,
-    "end": 1.54
+    "w": "apprendre…",
+    "start": 2.29,
+    "end": 2.83
    },
    {
-    "w": "du",
-    "start": 1.54,
-    "end": 1.65
+    "w": "et",
+    "start": 2.83,
+    "end": 3.33
    },
    {
-    "w": "jour.",
-    "start": 1.65,
-    "end": 1.98
+    "w": "grandir",
+    "start": 3.18,
+    "end": 3.77
+   },
+   {
+    "w": "ensemble :",
+    "start": 3.77,
+    "end": 4.502
+   },
+   {
+    "w": "c'est",
+    "start": 4.57,
+    "end": 4.78
+   },
+   {
+    "w": "ça,",
+    "start": 4.78,
+    "end": 5.0
+   },
+   {
+    "w": "RISE,",
+    "start": 5.0,
+    "end": 5.528
+   },
+   {
+    "w": "le",
+    "start": 5.55,
+    "end": 5.71
+   },
+   {
+    "w": "réseau",
+    "start": 5.71,
+    "end": 5.97
+   },
+   {
+    "w": "social",
+    "start": 5.97,
+    "end": 6.5
+   },
+   {
+    "w": "pensé",
+    "start": 6.52,
+    "end": 6.87
+   },
+   {
+    "w": "pour",
+    "start": 6.87,
+    "end": 7.0
+   },
+   {
+    "w": "les",
+    "start": 7.0,
+    "end": 7.11
+   },
+   {
+    "w": "chrétiens !",
+    "start": 7.12,
+    "end": 7.51
    }
   ]
  },
  "l8": {
-  "text": "Un kwiz par jour pour apprendre la Bible !",
-  "audio": "0036198af7634aaa45b6a8e00b715cb1169a040a",
+  "text": "Rejoins-nous : télécharge RISE gratuitement sur l'App Store et Google Play !",
+  "audio": "ffbe2b811b9c53a00e415c803eaf3bbf1c9074d2",
   "words": [
    {
-    "w": "Un",
-    "start": 0.01,
-    "end": 0.23
+    "w": "Rejoins-nous :",
+    "start": 0.0,
+    "end": 0.87
    },
    {
-    "w": "kwiz",
-    "start": 0.24,
-    "end": 0.42
+    "w": "télécharge",
+    "start": 0.93,
+    "end": 1.47
    },
    {
-    "w": "par",
-    "start": 0.42,
-    "end": 0.53
+    "w": "RISE",
+    "start": 1.47,
+    "end": 1.8
    },
    {
-    "w": "jour",
-    "start": 0.53,
-    "end": 0.785
+    "w": "gratuitement",
+    "start": 1.8,
+    "end": 2.45
    },
    {
-    "w": "pour",
-    "start": 0.798,
-    "end": 1.02
+    "w": "sur",
+    "start": 2.45,
+    "end": 2.59
    },
    {
-    "w": "apprendre",
-    "start": 1.02,
-    "end": 1.38
+    "w": "l'App",
+    "start": 2.605,
+    "end": 2.8
    },
    {
-    "w": "la",
-    "start": 1.38,
-    "end": 1.57
+    "w": "Store",
+    "start": 2.8,
+    "end": 3.23
    },
    {
-    "w": "Bible !",
-    "start": 1.57,
-    "end": 1.881
+    "w": "et",
+    "start": 3.25,
+    "end": 3.29
+   },
+   {
+    "w": "Google",
+    "start": 3.3,
+    "end": 3.74
+   },
+   {
+    "w": "Play !",
+    "start": 3.74,
+    "end": 3.95
    }
   ]
  },
