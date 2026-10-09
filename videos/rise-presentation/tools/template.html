@@ -108,10 +108,18 @@
         text-shadow: 0 4px 0 rgba(140, 62, 0, 0.35);
         box-shadow: 0 10px 0 #a24f03, 0 26px 46px rgba(162, 79, 3, 0.3); }
       .punch.long { font-size: 80px; }
+
+      /* ---------- variant: plain white background (build.py --white) ---------- */
+      #root.white, #root.white #bg { background: #fff; }
+      #root.white .tint, #root.white #bokeh { display: none; }
+      #root.white .setup { box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1), 0 0 0 2px #efefef; }
+      #root.white #phone .frame { box-shadow: 0 70px 120px rgba(0, 0, 0, 0.2), 0 18px 36px rgba(0, 0, 0, 0.1), inset 0 0 0 3px #3a332c; }
+      #root.white .icard { box-shadow: 0 40px 80px rgba(0, 0, 0, 0.14), 0 10px 24px rgba(0, 0, 0, 0.08), 0 0 0 2px #f0f0f0; }
+      #root.white .mini { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.16); }
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="@@DURATION@@" data-width="1080" data-height="1920">
+    <div id="root" class="@@ROOT_CLASS@@" data-composition-id="main" data-start="0" data-duration="@@DURATION@@" data-width="1080" data-height="1920">
       <svg width="0" height="0" style="position: absolute" aria-hidden="true">
         <symbol id="heartShape" viewBox="0 0 24 24"><path fill="#E5484D" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.2 4.3 2.4.7-1.2 2.1-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" /></symbol>
       </svg>

@@ -3,6 +3,7 @@
 python3 tools/build.py              -> index.html (+ sound design and music beds)
 python3 tools/build.py --no-audio   -> index.html only
 python3 tools/build.py --until 6.6  -> a preview cut at 6.6 s (the edit itself is unchanged)
+python3 tools/build.py --white      -> the same film on a plain white background
 """
 import html
 import json
@@ -131,6 +132,7 @@ def main():
         "@@AUDIO@@": audio_tags(duration),
         "/*@@DATA@@*/": "const E = " + json.dumps(E) + f"; const D = {duration};",
         "@@DURATION@@": str(duration),
+        "@@ROOT_CLASS@@": "white" if "--white" in sys.argv else "",
         "@@SPLASH2_START@@": str(E["splash2"]),
         "@@SPLASH2_DUR@@": str(round(splash_end - E["splash2"], 3)),
         "@@SPLASH9_START@@": str(E["splash9"]),
