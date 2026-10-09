@@ -5,16 +5,21 @@ optional patch painted with the page colour (e.g. a floating button that overlap
 build.py places every piece exactly over its spot on the screen, so it lifts off its own pixels.
 Pieces in SHEETS are floating sheets captured over the app's own dimmed backdrop: everything outside
 their rounded outline is made transparent (the video dims the screen behind them itself).
-Usage: python3 tools/lifts.py  -> assets/lift/<name>.png
+Usage: python3 tools/lifts.py            -> assets/lift/<name>.png
+       python3 tools/lifts.py --lang en  -> assets/lift_en/<name>.png, from the English captures
 """
+import os
+import sys
 from pathlib import Path
 
 import numpy as np
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-CAP = ROOT.parent.parent / "RISE_presentation" / "1_captures_clair"
-OUT = ROOT / "assets" / "lift"
+LANG = sys.argv[sys.argv.index("--lang") + 1] if "--lang" in sys.argv else os.environ.get("RISE_LANG", "fr")
+SUFFIX = "" if LANG == "fr" else f"_{LANG}"
+CAP = ROOT.parent.parent / "RISE_presentation" / f"1_captures_clair{SUFFIX}"
+OUT = ROOT / "assets" / f"lift{SUFFIX}"
 PAGE = (250, 248, 245)
 
 LIFTS = {

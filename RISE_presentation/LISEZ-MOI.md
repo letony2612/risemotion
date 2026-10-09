@@ -9,6 +9,7 @@ messages sont inventés.
 | Dossier | Contenu | Format |
 |---|---|---|
 | `1_captures_clair` | 26 écrans de l'appli en mode clair, de l'accueil (« Élève-toi. Ensemble. ») au quiz | PNG 1080×2400, heure 9:41 |
+| `1_captures_clair_en` | 13 de ces écrans traduits en anglais, pour la version anglaise de la vidéo (voir son LISEZ-MOI) | PNG 1080×2400 |
 | `2_captures_sombre` | 16 des mêmes écrans en mode sombre | PNG 1080×2400 |
 | `3_images_marketing` | 16 visuels prêts à l'emploi : un titre et le téléphone, aux couleurs de RISE. Chacun existe en `_vertical` (Reels, TikTok, Stories) et en `_horizontal` (YouTube, présentation) | PNG 1080×1920 et 1920×1080 |
 | `4_clips` | 8 courtes vidéos d'écran : accueil, fil, prière, groupe, messages, Explorer, parcours du quiz, question du quiz | MP4 H.264, 1080×2400, 30 i/s, sans son |

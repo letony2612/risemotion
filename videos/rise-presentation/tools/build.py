@@ -5,11 +5,13 @@ python3 tools/build.py --no-audio   -> index.html only
 python3 tools/build.py --until 6.6  -> a preview cut at 6.6 s (the edit itself is unchanged)
 python3 tools/build.py --white      -> the same film on a plain white background
 python3 tools/build.py --apple      -> the Apple-style cut: white, black headlines, softer motion, its own sound effects
-python3 tools/build.py --lang en    -> the English version (its voice in assets/vo_en, see timeline.py); combines with --apple
+python3 tools/build.py --lang en    -> the English version (its voice in assets/vo_en, see timeline.py; its app pictures
+                                      from tools/localize.py); combines with --apple
 """
 import html
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -175,6 +177,17 @@ def main():
         assert k in tpl or k.startswith(("@@POS:", "@@SPOS:")), k  # not every piece casts a shadow
         tpl = tpl.replace(k, v)
     assert "@@" not in tpl, tpl[tpl.index("@@") - 40: tpl.index("@@") + 40]
+    if T.SUFFIX:  # the translated app pictures (tools/localize.py); the French one where there is nothing to translate
+        kept = set()
+
+        def local(m):
+            alt = f"assets/{m[1]}{T.SUFFIX}/{m[2]}"
+            if (ROOT / alt).exists():
+                return alt
+            kept.add(m[0])
+            return m[0]
+        tpl = re.sub(r"assets/(lift|screens|ui)/([\w.-]+\.png)", local, tpl)
+        print(f"{T.LANG} app pictures; kept as they are: {', '.join(sorted(kept)) or 'none'}")
     (ROOT / "index.html").write_text(tpl)
     (ROOT / "tools" / f"events{T.SUFFIX}.json").write_text(json.dumps({"events": E, "words": W}, ensure_ascii=False, indent=1))
     print(f"index.html written: {duration}s (film {T.DURATION}s), {len(E)} events")
