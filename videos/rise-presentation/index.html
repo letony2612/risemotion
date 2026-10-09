@@ -89,9 +89,9 @@
       #logo9 { position: absolute; left: 0; top: 0; width: 768px; height: 400px; display: block; opacity: 0; }
       #slogan9 { position: absolute; left: 0; top: 990px; width: 1080px; text-align: center; font-weight: 800; font-size: 64px; letter-spacing: -0.02em; color: var(--ink); opacity: 0; }
       #slogan9 em { font-style: normal; color: #b45f06; }
-      #stores9 { position: absolute; left: 0; top: 1100px; width: 1080px; display: flex; justify-content: center; gap: 24px; }
-      .store { display: block; padding: 18px 40px 20px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 700; font-size: 40px; opacity: 0;
-        box-shadow: 0 14px 30px rgba(26, 23, 20, 0.25); }
+      #stores9 { position: absolute; left: 0; top: 1122px; width: 1080px; display: flex; justify-content: center; gap: 28px; }
+      /* the stores' own badges (French), shown as they are */
+      .store { display: block; width: 400px; height: 133px; opacity: 0; }
 
       /* ---------- captions: setup label + punch line ---------- */
       .beat { position: absolute; left: 0; top: 0; width: 1080px; height: 640px; }
@@ -149,8 +149,6 @@
       #root.apple .rg, #root.apple .conf, #root.apple .heart, #root.apple .mflame { display: none; }
       #root.apple #slogan9 { font-weight: 700; font-size: 70px; letter-spacing: -0.04em; color: #1d1d1f; }
       #root.apple #slogan9 em { color: #b64400; }
-      #root.apple .store { padding: 20px 42px 22px; border-radius: 22px; background: #1d1d1f; font-weight: 600; font-size: 38px; letter-spacing: -0.01em;
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18); }
     </style>
   </head>
   <body>
@@ -266,7 +264,10 @@
           <video id="splash9" class="clip" src="assets/brand/rise_splash_light.webm" muted playsinline data-start="36.644" data-duration="5.6" data-track-index="4"></video>
         </div>
         <div id="slogan9">Élève-toi. <em>Ensemble.</em></div>
-        <div id="stores9"><span id="st-app" class="store">App Store</span><span id="st-play" class="store">Google Play</span></div>
+        <div id="stores9">
+          <img id="st-app" class="store" src="assets/brand/badge_app_store_fr.png" alt="Télécharger dans l'App Store" />
+          <img id="st-play" class="store" src="assets/brand/badge_google_play_fr.png" alt="Disponible sur Google Play" />
+        </div>
       </div>
       <div id="confD" class="layer"><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span></div>
       <div id="flash" class="layer"></div>
