@@ -3,3 +3,4 @@ snapshots/
 .hyperframes/
 __pycache__/
 renders/
+.transcode-cache/

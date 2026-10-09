@@ -11,357 +11,111 @@
       @font-face { font-family: "Inter"; font-weight: 600; src: url("assets/fonts/inter-latin-600-normal.woff2") format("woff2"); }
       @font-face { font-family: "Inter"; font-weight: 700; src: url("assets/fonts/inter-latin-700-normal.woff2") format("woff2"); }
       @font-face { font-family: "Inter"; font-weight: 800; src: url("assets/fonts/inter-latin-800-normal.woff2") format("woff2"); }
-      @font-face { font-family: "Newsreader"; font-weight: 400; src: url("assets/fonts/newsreader-latin-400-normal.woff2") format("woff2"); }
-      @font-face { font-family: "Newsreader"; font-weight: 500; src: url("assets/fonts/newsreader-latin-500-normal.woff2") format("woff2"); }
-      @font-face { font-family: "Newsreader"; font-style: italic; font-weight: 400; src: url("assets/fonts/newsreader-latin-400-italic.woff2") format("woff2"); }
 
       :root {
-        --ink: #1a1714; --paper: #faf8f5; --snow: #fffafa; --amber: #f59e0b;
-        --amber-text: #d97706; --amber-deep: #b45309; --gold: #f5b000; --sky: #cfeaf6;
-        --shadow: 0 34px 70px rgba(26, 23, 20, 0.18), 0 10px 22px rgba(26, 23, 20, 0.08);
+        --ink: #1a1714; --paper: #faf8f5; --cream: #fff8ee; --amber: #f59e0b; --amber-hi: #ffb547;
+        --amber-lo: #ec8607; --edge: #c25e0c; --grey: #8c847c; --line: #ece6df;
       }
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--paper); }
-      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--paper); color: var(--ink); font-family: "Inter", sans-serif; }
-      #world, .layer, .scene { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
-      .scene { visibility: hidden; }
-      #s1 { visibility: visible; }
-      .abs { position: absolute; display: block; }
-      img.abs { display: block; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--cream); }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--cream); color: var(--ink); font-family: "Inter", sans-serif; }
+      .layer { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
 
-      /* ---------- background ---------- */
-      #bg { background: var(--paper); }
-      .blob { position: absolute; display: block; border-radius: 50%; }
-      #blobA { width: 1100px; height: 1100px; left: -420px; top: -360px; background: radial-gradient(closest-side, rgba(255, 214, 160, 0.42), rgba(255, 214, 160, 0)); }
-      #blobB { width: 1000px; height: 1000px; left: 520px; top: 1180px; background: radial-gradient(closest-side, rgba(207, 234, 246, 0.55), rgba(207, 234, 246, 0)); }
-      #sky { opacity: 0; background: linear-gradient(180deg, #b9e0f2 0%, var(--sky) 40%, #e9f6fb 100%); }
-      #clouds { position: absolute; display: block; left: -200px; top: 0; width: 1480px; height: 1920px;
-        background:
-          radial-gradient(410px 160px at 210px 270px, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0)),
-          radial-gradient(330px 135px at 1090px 575px, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0)),
-          radial-gradient(470px 180px at 350px 1360px, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0)),
-          radial-gradient(360px 150px at 1080px 1690px, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0)),
-          radial-gradient(300px 120px at 760px 980px, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0)); }
-      #sun { position: absolute; display: block; left: 40px; top: 1300px; width: 1000px; height: 1000px; border-radius: 50%; opacity: 0;
-        background: radial-gradient(closest-side, rgba(255, 214, 128, 0.95) 0%, rgba(253, 186, 72, 0.55) 38%, rgba(245, 158, 11, 0.16) 66%, rgba(245, 158, 11, 0) 100%); }
-      #warm { opacity: 0; background: linear-gradient(180deg, rgba(255, 244, 226, 0) 0%, rgba(255, 228, 186, 0.55) 70%, rgba(255, 210, 150, 0.7) 100%); }
-      #rays { position: absolute; display: block; left: -460px; top: 340px; width: 2000px; height: 2000px; opacity: 0;
-        background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 220, 160, 0.28) 0deg 6deg, rgba(255, 220, 160, 0) 6deg 18deg);
-        -webkit-mask-image: radial-gradient(closest-side, #000 20%, rgba(0, 0, 0, 0) 80%); mask-image: radial-gradient(closest-side, #000 20%, rgba(0, 0, 0, 0) 80%); }
+      /* ---------- background: warm light, out-of-focus lights drifting ---------- */
+      #bg { background: linear-gradient(180deg, #fffaf3 0%, #fff2e0 55%, #ffe7c9 100%); }
+      .bk { position: absolute; display: block; border-radius: 50%; }
 
-      /* ---------- shared pieces ---------- */
-      .title { position: absolute; left: 0; width: 1080px; display: flex; flex-direction: column; align-items: center; text-align: center; }
-      .ln { display: block; overflow: hidden; padding: 24px 24px 10px; margin-top: -24px; }
-      .ser { display: block; font-family: "Newsreader", serif; font-weight: 500; line-height: 1.0; letter-spacing: -0.02em; color: var(--ink); white-space: nowrap; }
-      .it { font-style: italic; font-weight: 400; color: #c06505; letter-spacing: -0.01em; }
-      .ch { display: inline-block; }
-      .card { position: absolute; display: block; border-radius: 30px; overflow: hidden; box-shadow: var(--shadow); background: var(--snow); }
-      .card > img { display: block; width: 100%; height: 100%; }
-      .eyebrow { display: block; font-weight: 700; font-size: 32px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--amber-deep); }
-      .ring { position: absolute; display: block; border-radius: 50%; border: 6px solid var(--amber); opacity: 0; }
-      .glow { position: absolute; display: block; border-radius: 50%; opacity: 0; background: radial-gradient(closest-side, rgba(245, 165, 36, 0.75), rgba(245, 158, 11, 0)); }
-      .phone { position: absolute; display: block; padding: 16px; border-radius: 82px; background: var(--ink);
-        box-shadow: 0 60px 110px rgba(26, 23, 20, 0.26), 0 14px 30px rgba(26, 23, 20, 0.12), inset 0 0 0 2px #3a332c; }
-      .screen { position: relative; overflow: hidden; border-radius: 66px; background: var(--paper); }
-      .scr { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-      .tapr { position: absolute; display: block; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; border: 6px solid var(--amber); opacity: 0; }
-      .tapd { position: absolute; display: block; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%; background: rgba(26, 23, 20, 0.22); opacity: 0; }
-      .mini-flame { position: absolute; display: block; width: 62px; height: 77px; margin: -38px 0 0 -31px; opacity: 0; filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.55)); }
+      /* ---------- 1-2. the week ---------- */
+      #week { position: absolute; left: 36px; top: 850px; width: 1008px; height: 210px; display: flex; gap: 12px; }
+      .day { position: relative; display: block; width: 134px; height: 210px; border-radius: 34px; background: #fff;
+        box-shadow: 0 20px 40px rgba(140, 90, 30, 0.13), 0 4px 10px rgba(140, 90, 30, 0.06); }
+      .day .hl { position: absolute; inset: -4px; border-radius: 36px; border: 5px solid var(--amber); opacity: 0;
+        box-shadow: 0 0 40px rgba(245, 158, 11, 0.45); }
+      .dl { position: absolute; left: 0; top: 28px; width: 134px; text-align: center; font-weight: 800; font-size: 48px; line-height: 1; color: var(--grey); }
+      .dc { position: absolute; left: 28px; top: 100px; width: 78px; height: 78px; border-radius: 50%; border: 5px solid var(--line); background: #faf7f3; }
+      .fill { position: absolute; left: -5px; top: -5px; width: 78px; height: 78px; border-radius: 50%;
+        background: linear-gradient(160deg, var(--amber-hi), var(--amber-lo)); box-shadow: 0 8px 18px rgba(236, 134, 7, 0.4); }
+      .ck { position: absolute; left: 14px; top: 16px; width: 40px; height: 36px; overflow: visible; }
+      .dfl { position: absolute; left: 44px; top: -60px; width: 46px; height: 57px; display: block; }
+      #splashw { position: absolute; left: 156px; top: 452px; width: 768px; height: 400px; }
+      #splash2 { position: absolute; left: 0; top: 0; width: 768px; height: 400px; display: block; }
+
+      /* ---------- the phone (a 3D object, held by the camera) ---------- */
+      #stage { perspective: 2600px; perspective-origin: 540px 1000px; }
+      #cam { transform-style: preserve-3d; transform-origin: 540px 1204px; }
+      #phone { position: absolute; left: 222px; top: 520px; width: 636px; height: 1369px; transform-style: preserve-3d; transform-origin: 318px 684px; }
+      #phone .frame { position: absolute; left: 0; top: 0; width: 636px; height: 1369px; border-radius: 92px; background: var(--ink);
+        box-shadow: 0 70px 120px rgba(90, 55, 20, 0.26), 0 18px 36px rgba(90, 55, 20, 0.14), inset 0 0 0 3px #3a332c; }
+      #phone .screen { position: absolute; left: 18px; top: 18px; width: 600px; height: 1333px; border-radius: 74px; overflow: hidden; background: var(--paper); }
+      .scr { position: absolute; left: 0; top: 0; width: 600px; height: 1333px; display: block; }
+      .lsh { position: absolute; display: block; border-radius: 30px; background: rgba(70, 40, 10, 0.3); opacity: 0; filter: blur(26px); }
+      .lift { position: absolute; display: block; transform-style: preserve-3d; opacity: 0; }
+      .lift .card { position: absolute; left: 0; top: 0; width: 100%; height: 100%; border-radius: 22px; overflow: hidden; background: var(--paper);
+        box-shadow: 0 2px 0 rgba(255, 255, 255, 0.9) inset, 0 0 0 2px rgba(255, 255, 255, 0.95); }
+      .lift .card img { display: block; width: 100%; height: 100%; }
+      .mark { position: absolute; display: block; border-radius: 6px; background: rgba(255, 186, 60, 0.55); mix-blend-mode: multiply; transform-origin: 0 50%; }
+      .heart { position: absolute; display: block; width: 34px; height: 34px; opacity: 0; }
+      .heart svg { display: block; width: 100%; height: 100%; }
+
+      /* ---------- confetti ---------- */
       .conf { position: absolute; display: block; width: 14px; height: 22px; border-radius: 3px; opacity: 0; }
-      .star { position: absolute; display: block; opacity: 0; }
-      .star svg { display: block; width: 100%; height: 100%; }
 
-      /* ---------- 1. hook ---------- */
-      #hk-words { top: 540px; }
-      #hk-dots { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
-      #hk1, #t3a { overflow: visible; }
-      #hk1 .ser, #hk2 .ser { font-size: 150px; }
-      #hk3 .ser { font-size: 168px; }
-      .hdot { position: absolute; display: block; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; opacity: 0; }
-      .logo { position: absolute; left: 200px; width: 680px; height: 234px; }
-      .logo .lp { position: absolute; left: 0; top: 0; width: 680px; height: 234px; display: block; }
-      #logo1 { top: 783px; }
-      #logo9 { top: 560px; }
-      .flamew { position: absolute; left: 418.1px; width: 74.5px; height: 92.2px; display: block; transform-origin: 50% 80%; }
-      #flame1 { top: 783px; }
-      #flame9 { top: 560px; }
-      .flamew img { display: block; width: 100%; height: 100%; }
-
-      /* ---------- 2. share ---------- */
-      #t2 { top: 150px; }
-      #t2a .ser { font-size: 190px; }
-      #t2b .ser { font-size: 132px; }
-      #phone2 { left: 230px; top: 640px; width: 620px; height: 1340px; }
-      #phone2 .screen { width: 588px; height: 1308px; }
-      #c2a { left: 30px; top: 700px; width: 700px; height: 281px; }
-      #c2b { left: 450px; top: 940px; width: 600px; height: 381px; }
-      #c2c { left: 66px; top: 1020px; width: 380px; height: 289px; border-radius: 26px; }
-      #c2c .flashw { position: absolute; inset: 0; background: #fff; opacity: 0; }
-      #pub { left: 382px; top: 560px; width: 315px; height: 140px; opacity: 0; }
-
-      /* ---------- 3. pray ---------- */
-      #t3 { top: 140px; }
-      #t3a .ser { font-size: 230px; }
-      #t3b .ser { font-size: 120px; }
-      #chips { position: absolute; left: 90px; top: 620px; width: 900px; display: flex; flex-wrap: wrap; justify-content: center; gap: 22px 18px; }
-      .chip3 { display: block; height: 76px; padding: 0 30px; line-height: 72px; border-radius: 18px; border: 2px solid #e5e0d9; background: var(--snow);
-        font-weight: 600; font-size: 36px; color: var(--ink); white-space: nowrap; box-shadow: 0 10px 24px rgba(26, 23, 20, 0.07); opacity: 0; }
-      #chipSel { position: absolute; display: block; border-radius: 18px; border: 3px solid var(--ink); opacity: 0; }
-      #confier { left: 130px; top: 860px; width: 820px; height: 119px; opacity: 0; }
-      #card3 { left: 120px; top: 600px; width: 840px; height: 503px; }
-      #count3 { position: absolute; left: 462px; top: 408px; width: 256px; height: 52px; background: var(--snow);
-        font-weight: 500; font-size: 28px; line-height: 52px; color: var(--ink); white-space: nowrap; }
-      #u3a { left: 210px; top: 1062px; width: 720px; height: 120px; }
-      #u3b { left: 150px; top: 1196px; width: 720px; height: 132px; }
-
-      /* ---------- 4. answered ---------- */
-      #t4 { top: 196px; }
-      #t4a .ser { font-size: 200px; }
-      #t4b .ser { font-size: 150px; }
-      #card4 { left: 120px; top: 650px; width: 840px; height: 564px; }
-      #badgePatch { position: absolute; left: 609px; top: 61px; width: 134px; height: 54px; background: #f0fdf4; }
-      #badge4 { left: 729.4px; top: 711.8px; width: 131.8px; height: 51.1px; opacity: 0; }
-      #shine4 { position: absolute; top: -10%; left: 0; width: 40%; height: 120%; opacity: 0;
-        background: linear-gradient(100deg, rgba(255, 220, 140, 0) 0%, rgba(255, 214, 120, 0.7) 50%, rgba(255, 220, 140, 0) 100%); }
-      #notif4 { left: 90px; top: 34px; width: 900px; height: 150px; border-radius: 34px; }
-      #m4a { left: 14px; top: 600px; width: 640px; height: 97px; border-radius: 24px; }
-      #m4b { left: 416px; top: 1160px; width: 640px; height: 95px; border-radius: 24px; }
-      #m4c { left: 30px; top: 1262px; width: 640px; height: 95px; border-radius: 24px; }
-
-      /* ---------- 5. groups ---------- */
-      #t5 { top: 140px; }
-      #t5a .ser { font-size: 200px; }
-      #t5b .ser { font-size: 140px; }
-      #rows5 { position: absolute; left: 100px; top: 600px; width: 880px; height: 740px; }
-      .row5 { position: absolute; left: 0; width: 880px; height: 135px; border-radius: 28px; overflow: hidden; background: var(--paper);
-        box-shadow: 0 18px 40px rgba(26, 23, 20, 0.12), 0 4px 10px rgba(26, 23, 20, 0.06); opacity: 0; }
-      .row5 img { display: block; width: 100%; height: 100%; }
-      .hl5 { position: absolute; left: 0; width: 880px; height: 135px; border-radius: 28px; border: 5px solid var(--amber); opacity: 0; }
-
-      /* ---------- 6. verse ---------- */
-      #ey7 { top: 190px; }
-      #t7 { top: 240px; }
-      #t7a .ser { font-size: 130px; }
-      #t7b .ser { font-size: 150px; }
-      #verse { position: absolute; left: 90px; top: 660px; width: 900px; padding: 58px 62px 54px; border-radius: 44px; background: var(--ink);
-        box-shadow: 0 50px 100px rgba(26, 23, 20, 0.3); overflow: hidden; }
-      #verseText { font-family: "Newsreader", serif; font-weight: 400; font-size: 52px; line-height: 1.32; color: var(--snow); }
-      .vw { display: inline-block; opacity: 0; }
-      #verseRef { margin-top: 30px; font-weight: 700; font-size: 34px; color: #f5a524; opacity: 0; }
-      #verseShine { position: absolute; top: 0; left: 0; width: 45%; height: 100%;
-        background: linear-gradient(100deg, rgba(255, 210, 140, 0) 0%, rgba(255, 210, 140, 0.25) 50%, rgba(255, 210, 140, 0) 100%); opacity: 0; }
-
-      /* ---------- 7. quiz ---------- */
-      #t8 { top: 160px; }
-      #t8a .ser { font-size: 140px; }
-      #t8b .ser { font-size: 140px; }
-      #count8 { position: absolute; left: 0; top: 560px; width: 1080px; text-align: center; font-weight: 800; font-size: 320px; line-height: 1; letter-spacing: -0.04em;
-        color: var(--ink); font-variant-numeric: tabular-nums; }
-      #count8l { position: absolute; left: 0; top: 900px; width: 1080px; text-align: center; font-weight: 700; font-size: 72px; color: var(--ink); }
-      #panel8 { position: absolute; left: 90px; top: 500px; width: 900px; height: 820px; border-radius: 48px; background: var(--paper); box-shadow: var(--shadow); opacity: 0; }
-      #q8 { left: 40px; top: 36px; width: 820px; height: 201px; }
-      .ans { position: absolute; left: 40px; width: 820px; height: 123px; border-radius: 26px; overflow: hidden; }
-      .ans img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
-      #exact8 { left: 90px; top: 935px; width: 900px; height: 385px; border-radius: 44px 44px 48px 48px; opacity: 0; }
-      #sans8 { position: absolute; left: 0; top: 400px; width: 1080px; text-align: center; font-weight: 800; font-size: 96px; letter-spacing: -0.02em; color: var(--ink); opacity: 0; }
-
-      /* ---------- 8. end ---------- */
-      #t9 { top: 880px; }
-      #t9a .ser, #t9b .ser { font-size: 150px; }
-      #rule9 { position: absolute; left: 470px; top: 1236px; width: 140px; height: 6px; border-radius: 3px; background: var(--amber); }
-      #stores9 { position: absolute; left: 0; top: 1268px; width: 1080px; text-align: center; font-weight: 600; font-size: 46px; color: rgba(26, 23, 20, 0.78); opacity: 0; }
-      .mini { position: absolute; display: block; width: 300px; height: 648px; padding: 9px; border-radius: 42px; background: var(--ink); box-shadow: 0 30px 60px rgba(26, 23, 20, 0.22); }
-      .mini .screen { width: 282px; height: 630px; border-radius: 34px; }
-      #mini1 { left: 110px; top: 1430px; }
-      #mini2 { left: 670px; top: 1430px; }
-
-      /* ---------- overlays & captions ---------- */
-      #flash { background: #fff; opacity: 0; }
-      .cap { position: absolute; left: 0; top: 1372px; width: 1080px; height: 110px; display: flex; justify-content: center; align-items: center; }
-      .pill { display: flex; flex-wrap: nowrap; gap: 0 13px; padding: 18px 34px; border-radius: 40px; white-space: nowrap;
-        background: rgba(255, 250, 250, 0.94); border: 1.5px solid rgba(255, 255, 255, 0.98);
-        box-shadow: 0 18px 44px rgba(26, 23, 20, 0.16), inset 0 1px 0 rgba(255, 255, 255, 1);
-        font-weight: 700; font-size: 48px; line-height: 1.15; color: var(--ink); }
-      .cw { display: inline-block; opacity: 0; }
-      .cw.k { color: var(--amber-text); }
+      /* ---------- captions: setup label + punch line ---------- */
+      .beat { position: absolute; left: 0; top: 0; width: 1080px; height: 640px; }
+      .row { position: absolute; left: 0; width: 1080px; display: flex; justify-content: center; }
+      .row.s { top: 196px; }
+      .row.p { top: 292px; }
+      .setup { display: block; padding: 14px 30px 16px; border-radius: 22px; background: #fff; white-space: nowrap;
+        font-weight: 700; font-size: 46px; line-height: 1.15; color: var(--ink); letter-spacing: -0.01em;
+        box-shadow: 0 12px 30px rgba(120, 70, 20, 0.14), 0 2px 6px rgba(120, 70, 20, 0.08); }
+      .setup b { font-weight: 800; }
+      .punch { display: block; max-width: 980px; padding: 16px 34px 20px; border-radius: 28px; text-align: center;
+        background: linear-gradient(180deg, #db7a07 0%, #d27105 100%);
+        font-weight: 800; font-size: 92px; line-height: 1.02; letter-spacing: -0.015em; text-transform: uppercase; color: #fff;
+        text-shadow: 0 4px 0 rgba(140, 62, 0, 0.35);
+        box-shadow: 0 10px 0 #a24f03, 0 26px 46px rgba(162, 79, 3, 0.3); }
     </style>
   </head>
   <body>
     <div id="root" data-composition-id="main" data-start="0" data-duration="@@DURATION@@" data-width="1080" data-height="1920">
       <svg width="0" height="0" style="position: absolute" aria-hidden="true">
-        <filter id="mbA" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur id="mbAb" stdDeviation="0 0" /></filter>
-        <filter id="mbB" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur id="mbBb" stdDeviation="0 0" /></filter>
-        <filter id="mbC" x="-30%" y="-20%" width="160%" height="140%"><feGaussianBlur id="mbCb" stdDeviation="0 0" /></filter>
-        <symbol id="starShape" viewBox="0 0 24 24"><path fill="#F5B000" d="M12 1.8l3.1 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.6l-6.4 3.6 1.5-7.1L1.7 9.2l7.2-.8z" /></symbol>
+        <symbol id="heartShape" viewBox="0 0 24 24"><path fill="#E5484D" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.2 4.3 2.4.7-1.2 2.1-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" /></symbol>
       </svg>
 
-      <div id="world">
-        <div id="bg" class="layer"></div>
-        <span id="blobA" class="blob"></span><span id="blobB" class="blob"></span>
-        <div id="sky" class="layer"><span id="clouds"></span></div>
-        <div id="warm" class="layer"></div>
-        <span id="rays"></span>
-        <span id="sun"></span>
+      <div id="bg" class="layer"></div>
+      <div id="bokeh" class="layer">@@BOKEH@@</div>
 
-        <!-- ===================== 1. HOOK ===================== -->
-        <div id="s1" class="scene">
-          <span id="hk-glow" class="glow" style="left: 340px; top: 229px; width: 400px; height: 400px"></span>
-          <div id="hk-words" class="title">
-            <span id="hk1" class="ln"><span class="ser">La foi,</span></span>
-            <span id="hk2" class="ln"><span class="ser">ça se vit</span></span>
-            <span id="hk3" class="ln"><span class="ser it">@@ENSEMBLE_LETTERS@@</span></span>
-          </div>
-          <div id="hk-dots">@@HOOK_DOTS@@</div>
-          <span id="ring1" class="ring" style="left: 405px; top: 779px; width: 100px; height: 100px"></span>
-          <span id="glow1" class="glow" style="left: 255px; top: 629px; width: 400px; height: 400px"></span>
-          <div id="logo1" class="logo">
-            <img class="lp" id="l1R" src="assets/ui/logo_R.png" alt="" />
-            <img class="lp" id="l1I" src="assets/ui/logo_i.png" alt="" />
-            <img class="lp" id="l1S" src="assets/ui/logo_S.png" alt="" />
-            <img class="lp" id="l1E" src="assets/ui/logo_E.png" alt="" />
-          </div>
-          <div id="flame1" class="flamew"><img src="assets/ui/flame.png" alt="" /></div>
-        </div>
+      <!-- ===================== 1-2. THE WEEK, THEN RISE ===================== -->
+      <div id="weekw" class="layer">
+        <div id="week">@@WEEK@@</div>
+      </div>
+      <div id="splashw">
+        <video id="splash2" class="clip" src="assets/brand/rise_splash_light.webm" muted playsinline data-start="@@SPLASH2_START@@" data-duration="@@SPLASH2_DUR@@" data-track-index="3"></video>
+      </div>
 
-        <!-- ===================== 2. SHARE ===================== -->
-        <div id="s2" class="scene">
-          <div id="t2" class="title">
-            <span id="t2a" class="ln"><span class="ser">@@PARTAGE_LETTERS@@</span></span>
-            <span id="t2b" class="ln" style="margin-left: 260px"><span class="ser it">ta foi.</span></span>
-          </div>
-          <div id="phone2" class="phone">
+      <!-- ===================== THE PHONE ===================== -->
+      <div id="stage" class="layer">
+        <div id="cam" class="layer">
+          <div id="phone">
+            <span class="frame"></span>
             <div class="screen">
-              <video id="v-fil" class="clip scr" src="assets/clips/01_fil.mp4" muted playsinline data-start="@@FIL_START@@" data-duration="@@FIL_DUR@@" data-media-start="4.95" data-track-index="2"></video>
-              <img id="i-publier" class="clip scr" src="assets/img/04_publier.png" alt="" data-start="@@PUB_START@@" data-duration="@@PUB_DUR@@" data-track-index="2" />
+              <img id="sc-feed" class="scr" src="assets/screens/02_accueil.png" alt="" />
+              <span id="sh-sarah" class="lsh" style="@@SPOS:post_sarah@@"></span>
+            </div>
+            <!-- 3. share: Sarah's testimony lifts out -->
+            <div id="lf-sarah" class="lift" style="@@POS:post_sarah@@">
+              <div class="card"><img src="assets/lift/post_sarah.png" alt="" /></div>
+              <span id="mk-sarah" class="mark" style="left: 236px; top: 80px; width: 182px; height: 29px"></span>
+              <div id="hearts">@@HEARTS@@</div>
             </div>
           </div>
-          <div id="c2a" class="card"><img src="assets/ui/post_temoignage.png" alt="" /></div>
-          <div id="c2b" class="card"><img src="assets/ui/post_verset.png" alt="" /></div>
-          <div id="c2c" class="card"><img src="assets/ui/photo_louange.png" alt="" /><span class="flashw"></span></div>
-          <img id="pub" class="abs" src="assets/ui/btn_publier.png" alt="" />
-          <span id="tap2r" class="tapr" style="left: 540px; top: 630px"></span>
-          <span id="tap2d" class="tapd" style="left: 540px; top: 630px"></span>
-        </div>
-
-        <!-- ===================== 3. PRAY ===================== -->
-        <div id="s3" class="scene">
-          <div id="t3" class="title">
-            <span id="t3a" class="ln"><span class="ser">Prie.</span></span>
-            <span id="t3b" class="ln"><span class="ser it">Sois porté.</span></span>
-          </div>
-          <div id="chips">
-            <span class="chip3" id="ch1">Ma famille</span><span class="chip3" id="ch2">Ma santé</span><span class="chip3" id="ch3">Mon travail</span>
-            <span class="chip3" id="ch4">Mes études</span><span class="chip3" id="ch5">Ma foi</span><span class="chip3" id="ch6">Un proche</span>
-          </div>
-          <img id="confier" class="abs" src="assets/ui/btn_confier.png" alt="" />
-          <span id="tap3ar" class="tapr" style="left: 540px; top: 920px"></span>
-          <div id="card3" class="card"><img src="assets/ui/prayer_maman.png" alt="" /><div id="count3">3 personnes prient</div></div>
-          <span id="tap3br" class="tapr" style="left: 236px; top: 1034px"></span>
-          <span id="tap3bd" class="tapd" style="left: 236px; top: 1034px"></span>
-          <div id="flames3">@@PRAY_FLAMES@@</div>
-          <div id="u3a" class="card"><img src="assets/ui/upd_sarah.png" alt="" /></div>
-          <div id="u3b" class="card"><img src="assets/ui/upd_esther.png" alt="" /></div>
-        </div>
-
-        <!-- ===================== 4. ANSWERED ===================== -->
-        <div id="s4" class="scene">
-          <div id="t4" class="title">
-            <span id="t4a" class="ln"><span class="ser">Dieu</span></span>
-            <span id="t4b" class="ln"><span class="ser it">répond.</span></span>
-          </div>
-          <div id="card4" class="card"><img src="assets/ui/card_exaucee.png" alt="" /><span id="badgePatch"></span><span id="shine4"></span></div>
-          <img id="badge4" class="abs" src="assets/ui/badge_exaucee.png" alt="" />
-          <span id="ring4" class="ring" style="left: 745px; top: 687px; width: 100px; height: 100px; border-color: #f5b000"></span>
-          <div id="conf4">@@CONFETTI@@</div>
-          <div id="m4a" class="card"><img src="assets/ui/com_david.png" alt="" /></div>
-          <div id="m4b" class="card"><img src="assets/ui/com_esther.png" alt="" /></div>
-          <div id="m4c" class="card"><img src="assets/ui/com_rebecca.png" alt="" /></div>
-          <div id="notif4" class="card"><img src="assets/ui/notif_exaucee.png" alt="" /></div>
-        </div>
-
-        <!-- ===================== 5. GROUPS ===================== -->
-        <div id="s5" class="scene">
-          <div id="t5" class="title">
-            <span id="t5a" class="ln"><span class="ser">Grandis</span></span>
-            <span id="t5b" class="ln"><span class="ser it">en groupe.</span></span>
-          </div>
-          <div id="rows5">
-            <div class="row5" id="r1" style="top: 0px"><img src="assets/ui/group_1.png" alt="" /></div>
-            <div class="row5" id="r2" style="top: 150px"><img src="assets/ui/group_2.png" alt="" /></div>
-            <div class="row5" id="r3" style="top: 300px"><img src="assets/ui/group_3.png" alt="" /></div>
-            <div class="row5" id="r4" style="top: 450px"><img src="assets/ui/group_4.png" alt="" /></div>
-            <div class="row5" id="r5" style="top: 600px"><img src="assets/ui/group_5.png" alt="" /></div>
-            <span class="hl5" id="h1" style="top: 0px"></span>
-            <span class="hl5" id="h2" style="top: 150px"></span>
-            <span class="hl5" id="h4" style="top: 450px"></span>
-          </div>
-        </div>
-
-        <!-- ===================== 6. VERSE ===================== -->
-        <div id="s7" class="scene">
-          <div id="ey7" class="title"><span class="eyebrow">Verset du jour</span></div>
-          <div id="t7" class="title">
-            <span id="t7a" class="ln"><span class="ser it">Chaque matin,</span></span>
-            <span id="t7b" class="ln"><span class="ser">une Parole.</span></span>
-          </div>
-          <div id="verse">
-            <div id="verseText">@@VERSE_WORDS@@</div>
-            <div id="verseRef">Jérémie 17:8 — LSG</div>
-            <span id="verseShine"></span>
-          </div>
-        </div>
-
-        <!-- ===================== 7. QUIZ ===================== -->
-        <div id="s8" class="scene">
-          <div id="t8" class="title">
-            <span id="t8a" class="ln"><span class="ser">Un an dans</span></span>
-            <span id="t8b" class="ln"><span class="ser it">la Bible.</span></span>
-          </div>
-          <div id="count8">0</div>
-          <div id="count8l">niveaux</div>
-          <div id="panel8">
-            <img id="q8" class="abs" src="assets/ui/quiz_question.png" alt="" />
-            <div class="ans" id="a1" style="top: 262px"><img src="assets/ui/answer_1.png" alt="" /><img id="a1s" src="assets/ui/answer_1_sel.png" alt="" style="opacity: 0" /><img id="a1k" src="assets/ui/answer_1_ok.png" alt="" style="opacity: 0" /></div>
-            <div class="ans" id="a2" style="top: 399px"><img src="assets/ui/answer_2.png" alt="" /></div>
-            <div class="ans" id="a3" style="top: 536px"><img src="assets/ui/answer_3.png" alt="" /></div>
-            <div class="ans" id="a4" style="top: 673px"><img src="assets/ui/answer_4.png" alt="" /></div>
-          </div>
-          <span id="tap8r" class="tapr" style="left: 540px; top: 823px"></span>
-          <span id="tap8d" class="tapd" style="left: 540px; top: 823px"></span>
-          <div id="exact8" class="card"><img src="assets/ui/quiz_exact.png" alt="" /></div>
-          <span id="st1" class="star" style="left: 290px; top: 230px; width: 130px; height: 130px"><svg><use href="#starShape" /></svg></span>
-          <span id="st2" class="star" style="left: 450px; top: 196px; width: 180px; height: 180px"><svg><use href="#starShape" /></svg></span>
-          <span id="st3" class="star" style="left: 660px; top: 230px; width: 130px; height: 130px"><svg><use href="#starShape" /></svg></span>
-          <div id="conf8">@@CONFETTI8@@</div>
-          <div id="sans8">Sans faute !</div>
-        </div>
-
-        <!-- ===================== 8. END ===================== -->
-        <div id="s9" class="scene">
-          <span id="glow9" class="glow" style="left: 205px; top: 356px; width: 500px; height: 500px"></span>
-          <span id="ring9" class="ring" style="left: 405px; top: 556px; width: 100px; height: 100px"></span>
-          <div id="logo9" class="logo">
-            <img class="lp" id="l9R" src="assets/ui/logo_R.png" alt="" />
-            <img class="lp" id="l9I" src="assets/ui/logo_i.png" alt="" />
-            <img class="lp" id="l9S" src="assets/ui/logo_S.png" alt="" />
-            <img class="lp" id="l9E" src="assets/ui/logo_E.png" alt="" />
-          </div>
-          <div id="flame9" class="flamew"><img src="assets/ui/flame.png" alt="" /></div>
-          <div id="t9" class="title">
-            <span id="t9a" class="ln"><span class="ser">Élève-toi.</span></span>
-            <span id="t9b" class="ln"><span class="ser it">Ensemble.</span></span>
-          </div>
-          <span id="rule9"></span>
-          <div id="stores9">Disponible sur iPhone et Android</div>
-          <div id="mini1" class="mini"><div class="screen"><img class="scr" src="assets/img/06_priere.png" alt="" /></div></div>
-          <div id="mini2" class="mini"><div class="screen"><img class="scr" src="assets/img/15_quiz_parcours.png" alt="" /></div></div>
         </div>
       </div>
 
-      <div id="flash" class="layer"></div>
+      <div id="confA" class="layer">@@CONFETTI@@</div>
 
-      <!-- captions (burned-in subtitles, word by word) -->
-@@CAPTIONS@@
+      <!-- captions: a setup label, then the punch line on its first word -->
+@@BEATS@@
 
       <!-- audio: voice-over lines, music bed, sound design -->
 @@AUDIO@@
@@ -370,303 +124,114 @@
     <script>
       /*@@DATA@@*/
       const tl = gsap.timeline({ paused: true });
-      const P = 1600; // perspective for 3D moves
-
-      // ---------------------------------------------------------------- helpers
-      const show = (sel, t0, t1) => {
-        tl.fromTo(sel, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, t0);
-        if (t1 !== undefined) tl.to(sel, { autoAlpha: 0, duration: 0.01 }, t1);
-      };
-      const blur = (node, axis, t, peak, up, down) => {
-        const el = document.getElementById(node);
-        const a = { v: 0 }, b = { v: peak };
-        const w = (p) => () => el.setAttribute("stdDeviation", axis === "y" ? `0 ${p.v}` : `${p.v} 0`);
-        tl.fromTo(a, { v: 0 }, { v: peak, duration: up, ease: "power2.in", onUpdate: w(a), immediateRender: false }, t);
-        tl.fromTo(b, { v: peak }, { v: 0, duration: down, ease: "power3.out", onUpdate: w(b), immediateRender: false }, t + up);
-      };
-      const filterOn = (sel, id, t0, t1) => {
-        tl.set(sel, { filter: `url(#${id})` }, t0);
-        tl.set(sel, { filter: "none" }, t1);
-      };
-      const shake = (t, amp = 10) => {
-        const k = [[1, -0.7], [-0.8, 0.6], [0.6, -0.4], [-0.35, 0.25], [0, 0]];
-        k.forEach(([x, y], i) => tl.to("#world", { x: x * amp, y: y * amp, duration: 0.045, ease: "none" }, t + i * 0.045));
-      };
-      const slam = (sel, t, from = 1.7) =>
-        tl.fromTo(sel, { scale: from, opacity: 0, filter: "blur(16px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power4.out" }, t);
-      const riseIn = (sel, t, stagger = 0.035) =>
-        tl.fromTo(sel, { yPercent: 140, rotation: 2 }, { yPercent: 0, rotation: 0, duration: 0.7, ease: "expo.out", stagger }, t);
-      const snapIn = (sel, t, dx = 260) =>
-        tl.fromTo(sel, { x: dx, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, t);
-      const popIn = (sel, t, from = 0.5, ease = "back.out(2)") =>
-        tl.fromTo(sel, { scale: from, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease }, t);
-      const tap = (r, d, t) => {
-        if (d) tl.fromTo(d, { scale: 0.4, opacity: 0.9 }, { scale: 1.2, opacity: 0, duration: 0.45, ease: "power2.out", immediateRender: false }, t);
-        tl.fromTo(r, { scale: 0.3, opacity: 1 }, { scale: 1.9, opacity: 0, duration: 0.6, ease: "power2.out", immediateRender: false }, t);
-      };
-      const press = (sel, t) => {
-        tl.to(sel, { scale: 0.92, duration: 0.08, ease: "power2.in" }, t);
-        tl.to(sel, { scale: 1, duration: 0.35, ease: "back.out(3)" }, t + 0.08);
-      };
-      const shock = (ring, glow, t, size = 9) => {
-        tl.fromTo(ring, { scale: 0.2, opacity: 1 }, { scale: size, opacity: 0, duration: 0.75, ease: "power2.out", immediateRender: false }, t);
-        if (glow) {
-          tl.fromTo(glow, { scale: 0.4, opacity: 0 }, { scale: 1.35, opacity: 1, duration: 0.25, ease: "power2.out", immediateRender: false }, t);
-          tl.to(glow, { scale: 1, opacity: 0.55, duration: 0.8, ease: "power2.out" }, t + 0.25);
-        }
-      };
       // index-seeded pseudo-random (deterministic)
       const rnd = (i, s = 1) => { const x = Math.sin(i * 127.1 + s * 311.7) * 43758.5453; return x - Math.floor(x); };
+      // a sine sway on one property, a pure function of time: nothing ever stands still
+      const sway = (sel, prop, amp, period, t0, t1, phase = 0) => {
+        const o = { p: 0 };
+        const set = () => gsap.set(sel, { [prop]: amp * Math.sin((o.p / period) * Math.PI * 2 + phase) });
+        tl.fromTo(o, { p: 0 }, { p: t1 - t0, duration: t1 - t0, ease: "none", onUpdate: set, immediateRender: false }, t0);
+      };
+      const pop = (sel, t, from = 0.4, ease = "back.out(2.2)", dur = 0.42) =>
+        tl.fromTo(sel, { scale: from, opacity: 0 }, { scale: 1, opacity: 1, duration: dur, ease }, t);
+      const press = (sel, t, to = 0.92) => {
+        tl.to(sel, { scale: to, duration: 0.08, ease: "power2.in" }, t);
+        tl.to(sel, { scale: 1, duration: 0.35, ease: "back.out(3)" }, t + 0.08);
+      };
       const burst = (sel, t, cx, cy, spread = 520, up = 620) => {
         document.querySelectorAll(sel).forEach((el, i) => {
           const a = rnd(i, 3) * Math.PI * 2, v = 0.45 + rnd(i, 5) * 0.55;
           const dx = Math.cos(a) * spread * v, dy = -Math.abs(Math.sin(a)) * up * v - 120;
-          tl.set(el, { left: cx, top: cy, backgroundColor: ["#F59E0B", "#F5B000", "#FFD27A", "#1A1714", "#CFEAF6"][i % 5] }, 0);
+          tl.set(el, { left: cx, top: cy, backgroundColor: ["#F59E0B", "#FFB547", "#FFD27A", "#1A1714", "#E5484D"][i % 5] }, 0);
           tl.fromTo(el, { x: 0, y: 0, rotation: 0, opacity: 1 }, { x: dx * 0.6, y: dy, rotation: rnd(i, 7) * 360, opacity: 1, duration: 0.45, ease: "power2.out", immediateRender: false }, t);
           tl.to(el, { x: dx, y: dy + 420, rotation: rnd(i, 9) * 720, opacity: 0, duration: 0.9, ease: "power1.in" }, t + 0.45);
         });
       };
-
-      // ---------------------------------------------------------------- background drift (whole film)
-      tl.fromTo("#blobA", { x: 0, y: 0 }, { x: 220, y: 160, duration: D, ease: "none" }, 0);
-      tl.fromTo("#blobB", { x: 0, y: 0 }, { x: -260, y: -220, duration: D, ease: "none" }, 0);
-
-      // ================================================================ 1. HOOK
-      // the flame: base position is its seat on the logo; offsets carry it around
-      const FX = 540 - 455.35;
-      tl.set("#flame1", { x: FX, y: 170 }, 0);
-      tl.set("#hk-glow", { x: 0, y: 570 }, 0);
-      tl.fromTo("#flame1", { scale: 0 }, { scale: 1.7, duration: 0.45, ease: "back.out(2.4)" }, E.spark);
-      tl.fromTo("#hk-glow", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "power2.out" }, E.spark);
-      tl.to("#flame1", { y: -400, duration: 0.55, ease: "power3.out" }, E.w_foi - 0.12);
-      tl.to("#hk-glow", { y: 0, duration: 0.55, ease: "power3.out" }, E.w_foi - 0.12);
-      tl.to("#flame1", { scaleY: 1.86, scaleX: 1.6, duration: 0.18, ease: "sine.inOut", yoyo: true, repeat: 5 }, E.w_foi + 0.45);
-      slam("#hk1 .ser", E.w_foi, 1.8);
-      tl.fromTo("#hk2 .ser", { yPercent: 110, rotationX: -80, transformPerspective: P, opacity: 0 }, { yPercent: 0, rotationX: 0, transformPerspective: P, opacity: 1, duration: 0.6, ease: "expo.out" }, E.w_vit - 0.05);
-      // "ensemble." letters gather from the centre
-      document.querySelectorAll("#hk3 .ch").forEach((c, i, all) => {
-        const mid = (all.length - 1) / 2, d = i - mid;
-        tl.fromTo(c, { x: -d * 46, y: 40, opacity: 0, scale: 0.6 }, { x: 0, y: 0, opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.8)" }, E.w_ensemble + Math.abs(d) * 0.03);
-      });
-      // people (dots) converge around "ensemble"
-      document.querySelectorAll(".hdot").forEach((d, i, all) => {
-        const a = (i / all.length) * Math.PI * 2;
-        tl.fromTo(d, { x: Math.cos(a) * 820, y: Math.sin(a) * 1100, opacity: 0, scale: 1.6 },
-          { x: Math.cos(a) * 430, y: Math.sin(a) * 190, opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" }, E.w_ensemble - 0.12 + (i % 4) * 0.03);
-      });
-      // everything is drawn into the flame
-      tl.to("#hk-words", { scale: 0.06, opacity: 0, filter: "blur(10px)", duration: 0.38, ease: "power3.in", transformOrigin: "540px -111px" }, E.collapse);
-      tl.to("#hk-dots", { scale: 0.06, opacity: 0, duration: 0.38, ease: "power3.in", transformOrigin: "540px 429px" }, E.collapse);
-      tl.to("#flame1", { scale: 2.3, duration: 0.3, ease: "power2.in" }, E.collapse);
-      tl.to("#hk-glow", { scale: 1.6, opacity: 1, duration: 0.3, ease: "power2.in" }, E.collapse);
-      // the logo rises letter by letter, the flame lands on the i
-      ["#l1R", "#l1I", "#l1S", "#l1E"].forEach((id, i) => {
-        const ox = [14.9, 37.4, 58.1, 87.6][i];
-        tl.fromTo(id, { y: 300, rotationX: -85, transformPerspective: 900, transformOrigin: `${ox}% 100%`, opacity: 0 },
-          { y: 0, rotationX: 0, transformPerspective: 900, transformOrigin: `${ox}% 100%`, opacity: 1, duration: 0.62, ease: "back.out(1.5)" }, E.letters + i * 0.07);
-      });
-      tl.to("#hk-glow", { opacity: 0, duration: 0.3 }, E.letters);
-      tl.to("#flame1", { keyframes: [{ x: FX * 0.4, y: -520, scale: 1.4, duration: 0.3, ease: "power2.out" },
-                                     { x: 0, y: 0, scale: 1, duration: 0.25, ease: "power3.in" }] }, E.logo_land - 0.55);
-      tl.to("#flame1", { keyframes: [{ scaleY: 0.72, scaleX: 1.2, duration: 0.07 }, { scaleY: 1.08, scaleX: 0.95, duration: 0.14 }, { scaleY: 1, scaleX: 1, duration: 0.2 }] }, E.logo_land);
-      shock("#ring1", "#glow1", E.logo_land, 10);
-      shake(E.logo_land, 12);
-      tl.to("#logo1", { keyframes: [{ scale: 1.07, duration: 0.08 }, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.5)" }] }, E.logo_land);
-      tl.to(["#logo1", "#flame1"], { scale: 1.035, duration: 0.6, ease: "sine.inOut" }, E.logo_land + 0.6);
-      // out: everything rises (the brand motion) with a vertical smear
-      filterOn("#s1", "mbA", E.hook_out - 0.01, E.share + 0.4);
-      blur("mbAb", "y", E.hook_out, 26, 0.22, 0.15);
-      tl.to(["#logo1", "#flame1", "#glow1"], { y: -1300, duration: 0.42, ease: "power3.in" }, E.hook_out);
-      show("#s1", 0, E.share + 0.42);
-
-      // ================================================================ 2. SHARE
-      show("#s2", E.hook_out, E.share_out + 0.5);
-      tl.fromTo("#phone2", { y: 1500, rotationY: -26, rotationX: 22, transformPerspective: 1800, scale: 0.9 },
-        { y: 0, rotationY: -16, rotationX: 7, transformPerspective: 1800, scale: 1, duration: 0.85, ease: "expo.out" }, E.hook_out + 0.05);
-      filterOn("#phone2", "mbB", E.hook_out, E.share + 0.6);
-      blur("mbBb", "y", E.hook_out + 0.05, 24, 0.12, 0.45);
-      tl.to("#phone2", { rotationY: -6, rotationX: 3, duration: Math.max(0.5, E.share_out - E.share - 0.65), ease: "sine.inOut" }, E.share + 0.6);
-      tl.to("#phone2", { y: -26, duration: 1.3, ease: "sine.inOut", yoyo: true, repeat: 1 }, E.share + 0.8);
-      riseIn("#t2a .ch", E.share + 0.05, 0.035);
-      snapIn("#t2b .ser", E.share + 0.45, 280);
-      // three kinds of posts fly out of the phone, on the words
-      const fly = (sel, t, cx, cy, rot, ry) => {
-        tl.fromTo(sel, { x: cx, y: cy, scale: 0.25, rotationX: 45, rotationY: 0, rotation: 0, transformPerspective: P, opacity: 0 },
-          { x: 0, y: 0, scale: 1, rotationX: 0, rotationY: ry, rotation: rot, transformPerspective: P, opacity: 1, duration: 0.65, ease: "back.out(1.35)" }, t);
-        tl.to(sel, { y: -16, duration: Math.max(0.3, E.share_out - t - 0.7), ease: "sine.inOut" }, t + 0.7);
+      // a piece of the screen lifts toward the camera; its shadow stays on the glass
+      const lift = (card, shadow, t, z = 170, s = 1.06, rx = -5) => {
+        tl.set(card, { opacity: 1 }, t);
+        tl.fromTo(card, { z: 0, scale: 1, rotationX: 0 }, { z, scale: s, rotationX: rx, duration: 0.6, ease: "back.out(1.7)" }, t);
+        tl.fromTo(shadow, { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1.04, duration: 0.6, ease: "power2.out" }, t);
       };
-      fly("#c2a", E.card_tem - 0.08, 160, 420, -4, 12);
-      fly("#c2b", E.card_ver - 0.08, -210, 180, 3, -12);
-      fly("#c2c", E.card_pho - 0.08, 284, 85, -6, 8);
-      tl.to("#c2c .flashw", { keyframes: [{ opacity: 0.9, duration: 0.05 }, { opacity: 0, duration: 0.35 }] }, E.card_pho + 0.08);
-      // publish
-      popIn("#pub", E.publish_in, 0.4, "back.out(2.6)");
-      press("#pub", E.publish_tap);
-      tap("#tap2r", "#tap2d", E.publish_tap);
-      // out: the whole post goes up
-      filterOn("#s2", "mbA", E.share_out - 0.01, E.pray + 0.35);
-      blur("mbAb", "y", E.share_out + 0.05, 28, 0.2, 0.15);
-      tl.to(["#c2a", "#c2b", "#c2c", "#pub"], { y: -1500, duration: 0.42, ease: "power3.in", stagger: 0.03 }, E.share_out);
-      tl.to(["#phone2", "#t2"], { y: -1700, duration: 0.45, ease: "power3.in" }, E.share_out + 0.06);
 
-      // ================================================================ 3. PRAY
-      show("#s3", E.share_out + 0.2, E.flip + 0.55);
-      slam("#t3a .ser", E.w_prie, 2.0);
-      shake(E.w_prie, 6);
-      tl.fromTo("#t3b .ser", { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: "expo.out" }, E.w_porte);
-      tl.fromTo(".chip3", { scale: 0.3, opacity: 0, y: 40 }, { scale: 1, opacity: 1, y: 0, duration: 0.4, ease: "back.out(2.4)", stagger: 0.05 }, E.chips);
-      tl.to("#ch1", { borderColor: "#1A1714", backgroundColor: "#EFEBE6", duration: 0.12 }, E.chip_pick);
-      press("#ch1", E.chip_pick);
-      tl.fromTo("#confier", { y: 120, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "expo.out" }, E.chip_pick + 0.05);
-      press("#confier", E.confier_tap);
-      tap("#tap3ar", null, E.confier_tap);
-      tl.to(["#chips", "#confier"], { y: -260, opacity: 0, scale: 0.9, duration: 0.3, ease: "power3.in" }, E.confier_tap + 0.16);
-      tl.fromTo("#card3", { y: 700, rotationX: 50, transformPerspective: P, opacity: 0, scale: 0.85 },
-        { y: 0, rotationX: 0, transformPerspective: P, opacity: 1, scale: 1, duration: 0.42, ease: "expo.out" }, E.card_maman);
-      // the community prays: tap, then little flames rise and the counter climbs
-      press("#card3", E.jeprie_tap);
-      tap("#tap3br", "#tap3bd", E.jeprie_tap);
-      document.querySelectorAll("#flames3 .mini-flame").forEach((f, i) => {
-        const t = E.jeprie_tap + 0.1 + i * 0.12, dx = (rnd(i, 2) - 0.5) * 300, h = 360 + rnd(i, 4) * 260;
-        tl.fromTo(f, { x: 0, y: 0, scale: 0.4, opacity: 0 }, { x: dx * 0.4, y: -h * 0.35, scale: 1.1, opacity: 1, duration: 0.3, ease: "power2.out" }, t);
-        tl.to(f, { x: dx, y: -h, scale: 0.6, opacity: 0, duration: 0.9, ease: "sine.in" }, t + 0.3);
+      // ---------------------------------------------------------------- background: the lights drift
+      document.querySelectorAll(".bk").forEach((b, i) => {
+        sway(b, "x", 26 + rnd(i, 2) * 40, 4 + rnd(i, 4) * 3, 0, D, rnd(i, 6) * 6);
+        sway(b, "y", 18 + rnd(i, 3) * 34, 5 + rnd(i, 5) * 3, 0, D, rnd(i, 8) * 6);
       });
-      const pray = { n: 3 };
-      tl.fromTo(pray, { n: 3 }, { n: 14, duration: E.count_end - E.jeprie_tap, ease: "power1.inOut",
-        onUpdate: () => { document.getElementById("count3").textContent = `${Math.round(pray.n)} personnes prient`; } }, E.jeprie_tap + 0.1);
-      tl.fromTo("#u3a", { x: 700, rotation: 6, opacity: 0 }, { x: 0, rotation: -2, opacity: 1, duration: 0.55, ease: "expo.out" }, E.upd1);
-      tl.fromTo("#u3b", { x: 700, rotation: 6, opacity: 0 }, { x: 0, rotation: 1.5, opacity: 1, duration: 0.55, ease: "expo.out" }, E.upd2);
-      // out: the prayer card flips into the answered one
-      tl.to(["#u3a", "#u3b"], { x: 900, opacity: 0, duration: 0.3, ease: "power3.in" }, E.flip - 0.12);
-      tl.to("#card3", { rotationY: -90, duration: 0.24, ease: "power2.in" }, E.flip);
-      tl.to("#t3", { y: -80, opacity: 0, duration: 0.28, ease: "power3.in" }, E.flip);
 
-      // ================================================================ 4. ANSWERED
-      show("#s4", E.flip + 0.22, E.answer_out + 0.5);
-      tl.fromTo("#card4", { rotationY: 90, transformPerspective: P, scale: 0.94 }, { rotationY: 0, transformPerspective: P, scale: 1, duration: 0.42, ease: "back.out(1.4)" }, E.flip + 0.24);
-      riseIn("#t4a .ser", E.w_dieu - 0.08, 0);
-      tl.fromTo("#t4b .ser", { x: 300, opacity: 0 }, { x: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, E.w_repond - 0.06);
-      tl.fromTo("#notif4", { y: -260, opacity: 0, scale: 0.96 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.6)" }, E.notif);
-      tl.to("#notif4", { y: -260, opacity: 0, duration: 0.35, ease: "power3.in" }, Math.min(E.notif + 1.3, E.answer_out - 0.35));
-      const com = (sel, t, rot) => tl.fromTo(sel, { scale: 0.55, opacity: 0, rotation: rot * 3 }, { scale: 1, opacity: 1, rotation: rot, duration: 0.5, ease: "back.out(2.2)" }, t);
-      com("#m4a", E.celebrate + 0.05, -2);
-      com("#m4b", E.celebrate + 0.35, 2);
-      com("#m4c", E.celebrate + 0.65, -1.5);
-      tl.to("#card4", { y: -12, duration: Math.max(0.4, E.answer_out - E.answer - 0.7), ease: "sine.inOut" }, E.answer + 0.7);
-      // the stamp: "Exaucée"
-      tl.fromTo("#badge4", { scale: 3.4, rotation: -16, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.24, ease: "power4.in" }, E.stamp - 0.24);
-      shake(E.stamp, 9);
-      shock("#ring4", null, E.stamp, 7);
-      burst("#conf4 .conf", E.stamp, 795, 737, 560, 640);
-      tl.fromTo("#shine4", { xPercent: -130, opacity: 1 }, { xPercent: 300, opacity: 1, duration: 0.8, ease: "power2.inOut", immediateRender: false }, E.stamp + 0.05);
-      // out: zoom through the card
-      tl.to("#s4", { scale: 2.6, opacity: 0, filter: "blur(12px)", duration: 0.45, ease: "power3.in", transformOrigin: "50% 55%" }, E.answer_out);
-      tl.to("#flash", { keyframes: [{ opacity: 0.85, duration: 0.3, ease: "power2.in" }, { opacity: 0, duration: 0.4, ease: "power2.out" }] }, E.answer_out + 0.15);
-
-      // ================================================================ 5. GROUPS
-      show("#s5", E.answer_out + 0.35, E.groups_out + 0.5);
-      tl.fromTo("#s5", { scale: 0.7, filter: "blur(10px)" }, { scale: 1, filter: "blur(0px)", duration: 0.55, ease: "power3.out" }, E.answer_out + 0.36);
-      riseIn("#t5a .ser", E.groups + 0.02, 0);
-      snapIn("#t5b .ser", E.groups + 0.3, 300);
-      tl.fromTo(".row5", { x: 760, rotationY: -40, transformPerspective: P, opacity: 0 }, { x: 0, rotationY: 0, transformPerspective: P, opacity: 1, duration: 0.6, ease: "expo.out", stagger: 0.09 }, E.rows);
-      tl.to("#rows5", { y: -36, duration: Math.max(0.5, E.groups_out - E.rows), ease: "none" }, E.rows);
-      const hl = (row, ring, t, next) => {
-        tl.to(row, { scale: 1.05, duration: 0.25, ease: "back.out(2.5)" }, t);
-        tl.fromTo(ring, { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1.05, duration: 0.25, ease: "power2.out" }, t);
-        if (next) { tl.to(row, { scale: 1, duration: 0.3 }, next); tl.to(ring, { opacity: 0, duration: 0.25 }, next); }
+      // ================================================================ 1. HOOK: only Sunday
+      const days = [...document.querySelectorAll(".day")];
+      days.forEach((d, i) =>
+        tl.fromTo(d, { y: 70, scale: 0.3, opacity: 0, rotation: (i - 3) * 4 }, { y: 0, scale: 1, opacity: 1, rotation: 0, duration: 0.5, ease: "back.out(1.8)" }, E.week_in + i * 0.05));
+      sway("#week", "rotation", 1.4, 3.6, 0, E.week_out);
+      sway("#week", "y", 10, 2.8, 0, E.week_out, 1.2);
+      tl.fromTo("#weekw", { scale: 0.92 }, { scale: 1.02, duration: E.w_dim - 0.1, ease: "sine.inOut" }, 0.1);
+      // "dimanche": Sunday lights up, the other days fade
+      const lit = (i, t, big = 1.12) => {
+        const d = days[i];
+        tl.fromTo(d.querySelector(".fill"), { scale: 0 }, { scale: 1, duration: 0.38, ease: "back.out(2.4)" }, t);
+        tl.fromTo(d.querySelector(".ck path"), { strokeDashoffset: 60 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, t + 0.1);
+        tl.to(d, { keyframes: [{ scale: big, y: -14, duration: 0.16, ease: "power2.out" }, { scale: 1, y: 0, duration: 0.5, ease: "elastic.out(1, 0.5)" }] }, t);
+        tl.fromTo(d.querySelector(".dl"), { color: "#8C847C" }, { color: "#B45F06", duration: 0.2 }, t);
       };
-      hl("#r1", "#h1", E.hl1, E.hl2);
-      hl("#r2", "#h2", E.hl2, E.hl3);
-      hl("#r4", "#h4", E.hl3);
-      // out: whip to the left, into the sunrise
-      filterOn("#s5", "mbC", E.groups_out - 0.01, E.verse + 0.3);
-      blur("mbCb", "x", E.groups_out, 30, 0.2, 0.15);
-      tl.to("#s5", { x: -1300, duration: 0.42, ease: "power3.in" }, E.groups_out);
+      lit(6, E.w_dim, 1.22);
+      tl.fromTo(days[6].querySelector(".hl"), { opacity: 0, scale: 1.2 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out" }, E.w_dim);
+      tl.to(days.slice(0, 6), { scale: 0.9, y: 12, duration: 0.3, ease: "power2.out" }, E.w_dim);
 
-      // ================================================================ 6. VERSE
-      show("#s7", E.groups_out + 0.2, E.quiz - 0.03);
-      tl.fromTo("#sun", { y: 900, opacity: 0, scale: 0.8 }, { y: 0, opacity: 1, scale: 1, duration: 1.6, ease: "power2.out" }, E.sunrise);
-      tl.fromTo("#warm", { opacity: 0 }, { opacity: 1, duration: 1.4, ease: "power1.out" }, E.sunrise);
-      tl.fromTo("#rays", { opacity: 0 }, { opacity: 0.8, duration: 1.4, ease: "power1.out" }, E.sunrise + 0.2);
-      tl.fromTo("#rays", { rotation: -8 }, { rotation: 4, duration: Math.max(1, E.quiz - E.sunrise), ease: "none" }, E.sunrise);
-      tl.fromTo("#ey7 .eyebrow", { opacity: 0, y: 24, scaleX: 1.25 }, { opacity: 1, y: 0, scaleX: 1, duration: 0.7, ease: "expo.out" }, E.verse);
-      tl.fromTo("#t7a .ser", { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: "expo.out" }, E.w_matin);
-      riseIn("#t7b .ser", E.verse_text - 0.15, 0);
-      tl.fromTo("#verse", { y: 520, rotationX: 38, transformPerspective: P, opacity: 0 }, { y: 0, rotationX: 0, transformPerspective: P, opacity: 1, duration: 0.85, ease: "expo.out" }, E.verse_card);
-      tl.fromTo(".vw", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", stagger: 0.05 }, E.verse_text);
-      tl.fromTo("#verseRef", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, E.verse_ref);
-      tl.fromTo("#verseShine", { xPercent: -120, opacity: 1 }, { xPercent: 260, opacity: 1, duration: 1.0, ease: "power2.inOut", immediateRender: false }, E.verse_ref);
-      tl.to("#verse", { scale: 1.06, duration: 1.2, ease: "power1.in" }, Math.max(E.verse_card + 0.9, E.verse_out - 1.0));
-      // out: overexposure into the sky (the drop)
-      tl.to("#s7", { filter: "brightness(1.9)", scale: 1.05, duration: 0.35, ease: "power2.in" }, E.verse_out);
-      tl.to("#flash", { keyframes: [{ opacity: 1, duration: 0.3, ease: "power2.in" }, { opacity: 0, duration: 0.55, ease: "power2.out" }] }, E.verse_out + 0.08);
-      tl.to(["#sun", "#warm", "#rays"], { opacity: 0, duration: 0.01 }, E.quiz - 0.02);
+      // ================================================================ 2. AVEC RISE: every day
+      // the week steps down to make room for the logo, which lights up on "RISE"
+      tl.to("#weekw", { y: 380, scale: 0.94, duration: 0.6, ease: "power3.inOut" }, E.splash2 + 0.05);
+      tl.fromTo("#splashw", { y: 40 }, { y: 0, duration: 1.2, ease: "power2.out" }, E.splash2);
+      sway("#splash2", "y", 6, 2.4, E.splash2, E.week_out + 0.6);
+      // "tous les jours": the six other days light up in a wave, each with its flame
+      tl.to(days.slice(0, 6), { scale: 1, y: 0, duration: 0.2, ease: "power2.out" }, E.days - 0.1);
+      tl.to(days[6].querySelector(".hl"), { opacity: 0, duration: 0.3 }, E.days);
+      for (let i = 0; i < 7; i++) {
+        const t = E.days + i * 0.07;
+        if (i < 6) lit(i, t, 1.14);
+        tl.fromTo(days[i].querySelector(".dfl"), { scale: 0, y: 30, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.45, ease: "back.out(2.6)" }, t + 0.05);
+        sway(days[i].querySelector(".dfl"), "scaleY", 0.06, 0.5 + i * 0.03, t + 0.5, E.week_out + 0.5);
+      }
+      burst("#confA .conf", E.days + 0.5, 540, 1240, 560, 560);
+      // out: the week and the logo rise away, the phone rises into frame
+      tl.to("#weekw", { y: -420, scale: 0.8, opacity: 0, duration: 0.36, ease: "power3.in" }, E.phone_in + 0.02);
+      tl.to("#splashw", { y: -760, scale: 0.85, opacity: 0, duration: 0.36, ease: "power3.in" }, E.phone_in);
 
-      // ================================================================ 7. QUIZ
-      show("#s8", E.quiz - 0.02, E.quiz_out + 0.5);
-      tl.fromTo("#sky", { opacity: 0 }, { opacity: 1, duration: 0.01 }, E.quiz - 0.02);
-      tl.fromTo("#clouds", { x: 0, y: 40 }, { x: 150, y: -40, duration: 7, ease: "none" }, E.quiz - 0.5);
-      slam("#count8", E.count, 2.4);
-      shake(E.count, 12);
-      const lv = { n: 0 };
-      tl.fromTo(lv, { n: 0 }, { n: 364, duration: 0.9, ease: "power2.out",
-        onUpdate: () => { document.getElementById("count8").textContent = Math.round(lv.n); } }, E.count);
-      tl.fromTo("#count8l", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "expo.out" }, E.count + 0.2);
-      tl.to("#count8", { keyframes: [{ scale: 1.1, duration: 0.08 }, { scale: 1, duration: 0.4, ease: "elastic.out(1, 0.5)" }] }, E.count + 0.92);
-      riseIn("#t8a .ser", E.quiz_title, 0);
-      snapIn("#t8b .ser", E.quiz_title + 0.25, 300);
-      tl.to(["#count8", "#count8l"], { scale: 0.4, opacity: 0, y: -120, duration: 0.3, ease: "power3.in" }, E.panel - 0.2);
-      tl.fromTo("#panel8", { y: 260, scale: 0.86, opacity: 0, rotationX: 24, transformPerspective: P }, { y: 0, scale: 1, opacity: 1, rotationX: 0, transformPerspective: P, duration: 0.6, ease: "expo.out" }, E.panel);
-      tl.fromTo("#q8", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, E.panel + 0.12);
-      tl.fromTo(".ans", { y: -50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "back.out(1.8)", stagger: 0.09 }, E.panel + 0.15);
-      tap("#tap8r", "#tap8d", E.tap);
-      press("#a1", E.tap);
-      tl.fromTo("#a1s", { opacity: 0 }, { opacity: 1, duration: 0.08 }, E.tap + 0.02);
-      tl.fromTo("#a1k", { opacity: 0 }, { opacity: 1, duration: 0.1 }, E.correct);
-      tl.to("#a1", { keyframes: [{ scale: 1.04, duration: 0.12 }, { scale: 1, duration: 0.4, ease: "elastic.out(1, 0.5)" }] }, E.correct);
-      tl.to(["#a2", "#a3", "#a4"], { opacity: 0.4, duration: 0.25 }, E.correct);
-      tl.fromTo("#exact8", { y: 520, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, E.exact);
-      tl.to("#t8", { y: -60, opacity: 0, duration: 0.3, ease: "power3.in" }, E.exact + 0.1);
-      [["#st1", 0.0], ["#st2", 0.15], ["#st3", 0.3]].forEach(([id, d]) =>
-        tl.fromTo(id, { scale: 0, rotation: -90, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.55, ease: "back.out(2.6)" }, E.stars + d));
-      burst("#conf8 .conf", E.stars + 0.05, 540, 300, 600, 520);
-      tl.fromTo("#sans8", { scale: 1.6, opacity: 0, filter: "blur(10px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power4.out" }, E.stars + 0.35);
-      // out: everything rises, the sky gives way to paper
-      filterOn("#s8", "mbA", E.quiz_out - 0.01, E.end + 0.45);
-      blur("mbAb", "y", E.quiz_out + 0.05, 28, 0.2, 0.2);
-      tl.to(["#st1", "#st2", "#st3", "#sans8", "#panel8", "#exact8"], { y: -1700, duration: 0.45, ease: "power3.in", stagger: 0.025 }, E.quiz_out);
-      tl.to("#sky", { opacity: 0, duration: 0.6, ease: "power1.inOut" }, E.quiz_out + 0.15);
+      // ================================================================ THE PHONE (one object, never still)
+      sway("#phone", "rotationY", 2.6, 4.2, 0, D);
+      sway("#phone", "rotationX", 1.7, 5.3, 0, D, 1.1);
+      sway("#phone", "y", 12, 3.6, 0, D, 2.0);
+      tl.set("#cam", { y: 1700, rotationX: 42, rotationY: -26, rotation: 6, scale: 0.9 }, 0);
+      const push3 = Math.max(E.lift_post - 0.12, E.phone_in + 0.6);
+      tl.to("#cam", { y: 40, rotationX: 12, rotationY: -20, rotation: -3, scale: 1.0, duration: push3 - E.phone_in, ease: "expo.out" }, E.phone_in);
 
-      // ================================================================ 8. END
-      show("#s9", E.quiz_out + 0.3);
-      tl.fromTo("#flame9", { x: FX, y: 1250, scale: 1.6 }, { x: FX * 0.5, y: -160, scale: 1.5, duration: 0.45, ease: "power2.out" }, E.end_land - 0.67);
-      tl.to("#flame9", { x: 0, y: 0, scale: 1, duration: 0.22, ease: "power3.in" }, E.end_land - 0.22);
-      ["#l9R", "#l9I", "#l9S", "#l9E"].forEach((id, i) => {
-        const ox = [14.9, 37.4, 58.1, 87.6][i];
-        tl.fromTo(id, { y: 300, rotationX: -85, transformPerspective: 900, transformOrigin: `${ox}% 100%`, opacity: 0 },
-          { y: 0, rotationX: 0, transformPerspective: 900, transformOrigin: `${ox}% 100%`, opacity: 1, duration: 0.6, ease: "back.out(1.5)" }, E.end_letters + i * 0.07);
+      // ================================================================ 3. SHARE: a testimony lifts out
+      // the camera follows the post as it rises off the feed
+      lift("#lf-sarah", "#sh-sarah", E.lift_post, 190, 1.07, -6);
+      tl.to("#cam", { y: -430, rotationX: 9, rotationY: -12, rotation: -1.5, scale: 1.17, duration: 0.85, ease: "power3.inOut" }, push3);
+      tl.to("#cam", { y: -470, rotationY: -6, rotation: 0, scale: 1.24, duration: Math.max(0.6, E.pray - push3 - 0.85), ease: "sine.inOut" }, push3 + 0.85);
+      // "Dieu ... fait": the line is marked; "ta vie": hearts
+      tl.fromTo("#mk-sarah", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power2.out" }, E.w_dieu - 0.05);
+      document.querySelectorAll("#hearts .heart").forEach((h, i) => {
+        const t = E.w_vie + i * 0.06, dx = (rnd(i, 2) - 0.5) * 160, up = 120 + rnd(i, 4) * 160;
+        tl.fromTo(h, { x: 0, y: 0, scale: 0.3, opacity: 0 }, { x: dx * 0.5, y: -up * 0.45, scale: 1.1, opacity: 1, duration: 0.3, ease: "power2.out" }, t);
+        tl.to(h, { x: dx, y: -up, scale: 0.7, opacity: 0, duration: 0.7, ease: "sine.in" }, t + 0.3);
       });
-      tl.to("#flame9", { keyframes: [{ scaleY: 0.72, scaleX: 1.2, duration: 0.07 }, { scaleY: 1.08, scaleX: 0.95, duration: 0.14 }, { scaleY: 1, scaleX: 1, duration: 0.2 }] }, E.end_land);
-      shock("#ring9", "#glow9", E.end_land, 11);
-      shake(E.end_land, 12);
-      tl.to("#logo9", { keyframes: [{ scale: 1.07, duration: 0.08 }, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.5)" }] }, E.end_land);
-      const s1 = Math.max(E.slogan1, E.end_land + 0.3);
-      riseIn("#t9a .ser", s1, 0);
-      tl.fromTo("#t9b .ser", { yPercent: 115, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.7, ease: "expo.out" }, Math.max(E.slogan2, s1 + 0.45));
-      tl.fromTo("#rule9", { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "expo.out" }, Math.max(E.slogan2, s1 + 0.45) + 0.3);
-      tl.fromTo("#stores9", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, E.stores);
-      tl.fromTo("#mini1", { y: 700, rotation: -4 }, { y: 0, rotation: -11, duration: 0.9, ease: "expo.out" }, E.phones);
-      tl.fromTo("#mini2", { y: 700, rotation: 4 }, { y: 0, rotation: 11, duration: 0.9, ease: "expo.out" }, E.phones + 0.12);
-      tl.to("#flame9", { scaleY: 1.07, scaleX: 0.97, duration: 0.32, ease: "sine.inOut", yoyo: true, repeat: 9 }, E.end_land + 0.6);
-      tl.to(["#logo9", "#flame9"], { scale: 1.03, duration: 1.6, ease: "sine.inOut", yoyo: true, repeat: 1 }, E.end_land + 0.7);
 
-      // ---------------------------------------------------------------- captions, word by word
-      document.querySelectorAll(".cap").forEach((cap) => {
-        const t0 = parseFloat(cap.dataset.start), d = parseFloat(cap.dataset.duration);
-        tl.fromTo(cap.querySelector(".pill"), { scale: 0.86, opacity: 0, y: 14 }, { scale: 1, opacity: 1, y: 0, duration: 0.18, ease: "back.out(2)" }, t0);
-        tl.to(cap.querySelector(".pill"), { opacity: 0, y: -8, duration: 0.07, ease: "power1.in" }, t0 + d - 0.07);
-        cap.querySelectorAll(".cw").forEach((w) => {
-          tl.fromTo(w, { opacity: 0, y: 18, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.2, ease: "back.out(2.4)" }, parseFloat(w.dataset.t));
+      // ---------------------------------------------------------------- captions: label, then the punch
+      document.querySelectorAll(".beat").forEach((b) => {
+        const t0 = parseFloat(b.dataset.start), t1 = t0 + parseFloat(b.dataset.duration);
+        const s = b.querySelector(".setup");
+        if (s) {
+          tl.fromTo(s, { scale: 0.55, y: 26, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.32, ease: "back.out(2.4)" }, t0);
+          tl.to(s, { y: -30, opacity: 0, duration: 0.12, ease: "power2.in" }, t1 - 0.12);
+        }
+        b.querySelectorAll(".punch").forEach((p) => {
+          const a = parseFloat(p.dataset.t), u = parseFloat(p.dataset.u);
+          tl.fromTo(p, { scale: 0.25, rotation: -5, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.38, ease: "back.out(2.6)" }, a);
+          tl.to(p, { scale: 1.035, duration: Math.max(0.2, u - a - 0.55), ease: "sine.inOut" }, a + 0.4);
+          tl.to(p, { scale: 0.8, opacity: 0, duration: 0.1, ease: "power2.in" }, u - 0.1);
         });
       });
 

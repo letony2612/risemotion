@@ -1,11 +1,11 @@
 """Assemble index.html from tools/template.html and tools/timeline.py.
 
-python3 tools/build.py            -> index.html (+ sound design and music beds)
-python3 tools/build.py --no-audio -> index.html only
+python3 tools/build.py              -> index.html (+ sound design and music beds)
+python3 tools/build.py --no-audio   -> index.html only
+python3 tools/build.py --until 6.6  -> a preview cut at 6.6 s (the edit itself is unchanged)
 """
 import html
 import json
-import math
 import sys
 from pathlib import Path
 
@@ -13,26 +13,37 @@ import soundfile as sf
 
 sys.path.insert(0, str(Path(__file__).parent))
 import timeline as T  # noqa: E402
+from lifts import LIFTS  # noqa: E402
 
 ROOT = T.ROOT
+SCREEN_W, BEZEL = 600, 18  # the phone screen in the composition (captures are 1080 px wide)
 
 
-def letters(word):
-    return "".join(f'<span class="ch">{html.escape(c)}</span>' for c in word)
-
-
-def dots(n=14):
+def bokeh():
+    """Out-of-focus lights: (left, top, size, rgba)."""
+    spots = [(-160, 120, 520, (255, 190, 110, 0.34)), (760, 40, 380, (255, 255, 255, 0.85)),
+             (820, 560, 300, (255, 205, 140, 0.4)), (-80, 900, 260, (255, 255, 255, 0.8)),
+             (600, 1180, 560, (255, 180, 100, 0.26)), (80, 1500, 360, (255, 214, 150, 0.34)),
+             (880, 1600, 240, (255, 255, 255, 0.75)), (380, 300, 160, (255, 226, 180, 0.5)),
+             (300, 1750, 200, (255, 200, 120, 0.3))]
     out = []
-    for i in range(n):
-        color = "#F59E0B" if i % 2 else "#1A1714"
-        size = 16 if i % 3 else 22
-        out.append(f'<span class="hdot" style="left: 540px; top: 970px; width: {size}px; height: {size}px; '
-                   f'margin: -{size // 2}px 0 0 -{size // 2}px; background: {color}"></span>')
+    for x, y, d, (r, g, b, a) in spots:
+        out.append(f'<span class="bk" style="left: {x}px; top: {y}px; width: {d}px; height: {d}px; '
+                   f'background: radial-gradient(closest-side, rgba({r}, {g}, {b}, {a}) 0%, rgba({r}, {g}, {b}, {a * 0.85:.2f}) 62%, '
+                   f'rgba({r}, {g}, {b}, 0) 100%)"></span>')
     return "".join(out)
 
 
-def flames(n=10):
-    return "".join('<img class="mini-flame" src="assets/ui/flame.png" alt="" style="left: 236px; top: 1034px" />'
+def week():
+    check = ('<svg class="ck" viewBox="0 0 40 36"><path d="M5 19 L15 29 L35 7" fill="none" stroke="#fff" stroke-width="7" '
+             'stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="60" stroke-dashoffset="60" /></svg>')
+    return "".join(f'<div class="day" id="d{i}"><span class="hl"></span><img class="dfl" src="assets/ui/flame.png" alt="" />'
+                   f'<span class="dl">{c}</span><span class="dc"><span class="fill"></span>{check}</span></div>'
+                   for i, c in enumerate("LMMJVSD"))
+
+
+def hearts(n=6):
+    return "".join('<span class="heart" style="left: 86px; top: 191px"><svg><use href="#heartShape" /></svg></span>'
                    for _ in range(n))
 
 
@@ -40,51 +51,65 @@ def confetti(n=26):
     return "".join('<span class="conf"></span>' for _ in range(n))
 
 
-VERSE = "« Il est comme un arbre planté près des eaux, Et qui étend ses racines vers le courant… »"
+def nbsp(text):
+    """French spacing: the space before ? ! : ; stays with its word."""
+    for p in "?!:;":
+        text = text.replace(f" {p}", f" {p}")
+    return text
 
 
-def verse_words():
-    return " ".join(f'<span class="vw">{html.escape(w)}</span>' for w in VERSE.split())
-
-
-def captions(W):
-    out = []
-    track = 8
-    for line, chunks in T.CHUNKS.items():
+def beats(W, duration):
+    """Two-tier captions: a setup label from the beat's first word, then each punch line on its own first word."""
+    out, starts = [], []
+    for line, setup, punches in T.BEATS:
+        first = (setup or punches[0])[0]
+        starts.append(round(W[line][first]["t"] - 0.08, 3))
+    for bi, (line, setup, punches) in enumerate(T.BEATS):
         words = W[line]
-        for ci, (a, b) in enumerate(chunks):
-            seg = words[a : b + 1]
-            start = round(seg[0]["t"] - 0.06, 3)
-            # hold until the next chunk takes its place (or a short tail after the last word)
-            if ci + 1 < len(chunks):
-                end = words[chunks[ci + 1][0]]["t"] - 0.07
-            else:
-                end = seg[-1]["e"] + 0.4
-            dur = round(max(0.2, end - start), 3)
-            spans = "".join(
-                f'<span class="cw{" k" if keyword(w["w"]) else ""}" data-t="{w["t"]}">{html.escape(w["w"])}</span>'
-                for w in seg)
-            out.append(f'      <div id="cap-{line}-{ci}" class="clip cap" data-start="{start}" data-duration="{dur}" '
-                       f'data-track-index="{track}"><div class="pill">{spans}</div></div>')
+        start = starts[bi]
+        end = starts[bi + 1] if bi + 1 < len(starts) else duration
+        parts = []
+        if setup:
+            text = " ".join(w["w"] for w in words[setup[0]: setup[1] + 1])
+            text = html.escape(nbsp(text)).replace("RISE", "<b>RISE</b>")
+            parts.append(f'<div class="row s"><span class="setup">{text}</span></div>')
+        times = [round(words[a]["t"] - 0.04, 3) for a, _ in punches]
+        for pi, (a, b) in enumerate(punches):
+            text = T.PUNCH_TEXT.get((line, a)) or " ".join(w["w"] for w in words[a: b + 1])
+            text = text.rstrip(",:")
+            u = times[pi + 1] if pi + 1 < len(times) else end
+            parts.append(f'<div class="row p"><span class="punch" data-t="{times[pi]}" data-u="{round(u, 3)}">'
+                         f'{html.escape(nbsp(text))}</span></div>')
+        out.append(f'      <div id="beat{bi}" class="clip beat" data-start="{start}" data-duration="{round(end - start, 3)}" '
+                   f'data-track-index="8">{"".join(parts)}</div>')
     return "\n".join(out)
 
 
-def keyword(word):
-    import re
-    return re.sub(r"[^\w’'-]", "", word.lower()) in T.KEYWORDS
+def positions():
+    """Each lifted piece over its own pixels: in phone coordinates (POS) and screen coordinates (SPOS)."""
+    s = SCREEN_W / 1080
+    rep = {}
+    for name, (_, (x0, y0, x1, y1), _) in LIFTS.items():
+        box = lambda off: (f"left: {off + x0 * s:.1f}px; top: {off + y0 * s:.1f}px; "
+                           f"width: {(x1 - x0) * s:.1f}px; height: {(y1 - y0) * s:.1f}px")
+        rep[f"@@POS:{name}@@"] = box(BEZEL)
+        rep[f"@@SPOS:{name}@@"] = box(0)
+    return rep
 
 
-def audio_tags():
+def audio_tags(duration):
     tags = []
     for key in T.LINES:
         start = T.VO_START[key]
+        if start >= duration:
+            continue
         f = ROOT / "assets" / "vo" / f"{key}.wav"
-        dur = round(sf.info(str(f)).duration, 3)
+        dur = round(min(sf.info(str(f)).duration, duration - start), 3)
         tags.append(f'      <audio id="vo-{key}" src="assets/vo/{key}.wav" data-start="{start}" data-duration="{dur}" '
                     f'data-track-index="10" data-volume="1"></audio>')
-    tags.append(f'      <audio id="music" src="assets/audio/music.wav" data-start="0" data-duration="{T.DURATION}" '
+    tags.append(f'      <audio id="music" src="assets/audio/music.wav" data-start="0" data-duration="{duration}" '
                 f'data-track-index="11" data-volume="0.45"></audio>')
-    tags.append(f'      <audio id="sfx" src="assets/audio/sfx.wav" data-start="0" data-duration="{T.DURATION}" '
+    tags.append(f'      <audio id="sfx" src="assets/audio/sfx.wav" data-start="0" data-duration="{duration}" '
                 f'data-track-index="12" data-volume="0.75"></audio>')
     return "\n".join(tags)
 
@@ -92,30 +117,31 @@ def audio_tags():
 def main():
     W = T.words()
     E = T.events(W)
+    duration = T.DURATION
+    if "--until" in sys.argv:
+        duration = min(duration, float(sys.argv[sys.argv.index("--until") + 1]))
     tpl = (ROOT / "tools" / "template.html").read_text()
+    splash_end = min(duration, E["week_out"] + 0.6)
     rep = {
-        "@@ENSEMBLE_LETTERS@@": letters("ensemble."),
-        "@@PARTAGE_LETTERS@@": letters("Partage"),
-        "@@HOOK_DOTS@@": dots(),
-        "@@PRAY_FLAMES@@": flames(),
+        "@@BOKEH@@": bokeh(),
+        "@@WEEK@@": week(),
+        "@@HEARTS@@": hearts(),
         "@@CONFETTI@@": confetti(),
-        "@@CONFETTI8@@": confetti(),
-        "@@VERSE_WORDS@@": verse_words(),
-        "@@CAPTIONS@@": captions(W),
-        "@@AUDIO@@": audio_tags(),
-        "/*@@DATA@@*/": "const E = " + json.dumps(E) + f"; const D = {T.DURATION};",
-        "@@DURATION@@": str(T.DURATION),
-        "@@FIL_START@@": str(E["hook_out"]),
-        "@@FIL_DUR@@": str(round(E["screen_publish"] - E["hook_out"], 3)),
-        "@@PUB_START@@": str(E["screen_publish"]),
-        "@@PUB_DUR@@": str(round(E["share_out"] + 0.6 - E["screen_publish"], 3)),
+        "@@BEATS@@": beats(W, duration),
+        "@@AUDIO@@": audio_tags(duration),
+        "/*@@DATA@@*/": "const E = " + json.dumps(E) + f"; const D = {duration};",
+        "@@DURATION@@": str(duration),
+        "@@SPLASH2_START@@": str(E["splash2"]),
+        "@@SPLASH2_DUR@@": str(round(splash_end - E["splash2"], 3)),
+        **positions(),
     }
     for k, v in rep.items():
         assert k in tpl, k
         tpl = tpl.replace(k, v)
+    assert "@@" not in tpl, tpl[tpl.index("@@") - 40: tpl.index("@@") + 40]
     (ROOT / "index.html").write_text(tpl)
     (ROOT / "tools" / "events.json").write_text(json.dumps({"events": E, "words": W}, ensure_ascii=False, indent=1))
-    print(f"index.html written: {T.DURATION}s, {len(E)} events")
+    print(f"index.html written: {duration}s (film {T.DURATION}s), {len(E)} events")
     if "--no-audio" not in sys.argv:
         import subprocess
         subprocess.run([sys.executable, str(ROOT / "tools" / "sfx.py")], check=True)
@@ -124,7 +150,7 @@ def main():
     import subprocess
     carve = ROOT.parent.parent / ".claude" / "skills" / "hyperframes-audio" / "scripts" / "carve.mjs"
     if carve.exists():
-        voices = sum((["--voice", f"vo-{k}"] for k in T.LINES), [])
+        voices = sum((["--voice", f"vo-{k}"] for k in T.LINES if T.VO_START[k] < duration), [])
         for bed, strength in (("music", "0.6"), ("sfx", "0.6")):
             subprocess.run(["node", str(carve), "--comp", str(ROOT / "index.html"), "--bed", bed, "--strength", strength, *voices],
                            check=True, capture_output=True)
