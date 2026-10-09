@@ -214,8 +214,8 @@ def events(_W=None):
 
 
 def cues(E=E, W=W):
-    """Sound design cue sheet: (time, sound, gain). No sparkle sounds (shimmer, chime) and no bell
-    run at the end: not liked; the bells only say "correct" in the quiz."""
+    """Sound design cue sheet: (time, sound, gain). No sparkle or bell sounds (shimmer, chime, success):
+    not liked, and bells sit right in the voice's band."""
     c = []
     # captions: a light tick when a setup label lands, a swish under each punch line
     for line, setup, punches in BEATS:
@@ -225,7 +225,7 @@ def cues(E=E, W=W):
             c.append((W[line][a]["t"] - 0.03, "swish", 0.35))
     # 1. intro
     c += [(E["c_share"], "pop", 0.5), (E["c_meet"], "pop2", 0.5), (E["c_grow"], "pop3", 0.5),
-          (E["intro_back"], "whoosh_long", 0.4), (E["logo_land"], "impact_soft", 0.65), (E["phone_in"], "whoosh_up", 0.7)]
+          (E["intro_back"], "whoosh_long", 0.4), (E["logo_land"] - 0.08, "impact_soft", 0.55), (E["phone_in"], "whoosh_up", 0.6)]
     # 2. feed
     c += [(E["q_feed"], "pop", 0.45), (E["t_feed"], "pop2", 0.5), (E["r_feed"], "whoosh", 0.45), (E["r_feed"] + 0.05, "pop3", 0.45),
           (E["enc"], "confetti", 0.5), (E["enc"] + 0.1, "pop", 0.45), (E["enc"] + 0.3, "pop2", 0.45), (E["enc"] + 0.5, "pop3", 0.45)]
@@ -237,16 +237,17 @@ def cues(E=E, W=W):
     # 4. prayer
     c += [(E["pray_tap"], "click", 0.8), (E["pray"], "whoosh_fast", 0.55), (E["lift_prayer"], "pop", 0.5),
           (E["sheet_up"], "whoosh", 0.5), (E["confier"], "click", 0.8), (E["jeprie"], "click", 0.85),
-          (E["jeprie"] + 0.1, "count_roll", 0.45), (E["upd1"], "ding", 0.45), (E["upd2"], "ding2", 0.45)]
+          (E["jeprie"] + 0.1, "count_roll", 0.45), (E["upd1"], "msg_in", 0.55), (E["upd2"], "msg_in", 0.5)]
     # 5. quiz (drop)
     c += [(E["explore_tap"], "click", 0.8), (E["verse"], "whoosh_fast", 0.5), (E["verse_lift"], "pop", 0.45),
-          (E["quiz"], "impact", 0.9), (E["q_tap"], "click", 0.85), (E["q_ok"], "success", 0.65),
+          (E["quiz"] - 0.08, "impact", 0.65), (E["q_tap"], "click", 0.85), (E["q_ok"], "pop2", 0.6),
           (E["learn"], "whoosh_up", 0.5), (E["learn"] + 0.1, "confetti", 0.5)]
     # 6. recap and end
     c += [(E["end"], "whoosh", 0.55)]
     for k, name in (("v1", "pop"), ("v2", "pop2"), ("v3", "pop3"), ("v4", "pop")):
         c.append((E[k], name, 0.6))
-    c += [(E["together"], "suck", 0.5), (E["w_rise9"], "impact", 0.9), (E["free"], "impact_soft", 0.5),
+    # the hits land a hair before the word they underline, so the word itself stays clear
+    c += [(E["together"], "suck", 0.5), (E["w_rise9"] - 0.08, "impact", 0.6), (E["free"], "impact_soft", 0.5),
           (E["appstore"], "pop", 0.5), (E["gplay"], "pop2", 0.5)]
     return sorted(c)
 

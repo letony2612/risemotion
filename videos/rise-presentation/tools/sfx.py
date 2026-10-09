@@ -358,7 +358,8 @@ if __name__ == "__main__":
     C = timeline.cues(E, W)
     y = render(C, timeline.DURATION)
     # the effects step back while the voice speaks (build.py also carves the voice's bands out of them)
-    y = y * (1 - (1 - 10 ** (-8 / 20)) * timeline.voice_activity(len(y), SR, attack=0.03, release=0.15))[:, None]
+    # only a slight dip under the voice: the effects are short, and they should be heard
+    y = y * (1 - (1 - 10 ** (-4 / 20)) * timeline.voice_activity(len(y), SR, attack=0.03, release=0.15))[:, None]
     (ROOT / "assets" / "audio").mkdir(parents=True, exist_ok=True)
     sf.write(ROOT / "assets" / "audio" / "sfx.wav", y * 0.8, SR)
     print("sfx cues:", len(C), "peak", float(np.max(np.abs(y))))

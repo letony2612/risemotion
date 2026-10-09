@@ -307,7 +307,7 @@ track = track()
 OUT.parent.mkdir(parents=True, exist_ok=True)
 
 
-def ducked(y, depth_db=-6):
+def ducked(y, depth_db=-5):
     """The bed dips while the voice speaks (on top of the spectral carve build.py adds)."""
     return y * (1 - (1 - 10 ** (depth_db / 20)) * T.voice_activity(y.shape[1], SR))
 
