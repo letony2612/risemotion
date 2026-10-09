@@ -36,8 +36,8 @@ LINES = {
     "l5": ("Trouve ton groupe : louange, étude biblique, jeunes !",
            "Trouve ton groupe : louange, étude biblique, jeunes !"),
     "l6": ("Chaque matin, ta Parole du jour.", "Chaque matin, ta Parole du jour."),
-    "l7": ("Et chaque jour, un niveau de kwiz : toute la Bible en un an !",
-           "Et chaque jour, un niveau de quiz : toute la Bible en un an !"),
+    # the PUB A take skips "toute la Bible en un an !" after the ellipsis; the quiz title carries it
+    "l7": ("Et chaque jour, un niveau de kwiz…", "Et chaque jour, un niveau de quiz…"),
     "l8": ("RISE. Élève-toi. Ensemble ! Dispo sur iPhone et Android.",
            "RISE. Élève-toi. Ensemble ! Dispo sur iPhone et Android."),
 }
@@ -51,7 +51,7 @@ CHUNKS = {
     "l4": [(0, 3), (4, 6)],
     "l5": [(0, 2), (3, 3), (4, 5), (6, 6)],
     "l6": [(0, 1), (2, 5)],
-    "l7": [(0, 2), (3, 6), (7, 12)],
+    "l7": [(0, 2), (3, 6)],
 }
 # Words shown in amber inside the captions (compared without punctuation, lower case).
 KEYWORDS = {"dieu", "vie", "prient", "répond", "célèbre", "louange", "biblique", "jeunes", "parole", "quiz", "bible"}
@@ -201,7 +201,7 @@ def _plan():
     E["end"] = E["quiz"] + math.ceil((E["quiz_out"] + 0.3 - E["quiz"]) / grid - 1e-6) * grid  # on the beat
 
     # 8. end card: "RISE" is said as the letters rise
-    V["l8"] = after("l7", E["end"] + 0.4)  # "RISE" on the logo's landing
+    V["l8"] = after("l7", E["end"] + 0.5)  # "RISE" on the logo's landing
     E["end_letters"] = E["end"] + 0.15
     E["end_land"] = max(wt("l8", 0) + 0.1, E["end_letters"] + 0.45)
     E["slogan1"], E["slogan2"], E["stores"] = wt("l8", 1), wt("l8", 2), wt("l8", 3)

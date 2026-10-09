@@ -1,8 +1,9 @@
 """Import a full voice-over take (one file, the lines read in order) into assets/vo/.
 
-The take is split at the pauses between lines: among all the silences, the cuts
-whose share of the spoken time best matches each line's share of the syllables
-win. Inside a line, pauses longer than MAX_PAUSE are shortened, a slow read is
+The take is split at the pauses between lines: a reference reading of the script
+is warped onto the take (dtw_align.py) and each break between two lines lands in
+one of its pauses (a share-of-syllables guess put "jeunes" in the wrong line,
+because one pause inside a line can be longer than the one between two). Inside a line, pauses longer than MAX_PAUSE are shortened, a slow read is
 brought up to an ad pace (at most TEMPO_MAX faster, pitch kept), and the voice
 gets a light broadcast polish so it sits on top of the music.
 Usage: python3 tools/import_voice.py path/to/voice.mp3
@@ -62,39 +63,46 @@ def silences(voiced, min_len=0.07):
     return out, first * HOP, (last + 1) * HOP
 
 
-def split(x, n_lines, weights):
-    voiced = voicing(x)
-    sil, t0, t1 = silences(voiced)
-    K = n_lines - 1
-    if len(sil) < K:
-        raise SystemExit(f"only {len(sil)} pauses found, need {K}: is this the full take?")
-    target = np.cumsum(weights)[:-1] / sum(weights)  # each cut's share of the syllables
-    spoken = np.cumsum(voiced)
-    cands = [((a + b) / 2, b - a) for a, b in sil]
-    pos = [spoken[min(len(spoken) - 1, int(c / HOP))] / spoken[-1] for c, _ in cands]  # share of the spoken time
-    # dynamic programming: K increasing cuts, close to their target, preferring real pauses
-    INF = 1e9
-    M = len(cands)
-    score = lambda j, k: abs(pos[j] - target[k]) * 30 - min(cands[j][1], 0.6)
-    cost = [[INF] * M for _ in range(K)]
-    back = [[-1] * M for _ in range(K)]
-    for j in range(M):
-        cost[0][j] = score(j, 0)
-    for k in range(1, K):
-        for j in range(M):
-            c = score(j, k)
-            for i in range(j):
-                if cost[k - 1][i] + c < cost[k][j]:
-                    cost[k][j] = cost[k - 1][i] + c
-                    back[k][j] = i
-    j = int(np.argmin(cost[K - 1]))
-    picks = [j]
-    for k in range(K - 1, 0, -1):
-        j = back[k][j]
-        picks.append(j)
-    cuts = [cands[p][0] for p in sorted(picks)]
-    bounds = [t0] + cuts + [t1]
-    return [(bounds[i], bounds[i + 1]) for i in range(n_lines)]
+def split(x, keys):
+    """Cut the take into its lines. A reference reading of the script is warped onto the take
+    (dtw_align) to say roughly where each line ends; among the pauses near there, the cuts kept
+    are those whose lines best match their own reference readings."""
+    import librosa
+    from functools import lru_cache
+    from dtw_align import SR as DSR, fit_cost, line_breaks
+    sil, t0, t1 = silences(voicing(x))
+    texts = [T.LINES[k][0] for k in keys]
+    y16 = librosa.resample(x, orig_sr=SR, target_sr=DSR)
+    targets = line_breaks(y16, texts)
+    mids = [(a + b) / 2 for a, b in sil]
+    near = lambda tg: sorted(range(len(mids)), key=lambda j: abs(mids[j] - tg))
+    # candidate pauses per break: within 1.5 s of where the warp puts it (always at least the nearest)
+    cands = [sorted({j for j in near(tg)[:1]} | {j for j, m in enumerate(mids) if abs(m - tg) <= 1.5}) for tg in targets]
+    edge = lambda j: mids[j] if j >= 0 else (t0 if j == -1 else t1)
+
+    @lru_cache(maxsize=None)
+    def cost(i, a, b):  # line i spoken between pause a and pause b (-1: take start, -2: take end)
+        s0, s1 = edge(a), edge(b)
+        if s1 - s0 < 0.3:
+            return 1e9
+        return fit_cost(y16[int(s0 * DSR) : int(s1 * DSR)], texts[i])
+
+    # dynamic programming over the breaks: total cost of the lines, a little pull towards the warp's guess
+    best = {j: (cost(0, -1, j) + 0.02 * abs(mids[j] - targets[0]), [j]) for j in cands[0]}
+    for i in range(1, len(targets)):
+        nxt = {}
+        for j in cands[i]:
+            opts = [(c + cost(i, a, j) + 0.02 * abs(mids[j] - targets[i]), path + [j])
+                    for a, (c, path) in best.items() if mids[a] < mids[j]]
+            if opts:
+                nxt[j] = min(opts)
+        best = nxt
+    total, path = min((c + cost(len(keys) - 1, path[-1], -2), path) for c, path in best.values())
+    for tg, j in zip(targets, path):
+        a, b = sil[j]
+        print(f"break near {tg:6.2f}s -> pause {a:.2f}-{b:.2f}s")
+    bounds = [t0] + [mids[j] for j in path] + [t1]
+    return [(bounds[i], bounds[i + 1]) for i in range(len(keys))]
 
 
 def trim(seg, pad=0.04):
@@ -150,7 +158,7 @@ def main(path):
     x = load(path)
     keys = list(T.LINES)
     weights = [sum(syllables(w) for w in T.LINES[k][0].split()) for k in keys]
-    parts = split(x, len(keys), weights)
+    parts = split(x, keys)
     segs, natural = {}, {}
     for k, (a, b) in zip(keys, parts):
         seg, lead = trim(x[int(a * SR) : int(b * SR)])

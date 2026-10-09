@@ -1,9 +1,10 @@
 """Word timings of a voice-over line, by aligning it to a reference reading whose timings are known.
 
-No speech recogniser is needed: the local Kokoro voice reads the same line through a copy of
-its model that also reports each phoneme's duration, so the reference's word boundaries are
-exact; dynamic time warping on MFCCs then maps them onto the real take. Accurate to a few
-hundredths of a second where the old loudness-and-syllables estimate could be off by a word.
+No speech recogniser is needed: the local Kokoro voice reads the line twice, fluently and one word
+at a time (so the word boundaries of the second reading are exact); a first warp carries those
+boundaries onto the fluent reading, and dynamic time warping on MFCCs and loudness (pauses squeezed
+out of both sides) then maps them onto the real take. Words that follow a pause are finally set on
+the pause's end, where the voice audibly resumes.
 """
 import re
 from functools import lru_cache
@@ -13,29 +14,16 @@ import numpy as np
 
 CACHE = Path.home() / ".cache" / "hyperframes" / "tts"
 MODEL = CACHE / "models" / "kokoro-v1.0.onnx"
-TIMED = CACHE / "models" / "kokoro-v1.0-timed.onnx"
 SR = 16000
 HOP = 160  # 10 ms
 SAY = {"RISE": "Raïze"}  # Kokoro spells capitals out
 PUNCT = re.compile(r"[,:;.…!?»]+")
 
 
-def timed_model():
-    """A copy of the Kokoro model that also outputs each phoneme's duration (built once)."""
-    if not TIMED.exists():
-        import onnx
-        from onnx import TensorProto, helper
-        m = onnx.load(str(MODEL))
-        m.graph.node.append(helper.make_node("Identity", ["/encoder/Gather_output_0"], ["duration"], name="duration_out"))
-        m.graph.output.append(helper.make_tensor_value_info("duration", TensorProto.INT64, None))
-        onnx.save(m, str(TIMED))
-    return TIMED
-
-
 @lru_cache(maxsize=1)
 def kokoro():
     import kokoro_onnx
-    return kokoro_onnx.Kokoro(str(timed_model()), str(CACHE / "voices" / "voices-v1.0.bin"))
+    return kokoro_onnx.Kokoro(str(MODEL), str(CACHE / "voices" / "voices-v1.0.bin"))
 
 
 def say(token):
@@ -55,39 +43,48 @@ def words_of(text):
 
 
 def reference(text, voice="ff_siwis", speed=1.0):
-    """Kokoro reading of the line: audio at SR and each word's (start, end) in it."""
+    """Kokoro reading of the line: audio at SR and each word's (start, end) in it.
+
+    Kokoro's own phoneme durations drift from its audio by up to 0.2 s, so the word boundaries come
+    from a second reading, one word at a time (where every boundary is exact by construction),
+    warped onto the fluent reading: same voice, same phonemes, so that warp is tight."""
     import librosa
     k = kokoro()
-    tokens = [say(t) for t in text.split()]
-    audio, sr, timing = k.create_timed(" ".join(tokens), voice=voice, lang="fr-fr", speed=speed)
-    # phoneme groups between spaces, in order
-    groups, cur = [], []
-    for t in timing:
-        if t.phoneme == " ":
-            if cur:
-                groups.append(cur)
-            cur = []
-        else:
-            cur.append(t)
-    if cur:
-        groups.append(cur)
-    # how many groups each text token produces when read on its own
-    counts = [max(1, len(k.tokenizer.phonemize(tok, "fr-fr").split())) if not PUNCT.fullmatch(tok) else 1
-              for tok in tokens]
-    if sum(counts) != len(groups):
-        raise ValueError(f"cannot map {len(groups)} phoneme groups onto {len(tokens)} words: {text!r}")
-    spans, i = [], 0
-    for tok, n in zip(tokens, counts):
-        g = [t for grp in groups[i : i + n] for t in grp if not PUNCT.fullmatch(t.phoneme)]
-        spans.append((tok, (g[0].start, g[-1].end) if g else None))
-        i += n
-    # join standalone punctuation to the word before
-    words = []
-    for tok, span in spans:
-        if words and PUNCT.fullmatch(tok):
-            continue
-        words.append(span)
-    return librosa.resample(np.asarray(audio, dtype=np.float32), orig_sr=sr, target_sr=SR), words
+    to16 = lambda a, sr: librosa.resample(np.asarray(a, dtype=np.float32), orig_sr=sr, target_sr=SR)
+    said = " ".join(say(t) for t in text.split())
+    fluent = to16(*k.create(said, voice=voice, lang="fr-fr", speed=speed))
+    pieces, bounds, t = [], [], 0.0
+    gap = np.zeros(int(0.03 * SR), dtype=np.float32)
+    for w in words_of(said):  # punctuation stays on its word, for its intonation
+        a = to16(*k.create(w, voice=voice, lang="fr-fr", speed=speed))
+        pieces += [a, gap]
+        bounds.append((t, t + len(a) / SR))
+        t += (len(a) + len(gap)) / SR
+    to_fluent = warp(np.concatenate(pieces), fluent)
+    spans = [(to_fluent(a), to_fluent(b)) for a, b in bounds]
+    starts = snap([a for a, _ in spans], onsets(fluent))
+    return fluent, [(a, max(b, a + 0.04)) for a, (_, b) in zip(starts, spans)]
+
+
+def onsets(y, floor=35, min_pause=0.06):
+    """Times where speech resumes after a pause of at least min_pause seconds."""
+    import librosa
+    rms = librosa.feature.rms(y=y, frame_length=400, hop_length=HOP)[0]
+    loud = 20 * np.log10(rms + 1e-9) > 20 * np.log10(rms.max() + 1e-9) - floor
+    k = int(min_pause * SR / HOP)
+    return [i * HOP / SR for i in range(len(loud)) if loud[i] and (i == 0 or (i >= k and not loud[i - k : i].any()))]
+
+
+def snap(starts, ons, reach=0.25):
+    """Move each word start onto a nearby speech onset, keeping the words in order."""
+    out = list(starts)
+    for i, t in enumerate(out):
+        lo = out[i - 1] + 0.08 if i else -1.0
+        hi = starts[i + 1] - 0.05 if i + 1 < len(starts) else t + reach
+        near = [o for o in ons if abs(o - t) <= reach and lo < o < hi]
+        if near:
+            out[i] = min(near, key=lambda o: abs(o - t))
+    return out
 
 
 ENERGY_WEIGHT = 3.0
@@ -130,11 +127,9 @@ def squeeze(y, keep=0.04, floor=35):
     return np.concatenate(pieces), bp[:, 0], bp[:, 1]
 
 
-def align(path, text):
-    """Word timings in the line's audio: ([{"w", "start", "end"}], speech start, speech end)."""
+def warp(ref, y):
+    """Map a time in the reference reading to the matching time in the take (both mono at SR)."""
     import librosa
-    y, _ = librosa.load(str(path), sr=SR, mono=True)
-    ref, spans = reference(text)
     ref_sq, rs, ro = squeeze(ref)
     y_sq, ys, yo = squeeze(y)
     _, wp = librosa.sequence.dtw(X=features(ref_sq), Y=features(y_sq), metric="euclidean")
@@ -143,11 +138,46 @@ def align(path, text):
     def to_real(t):
         i = min(int(round(np.interp(t, ro, rs) * SR / HOP)), wp[-1, 0])
         return float(np.interp(np.median(wp[wp[:, 0] == i, 1]) * HOP / SR, ys, yo))
+    return to_real
+
+
+def fit_cost(y, text):
+    """How well a stretch of take matches a reading of `text`: mean warping cost per step (lower is better)."""
+    import librosa
+    ref, _ = reference(text)
+    X, Y = features(squeeze(ref)[0]), features(squeeze(y)[0])
+    D, wp = librosa.sequence.dtw(X=X, Y=Y, metric="euclidean")
+    return float(D[-1, -1] / len(wp))
+
+
+def align(path, text):
+    """Word timings in the line's audio: ([{"w", "start", "end"}], speech start, speech end)."""
+    import librosa
+    y, _ = librosa.load(str(path), sr=SR, mono=True)
+    ref, spans = reference(text)
+    to_real = warp(ref, y)
     shown = words_of(text)
+    warped = snap([to_real(span[0]) for span in spans], onsets(y))
     starts, ends = [], []
-    for span in spans:
-        a, b = (to_real(span[0]), to_real(span[1])) if span else (ends[-1], ends[-1])
+    for a, span in zip(warped, spans):
+        b = to_real(span[1])
         starts.append(max(a, starts[-1] + 0.05) if starts else a)  # every word gets its own beat
         ends.append(max(b, starts[-1] + 0.04))
     out = [{"w": w, "start": round(a, 3), "end": round(b, 3)} for w, a, b in zip(shown, starts, ends)]
     return out, out[0]["start"], out[-1]["end"]
+
+
+def line_breaks(y, lines, gap=0.3):
+    """Where each line ends in a full take (mono at SR): the take is warped onto a reference reading
+    of all the lines, and each break between two reference lines lands in the take."""
+    pieces, breaks, t = [], [], 0.0
+    for i, text in enumerate(lines):
+        ref, _ = reference(text)
+        pieces.append(ref)
+        t += len(ref) / SR
+        if i < len(lines) - 1:
+            pieces.append(np.zeros(int(gap * SR), dtype=ref.dtype))
+            breaks.append(t + gap / 2)
+            t += gap
+    to_real = warp(np.concatenate(pieces), y)
+    return [to_real(b) for b in breaks]
