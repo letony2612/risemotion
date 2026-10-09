@@ -6,7 +6,9 @@ one of its pauses (a share-of-syllables guess put "jeunes" in the wrong line,
 because one pause inside a line can be longer than the one between two). Inside a line, pauses longer than MAX_PAUSE are shortened, a slow read is
 brought up to an ad pace (at most TEMPO_MAX faster, pitch kept), and the voice
 gets a light broadcast polish so it sits on top of the music.
-Usage: python3 tools/import_voice.py path/to/voice.mp3
+Usage: python3 tools/import_voice.py path/to/voice.mp3 [--semitones -2] [--tempo 1.0]
+  --semitones: shift the voice (formants kept, a touch warmer) when a take sounds too high
+  --tempo: force the pace (1.0 keeps a take that already has the right energy as it was read)
 Then: python3 tools/build.py  (and check the scene windows it prints)
 """
 import json
@@ -28,6 +30,7 @@ HOP = 0.01
 MAX_PAUSE = 0.4  # longest pause kept inside a line (s)
 TARGET_RATE = 5.2  # syllables per second of an ad read
 TEMPO_MAX = 1.12
+PULL = 0.2  # cost per second between a cut and the warp's guess for it
 
 
 def load(path):
@@ -70,14 +73,16 @@ def split(x, keys):
     import librosa
     from functools import lru_cache
     from dtw_align import SR as DSR, fit_cost, line_breaks
-    sil, t0, t1 = silences(voicing(x))
+    # a fast read can run lines together with only a 40-60 ms gap, so short, shallow gaps count too
+    sil, t0, t1 = silences(voicing(x, floor=30), min_len=0.04)
     texts = [T.LINES[k][0] for k in keys]
     y16 = librosa.resample(x, orig_sr=SR, target_sr=DSR)
     targets = line_breaks(y16, texts)
     mids = [(a + b) / 2 for a, b in sil]
     near = lambda tg: sorted(range(len(mids)), key=lambda j: abs(mids[j] - tg))
-    # candidate pauses per break: within 1.5 s of where the warp puts it (always at least the nearest)
-    cands = [sorted({j for j in near(tg)[:1]} | {j for j, m in enumerate(mids) if abs(m - tg) <= 1.5}) for tg in targets]
+    # candidate pauses per break: within 0.6 s of where the warp puts it (always at least the nearest);
+    # the warp lands within ~0.3 s, and a longer pause further away is usually a breath inside a line
+    cands = [sorted({j for j in near(tg)[:1]} | {j for j, m in enumerate(mids) if abs(m - tg) <= 0.6}) for tg in targets]
     edge = lambda j: mids[j] if j >= 0 else (t0 if j == -1 else t1)
 
     @lru_cache(maxsize=None)
@@ -88,11 +93,11 @@ def split(x, keys):
         return fit_cost(y16[int(s0 * DSR) : int(s1 * DSR)], texts[i])
 
     # dynamic programming over the breaks: total cost of the lines, a little pull towards the warp's guess
-    best = {j: (cost(0, -1, j) + 0.02 * abs(mids[j] - targets[0]), [j]) for j in cands[0]}
+    best = {j: (cost(0, -1, j) + PULL * abs(mids[j] - targets[0]), [j]) for j in cands[0]}
     for i in range(1, len(targets)):
         nxt = {}
         for j in cands[i]:
-            opts = [(c + cost(i, a, j) + 0.02 * abs(mids[j] - targets[i]), path + [j])
+            opts = [(c + cost(i, a, j) + PULL * abs(mids[j] - targets[i]), path + [j])
                     for a, (c, path) in best.items() if mids[a] < mids[j]]
             if opts:
                 nxt[j] = min(opts)
@@ -146,16 +151,29 @@ def fade_edges(seg):
 
 def polish(segs):
     """Broadcast polish: low rumble out, gentle compression, a little presence; one gain for every line."""
-    from pedalboard import Compressor, HighpassFilter, PeakFilter, Pedalboard
+    from pedalboard import Compressor, Gain, HighpassFilter, Limiter, PeakFilter, Pedalboard
+    # the limiter lifts the read about 3 dB, so the mix reaches the -14 LUFS of social platforms
     chain = Pedalboard([HighpassFilter(80), Compressor(threshold_db=-22, ratio=3, attack_ms=4, release_ms=90),
-                        PeakFilter(3200, 2.5, 0.8)])
+                        PeakFilter(3200, 2.5, 0.8), Gain(4.0), Limiter(threshold_db=-1.5, release_ms=60)])
     out = {k: chain(s.astype(np.float32)[None, :], SR)[0].astype(np.float64) for k, s in segs.items()}
     peak = max(np.max(np.abs(s)) for s in out.values()) or 1
     return {k: s / peak * 0.89 for k, s in out.items()}
 
 
-def main(path):
+def deepen(x, semitones):
+    """Lower (or raise) the voice by a few semitones, formants kept so it stays natural, with a slightly warmer tone."""
+    from pedalboard import HighShelfFilter, LowShelfFilter, Pedalboard, time_stretch
+    y = time_stretch(x.astype(np.float32)[None, :], SR, stretch_factor=1.0, pitch_shift_in_semitones=semitones,
+                     high_quality=True, transient_mode="crisp", preserve_formants=True)
+    y = Pedalboard([LowShelfFilter(cutoff_frequency_hz=220, gain_db=2.0), HighShelfFilter(cutoff_frequency_hz=6500, gain_db=-2.0)])(y, SR)
+    return y[0].astype(np.float64)
+
+
+def main(path, semitones=0.0, force_tempo=None):
     x = load(path)
+    if semitones:
+        x = deepen(x, semitones)
+        print(f"voice shifted by {semitones:+.1f} semitones")
     keys = list(T.LINES)
     weights = [sum(syllables(w) for w in T.LINES[k][0].split()) for k in keys]
     parts = split(x, keys)
@@ -165,7 +183,7 @@ def main(path):
         natural[k] = (a + lead, a + lead + len(seg) / SR)
         segs[k] = tighten(seg)
     rate = sum(weights) / sum(len(s) / SR for s in segs.values())
-    tempo = float(np.clip(TARGET_RATE / rate, 1.0, TEMPO_MAX))
+    tempo = force_tempo or float(np.clip(TARGET_RATE / rate, 1.0, TEMPO_MAX))
     print(f"read at {rate:.1f} syll/s -> tempo x{tempo:.2f}")
     if tempo > 1.001:
         from pedalboard import time_stretch
@@ -187,4 +205,7 @@ def main(path):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    args = sys.argv[1:]
+    shift = float(args[args.index("--semitones") + 1]) if "--semitones" in args else 0.0
+    tempo = float(args[args.index("--tempo") + 1]) if "--tempo" in args else None
+    main(args[0], shift, tempo)

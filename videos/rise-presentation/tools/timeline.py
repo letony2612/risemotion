@@ -35,8 +35,8 @@ LINES = {
     "l6": ("Trouve ton groupe : louange, étude biblique, jeunes.",
            "Trouve ton groupe : louange, étude biblique, jeunes."),
     "l7": ("Chaque matin, ta Parole du jour.", "Chaque matin, ta Parole du jour."),
-    "l8": ("Un kwiz par jour : toute la Bible en un an !", "Un quiz par jour : toute la Bible en un an !"),
-    "l9": ("Télécharge RISE. Élève-toi, ensemble !", "Télécharge RISE. Élève-toi, ensemble !"),
+    "l8": ("Un kwiz par jour pour apprendre la Bible !", "Un quiz par jour pour apprendre la Bible !"),
+    "l9": ("Télécharge RISE, c'est cent pour cent gratuit !", "Télécharge RISE, c'est cent pour cent gratuit !"),
 }
 
 # Captions in two tiers, as in a social ad: a small setup label, then the punch line, which lands on
@@ -50,10 +50,10 @@ BEATS = [
     ("l5", (0, 3), [(4, 7)]),
     ("l6", (0, 2), [(3, 3), (4, 5), (6, 6)]),
     ("l7", (0, 1), [(2, 5)]),
-    ("l8", (0, 3), [(4, 9)]),
-    ("l9", (0, 1), [(2, 3)]),
+    ("l8", (0, 3), [(4, 7)]),
+    ("l9", (0, 1), [(2, 6)]),
 ]
-PUNCH_TEXT = {("l8", 4): "toute la Bible en 1 an !"}  # shown instead of the words (same timing)
+PUNCH_TEXT = {("l9", 2): "c'est 100 % gratuit !"}  # shown instead of the words (same timing)
 
 
 def _tokens(text):
@@ -140,8 +140,8 @@ def _plan():
     E["pray"] = V["l4"] - 0.12
     E["lift_prayer"] = wt("l4", 1)  # coup dur
     E["jeprie"] = wt("l4", 7)  # prient
-    E["upd1"] = E["jeprie"] + 0.35
-    E["upd2"] = E["jeprie"] + 0.65
+    E["upd1"] = E["jeprie"] + 0.2
+    E["upd2"] = E["jeprie"] + 0.4
     # 5. answered: "répond" stamps it, everybody celebrates
     E["answer"] = V["l5"] - 0.12
     E["stamp"] = wt("l5", 3) + 0.08  # répond
@@ -157,12 +157,13 @@ def _plan():
     E["quiz"] = V["l8"] - 0.05
     E["q_tap"] = wt("l8", 2)  # par
     E["q_ok"] = wt("l8", 3) + 0.1  # jour
-    E["bible"] = wt("l8", 4)  # toute la Bible
+    E["learn"] = wt("l8", 5)  # apprendre la Bible
     # 9. end card
     E["end"] = V["l9"] - 0.12
     E["w_rise9"] = wt("l9", 1)
-    E["slogan"] = wt("l9", 2)
-    E["stores"] = max(end("l9") + 0.05, E["slogan"] + 0.5)
+    E["splash9"] = E["w_rise9"] - 0.85  # the logo's letters burst out on "RISE"
+    E["free"] = wt("l9", 2)  # c'est 100 % gratuit
+    E["stores"] = max(end("l9") + 0.05, E["free"] + 0.5)
     duration = math.ceil((E["stores"] + 2.0) * 10) / 10
     if music:  # a little longer, so the track ends on its own last hit
         from import_music import ending
@@ -231,11 +232,11 @@ def cues(E=E, W=W):
     c += [(E["verse"], "whoosh_long", 0.55), (E["verse"] + 0.2, "shimmer", 0.4), (E["verse_lift"], "chime", 0.4)]
     # 8. quiz (drop)
     c += [(E["quiz"], "impact", 0.9), (E["q_tap"], "click", 0.85), (E["q_ok"], "success", 0.65),
-          (E["bible"], "whoosh_up", 0.55), (E["bible"] + 0.05, "count_roll", 0.5), (E["bible"] + 0.9, "pop", 0.55),
-          (E["bible"] + 1.05, "pop2", 0.55), (E["bible"] + 1.2, "pop3", 0.6), (E["bible"] + 1.0, "confetti", 0.5)]
+          (E["learn"], "whoosh_up", 0.55), (E["learn"] + 0.05, "count_roll", 0.5), (E["learn"] + 0.5, "pop", 0.55),
+          (E["learn"] + 0.65, "pop2", 0.55), (E["learn"] + 0.8, "pop3", 0.6), (E["learn"] + 0.6, "confetti", 0.5)]
     # 9. end
     c += [(E["end"], "whoosh", 0.55), (E["w_rise9"], "impact", 0.9), (E["w_rise9"] + 0.02, "chime", 0.5),
-          (E["slogan"], "shimmer", 0.4), (E["stores"], "pop", 0.4), (E["stores"] + 0.12, "pop2", 0.4),
+          (E["free"], "success", 0.55), (E["free"] + 0.05, "confetti", 0.5), (E["stores"], "pop", 0.4), (E["stores"] + 0.12, "pop2", 0.4),
           (DURATION - 1.4, "shimmer", 0.3)]
     return sorted(c)
 

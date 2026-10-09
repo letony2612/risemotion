@@ -69,11 +69,48 @@
         font-weight: 700; font-size: 46px; line-height: 1.15; color: var(--ink); letter-spacing: -0.01em;
         box-shadow: 0 12px 30px rgba(120, 70, 20, 0.14), 0 2px 6px rgba(120, 70, 20, 0.08); }
       .setup b { font-weight: 800; }
-      .punch { display: block; max-width: 980px; padding: 16px 34px 20px; border-radius: 28px; text-align: center;
+      .punch { display: block; max-width: 940px; padding: 16px 34px 20px; border-radius: 28px; text-align: center;
         background: linear-gradient(180deg, #db7a07 0%, #d27105 100%);
         font-weight: 800; font-size: 92px; line-height: 1.02; letter-spacing: -0.015em; text-transform: uppercase; color: #fff;
         text-shadow: 0 4px 0 rgba(140, 62, 0, 0.35);
         box-shadow: 0 10px 0 #a24f03, 0 26px 46px rgba(162, 79, 3, 0.3); }
+      .punch.long { font-size: 80px; }
+
+      /* ---------- scene tints (light), flash ---------- */
+      .tint { opacity: 0; }
+      #tintMint { background: linear-gradient(180deg, #f4fdf7 0%, #dbf5e5 100%); }
+      #tintSun { background: radial-gradient(1000px 900px at 540px 1950px, rgba(255, 196, 96, 0.8), rgba(255, 196, 96, 0) 72%), linear-gradient(180deg, #fff7ea 0%, #ffe6bf 100%); }
+      #tintSky { background: linear-gradient(180deg, #d6eefa 0%, #ecf7fd 55%, #fbfeff 100%); }
+      #flash { background: #fff; opacity: 0; }
+
+      /* ---------- pieces riding on the lifted cards ---------- */
+      .lift .card img.st { position: absolute; left: 0; top: 0; }
+      .exs { position: absolute; display: block; }
+      .tapr { position: absolute; display: block; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; border: 5px solid var(--amber); opacity: 0; }
+      .cnt { position: absolute; display: block; left: 302px; top: 271px; width: 186px; height: 30px; background: #fffafa; white-space: nowrap;
+        font-weight: 500; font-size: 21px; line-height: 30px; color: var(--ink); }
+      .mflame { position: absolute; display: block; width: 34px; height: 42px; margin: -21px 0 0 -17px; opacity: 0; }
+      .stampb { position: absolute; display: block; opacity: 0; }
+      .ring { position: absolute; display: block; border-radius: 50%; border: 5px solid #f5b000; opacity: 0; }
+      .shine { position: absolute; top: -10%; left: 0; width: 40%; height: 120%;
+        background: linear-gradient(100deg, rgba(255, 230, 160, 0) 0%, rgba(255, 230, 160, 0.55) 50%, rgba(255, 230, 160, 0) 100%); }
+      .rg { position: absolute; left: -3px; top: -3px; right: -3px; bottom: -3px; border-radius: 10px; border: 5px solid var(--amber);
+        box-shadow: 0 0 30px rgba(245, 158, 11, 0.5); opacity: 0; }
+
+      /* ---------- 9. end card ---------- */
+      #splashw9 { position: absolute; left: 156px; top: 560px; width: 768px; height: 400px; }
+      #splash9 { position: absolute; left: 0; top: 0; width: 768px; height: 400px; display: block; }
+      #slogan9 { position: absolute; left: 0; top: 990px; width: 1080px; text-align: center; font-weight: 800; font-size: 64px; letter-spacing: -0.02em; color: var(--ink); opacity: 0; }
+      #slogan9 em { font-style: normal; color: #b45f06; }
+      #stores9 { position: absolute; left: 0; top: 1100px; width: 1080px; display: flex; justify-content: center; }
+      .store { display: block; padding: 18px 38px 20px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 700; font-size: 38px; opacity: 0;
+        box-shadow: 0 14px 30px rgba(26, 23, 20, 0.25); }
+      .mini { position: absolute; display: block; width: 300px; height: 648px; padding: 9px; border-radius: 42px; background: var(--ink);
+        box-shadow: 0 30px 60px rgba(90, 55, 20, 0.22); }
+      .mini .mscreen { position: relative; width: 282px; height: 630px; border-radius: 34px; overflow: hidden; background: var(--paper); }
+      .mini img { display: block; width: 282px; height: 630px; }
+      #mini1 { left: 110px; top: 1330px; }
+      #mini2 { left: 670px; top: 1330px; }
     </style>
   </head>
   <body>
@@ -83,6 +120,9 @@
       </svg>
 
       <div id="bg" class="layer"></div>
+      <div id="tintMint" class="layer tint"></div>
+      <div id="tintSun" class="layer tint"></div>
+      <div id="tintSky" class="layer tint"></div>
       <div id="bokeh" class="layer">@@BOKEH@@</div>
 
       <!-- ===================== 1-2. THE WEEK, THEN RISE ===================== -->
@@ -95,12 +135,25 @@
 
       <!-- ===================== THE PHONE ===================== -->
       <div id="stage" class="layer">
-        <div id="cam" class="layer">
+        <div id="cam" class="layer" data-layout-allow-overflow>
           <div id="phone">
             <span class="frame"></span>
             <div class="screen">
-              <img id="sc-feed" class="scr" src="assets/screens/02_accueil.png" alt="" />
+              <img id="sc-feed" class="scr" data-layout-allow-overflow src="assets/screens/02_accueil.png" alt="" />
               <span id="sh-sarah" class="lsh" style="@@SPOS:post_sarah@@"></span>
+              <img id="sc-pray" class="scr" data-layout-allow-overflow src="assets/screens/06_priere.png" alt="" />
+              <span id="sh-maman" class="lsh" style="@@SPOS:prayer_maman@@"></span>
+              <img id="sc-answer" class="scr" data-layout-allow-overflow src="assets/screens/08_priere_exaucee.png" alt="" />
+              <span id="sh-answered" class="lsh" style="@@SPOS:answered@@"></span>
+              <img id="sc-groups" class="scr" data-layout-allow-overflow src="assets/screens/10_groupes.png" alt="" />
+              <span id="sh-g1" class="lsh" style="@@SPOS:group_1@@"></span>
+              <span id="sh-g2" class="lsh" style="@@SPOS:group_2@@"></span>
+              <span id="sh-g4" class="lsh" style="@@SPOS:group_4@@"></span>
+              <img id="sc-verse" class="scr" data-layout-allow-overflow src="assets/screens/14_explorer.png" alt="" />
+              <span id="sh-verse" class="lsh" style="@@SPOS:verse@@"></span>
+              <img id="sc-quiz" class="scr" data-layout-allow-overflow src="assets/screens/17_quiz_question.png" alt="" />
+              <img id="ans-flat" class="exs" src="assets/ui/answer_1.png" alt="" style="@@SPOS:quiz_answer@@; opacity: 0" />
+              <img id="ex-sheet" class="exs" data-layout-allow-overflow src="assets/lift/quiz_exact.png" alt="" style="@@SPOS:quiz_exact@@" />
             </div>
             <!-- 3. share: Sarah's testimony lifts out -->
             <div id="lf-sarah" class="lift" style="@@POS:post_sarah@@">
@@ -108,11 +161,58 @@
               <span id="mk-sarah" class="mark" style="left: 236px; top: 80px; width: 182px; height: 29px"></span>
               <div id="hearts">@@HEARTS@@</div>
             </div>
+            <!-- 4. pray: Rebecca's request, then the community's replies -->
+            <div id="lf-maman" class="lift" style="@@POS:prayer_maman@@">
+              <div class="card"><img src="assets/lift/prayer_maman.png" alt="" /></div>
+              <span id="cnt" class="cnt">3 personnes prient</span>
+              <span id="tapM" class="tapr" style="left: 77px; top: 286px"></span>
+              <div id="mflames">@@MFLAMES@@</div>
+            </div>
+            <div id="lf-upd1" class="lift" style="left: 150px; top: 640px; width: 540px; height: 90px"><div class="card"><img src="assets/ui/upd_sarah.png" alt="" /></div></div>
+            <div id="lf-upd2" class="lift" style="left: -90px; top: 760px; width: 540px; height: 99px"><div class="card"><img src="assets/ui/upd_esther.png" alt="" /></div></div>
+            <!-- 5. answered: "Exaucée" is stamped, the comments fly out -->
+            <div id="lf-answered" class="lift" style="@@POS:answered@@">
+              <div class="card"><img src="assets/lift/answered.png" alt="" /><span id="shine5" class="shine"></span></div>
+              <img id="stampB" class="stampb" src="assets/ui/badge_exaucee.png" alt="" style="left: 411px; top: 42px; width: 89px; height: 34px" />
+              <span id="ring5" class="ring" style="left: 425px; top: 29px; width: 60px; height: 60px"></span>
+            </div>
+            <div id="lf-com1" class="lift" style="left: -150px; top: 650px; width: 560px; height: 85px"><div class="card"><img src="assets/ui/com_david.png" alt="" /></div></div>
+            <div id="lf-com2" class="lift" style="left: 230px; top: 790px; width: 560px; height: 84px"><div class="card"><img src="assets/ui/com_esther.png" alt="" /></div></div>
+            <div id="lf-com3" class="lift" style="left: -70px; top: 930px; width: 560px; height: 84px"><div class="card"><img src="assets/ui/com_rebecca.png" alt="" /></div></div>
+            <!-- 6. groups -->
+            <div id="lf-g1" class="lift" style="@@POS:group_1@@"><div class="card"><img src="assets/lift/group_1.png" alt="" /></div><span class="rg"></span></div>
+            <div id="lf-g2" class="lift" style="@@POS:group_2@@"><div class="card"><img src="assets/lift/group_2.png" alt="" /></div><span class="rg"></span></div>
+            <div id="lf-g4" class="lift" style="@@POS:group_4@@"><div class="card"><img src="assets/lift/group_4.png" alt="" /></div><span class="rg"></span></div>
+            <!-- 7. verse of the day -->
+            <div id="lf-verse" class="lift" style="@@POS:verse@@">
+              <div class="card"><img src="assets/lift/verse.png" alt="" /><span id="shine7" class="shine"></span></div>
+            </div>
+            <!-- 8. quiz: the right answer (unselected, selected, correct), then the streak -->
+            <div id="lf-ans" class="lift" style="@@POS:quiz_answer@@">
+              <div class="card"><img class="st" src="assets/ui/answer_1.png" alt="" /><img id="ans-sel" class="st" src="assets/ui/answer_1_sel.png" alt="" /><img id="ans-ok" class="st" src="assets/ui/answer_1_ok.png" alt="" /></div>
+              <span id="tapQ" class="tapr" style="left: 270px; top: 41px"></span>
+            </div>
+            <div id="lf-stats" class="lift" style="left: 40px; top: 330px; width: 556px; height: 315px"><div class="card"><img src="assets/ui/quiz_stats.png" alt="" /></div></div>
           </div>
         </div>
       </div>
 
       <div id="confA" class="layer">@@CONFETTI@@</div>
+      <div id="confB" class="layer">@@CONFETTI@@</div>
+      <div id="confC" class="layer">@@CONFETTI@@</div>
+
+      <!-- ===================== 9. END CARD ===================== -->
+      <div id="endw" class="layer">
+        <div id="splashw9">
+          <video id="splash9" class="clip" src="assets/brand/rise_splash_light.webm" muted playsinline data-start="@@SPLASH9_START@@" data-duration="@@SPLASH9_DUR@@" data-track-index="4"></video>
+        </div>
+        <div id="slogan9">Élève-toi. <em>Ensemble.</em></div>
+        <div id="stores9"><span class="store">Dispo sur iPhone et Android</span></div>
+        <div id="mini1" class="mini" data-layout-allow-overflow><div class="mscreen"><img src="assets/screens/06_priere.png" alt="" /></div></div>
+        <div id="mini2" class="mini" data-layout-allow-overflow><div class="mscreen"><img src="assets/screens/15_quiz_parcours.png" alt="" /></div></div>
+      </div>
+      <div id="confD" class="layer">@@CONFETTI@@</div>
+      <div id="flash" class="layer"></div>
 
       <!-- captions: a setup label, then the punch line on its first word -->
 @@BEATS@@
@@ -148,10 +248,10 @@
         });
       };
       // a piece of the screen lifts toward the camera; its shadow stays on the glass
-      const lift = (card, shadow, t, z = 170, s = 1.06, rx = -5) => {
+      const lift = (card, shadow, t, z = 170, s = 1.06, rx = -5, dur = 0.6) => {
         tl.set(card, { opacity: 1 }, t);
-        tl.fromTo(card, { z: 0, scale: 1, rotationX: 0 }, { z, scale: s, rotationX: rx, duration: 0.6, ease: "back.out(1.7)" }, t);
-        tl.fromTo(shadow, { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1.04, duration: 0.6, ease: "power2.out" }, t);
+        tl.fromTo(card, { z: 0, scale: 1, rotationX: 0 }, { z, scale: s, rotationX: rx, duration: dur, ease: "back.out(1.7)" }, t);
+        tl.fromTo(shadow, { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1.04, duration: dur, ease: "power2.out" }, t);
       };
 
       // ---------------------------------------------------------------- background: the lights drift
@@ -210,7 +310,7 @@
       // the camera follows the post as it rises off the feed
       lift("#lf-sarah", "#sh-sarah", E.lift_post, 190, 1.07, -6);
       tl.to("#cam", { y: -430, rotationX: 9, rotationY: -12, rotation: -1.5, scale: 1.17, duration: 0.85, ease: "power3.inOut" }, push3);
-      tl.to("#cam", { y: -470, rotationY: -6, rotation: 0, scale: 1.24, duration: Math.max(0.6, E.pray - push3 - 0.85), ease: "sine.inOut" }, push3 + 0.85);
+      tl.to("#cam", { y: -470, rotationY: -6, rotation: 0, scale: 1.24, duration: Math.max(0.3, E.pray - 0.1 - push3 - 0.85), ease: "sine.inOut" }, push3 + 0.85);
       // "Dieu ... fait": the line is marked; "ta vie": hearts
       tl.fromTo("#mk-sarah", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power2.out" }, E.w_dieu - 0.05);
       document.querySelectorAll("#hearts .heart").forEach((h, i) => {
@@ -218,6 +318,117 @@
         tl.fromTo(h, { x: 0, y: 0, scale: 0.3, opacity: 0 }, { x: dx * 0.5, y: -up * 0.45, scale: 1.1, opacity: 1, duration: 0.3, ease: "power2.out" }, t);
         tl.to(h, { x: dx, y: -up, scale: 0.7, opacity: 0, duration: 0.7, ease: "sine.in" }, t + 0.3);
       });
+
+      // ================================================================ THE APP MOVES ON: one screen per scene
+      const swap = (sel, t, dur = 0.42) => tl.fromTo(sel, { x: 600 }, { x: 0, duration: dur, ease: "expo.out" }, t);
+      const settle = (card, shadow, t) => {
+        tl.to(card, { z: 0, scale: 1, rotationX: 0, duration: 0.28, ease: "power2.in" }, t);
+        if (shadow) tl.to(shadow, { opacity: 0, duration: 0.28 }, t);
+        tl.set(card, { opacity: 0 }, t + 0.28);
+      };
+      const shake = (t, amp = 10) => {
+        const k = [[1, -0.7], [-0.8, 0.6], [0.6, -0.4], [-0.35, 0.25], [0, 0]];
+        k.forEach(([x, y], i) => tl.to("#stage", { x: x * amp, y: y * amp, duration: 0.045, ease: "none" }, t + i * 0.045));
+      };
+      const floatIn = (sel, t, z, r, dx = 260) => {
+        tl.set(sel, { opacity: 1 }, t);
+        tl.fromTo(sel, { x: dx, z: 0, scale: 0.5, rotation: r * 4 }, { x: 0, z, scale: 1, rotation: r, duration: 0.55, ease: "back.out(1.8)" }, t);
+      };
+
+      // ================================================================ 4. PRAY: a hard time, the community prays
+      settle("#lf-sarah", "#sh-sarah", E.pray - 0.1);
+      swap("#sc-pray", E.pray);
+      tl.to("#cam", { y: 60, rotationX: 6, rotationY: 14, rotation: 2, scale: 1.12, duration: 0.6, ease: "power3.inOut" }, E.pray - 0.1);
+      lift("#lf-maman", "#sh-maman", E.lift_prayer, 180, 1.06, -5);
+      tl.to("#cam", { y: 110, rotationY: 8, rotation: 0.5, scale: 1.18, duration: Math.max(0.6, E.answer - E.pray - 0.6), ease: "sine.inOut" }, E.pray + 0.5);
+      // "prient": the button is tapped, little flames rise, the count climbs, the replies come in
+      tl.fromTo("#tapM", { scale: 0.3, opacity: 1 }, { scale: 1.9, opacity: 0, duration: 0.55, ease: "power2.out", immediateRender: false }, E.jeprie);
+      document.querySelectorAll("#mflames .mflame").forEach((f, i) => {
+        const t = E.jeprie + 0.08 + i * 0.09, dx = (rnd(i, 2) - 0.5) * 220, h = 160 + rnd(i, 4) * 170;
+        tl.fromTo(f, { x: 0, y: 0, scale: 0.4, opacity: 0 }, { x: dx * 0.4, y: -h * 0.35, scale: 1.1, opacity: 1, duration: 0.28, ease: "power2.out" }, t);
+        tl.to(f, { x: dx, y: -h, scale: 0.6, opacity: 0, duration: 0.8, ease: "sine.in" }, t + 0.28);
+      });
+      const praying = { n: 3 };
+      tl.fromTo(praying, { n: 3 }, { n: 14, duration: Math.max(0.4, E.answer - E.jeprie - 0.35), ease: "power1.inOut",
+        onUpdate: () => { document.getElementById("cnt").textContent = `${Math.round(praying.n)} personnes prient`; } }, E.jeprie + 0.08);
+      floatIn("#lf-upd1", E.upd1, 260, -2);
+      floatIn("#lf-upd2", E.upd2, 300, 1.5, -260);
+
+      // ================================================================ 5. ANSWERED: "Exaucée", everybody celebrates
+      settle("#lf-maman", "#sh-maman", E.answer - 0.1);
+      tl.to(["#lf-upd1", "#lf-upd2"], { x: 700, opacity: 0, duration: 0.28, ease: "power3.in" }, Math.max(E.answer - 0.15, E.upd2 + 0.6));
+      swap("#sc-answer", E.answer);
+      tl.to("#tintMint", { opacity: 1, duration: 0.5, ease: "power1.out" }, E.answer);
+      tl.to("#cam", { y: 140, rotationX: 8, rotationY: -12, rotation: -2, scale: 1.1, duration: 0.6, ease: "power3.inOut" }, E.answer - 0.1);
+      lift("#lf-answered", "#sh-answered", E.answer + 0.3, 200, 1.06, -4);
+      tl.fromTo("#stampB", { scale: 3.2, rotation: -16, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.22, ease: "power4.in" }, E.stamp - 0.22);
+      tl.fromTo("#ring5", { scale: 0.3, opacity: 1 }, { scale: 4, opacity: 0, duration: 0.7, ease: "power2.out", immediateRender: false }, E.stamp);
+      tl.fromTo("#shine5", { xPercent: -130 }, { xPercent: 320, duration: 0.8, ease: "power2.inOut" }, E.stamp + 0.05);
+      shake(E.stamp, 9);
+      floatIn("#lf-com1", E.celebrate, 280, -3, -300);
+      floatIn("#lf-com2", E.celebrate + 0.2, 320, 2.5);
+      floatIn("#lf-com3", E.celebrate + 0.4, 360, -1.5, -300);
+      burst("#confB .conf", E.celebrate + 0.05, 540, 960, 620, 660);
+      tl.to("#cam", { y: 150, rotationY: -6, scale: 1.14, duration: Math.max(0.6, E.groups - E.answer - 0.6), ease: "sine.inOut" }, E.answer + 0.5);
+
+      // ================================================================ 6. GROUPS: each one lifts as it is named
+      settle("#lf-answered", "#sh-answered", E.groups - 0.1);
+      tl.to(["#lf-com1", "#lf-com2", "#lf-com3"], { x: -900, opacity: 0, duration: 0.3, ease: "power3.in", stagger: 0.04 }, E.groups - 0.2);
+      tl.to("#tintMint", { opacity: 0, duration: 0.5 }, E.groups);
+      swap("#sc-groups", E.groups);
+      tl.to("#cam", { y: -60, rotationX: 10, rotationY: 15, rotation: 1.5, scale: 1.12, duration: 0.6, ease: "power3.inOut" }, E.groups - 0.1);
+      const named = (card, shadow, t, next) => {
+        lift(card, shadow, t, 150, 1.05, -4, Math.min(0.6, next - 0.05 - t));
+        tl.fromTo(card + " .rg", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t);
+        tl.to(card + " .rg", { opacity: 0, duration: 0.15 }, next - 0.05);
+        settle(card, shadow, next - 0.05);
+      };
+      named("#lf-g1", "#sh-g1", E.hl1, E.hl2);
+      named("#lf-g2", "#sh-g2", E.hl2, E.hl3);
+      named("#lf-g4", "#sh-g4", E.hl3, E.verse - 0.05);
+      tl.to("#cam", { y: -110, rotationY: 12, duration: Math.max(0.3, E.hl2 - E.hl1), ease: "sine.inOut" }, E.hl1);
+      tl.to("#cam", { y: -200, rotationY: 9, duration: Math.max(0.3, E.hl3 - E.hl2), ease: "sine.inOut" }, E.hl2);
+      tl.to("#cam", { y: -250, rotationY: 7, scale: 1.16, duration: Math.max(0.3, E.verse - E.hl3 - 0.15), ease: "sine.inOut" }, E.hl3);
+
+      // ================================================================ 7. VERSE OF THE DAY: sunrise
+      swap("#sc-verse", E.verse);
+      tl.to("#tintSun", { opacity: 1, duration: 0.9, ease: "power1.out" }, E.verse - 0.1);
+      tl.to("#cam", { y: 220, rotationX: 4, rotationY: -10, rotation: -1, scale: 1.08, duration: 0.6, ease: "power3.inOut" }, E.verse - 0.05);
+      lift("#lf-verse", "#sh-verse", E.verse_lift, 210, 1.08, -5);
+      tl.fromTo("#shine7", { xPercent: -130 }, { xPercent: 320, duration: 1.0, ease: "power2.inOut" }, E.verse_lift + 0.25);
+      tl.to("#cam", { y: 330, rotationY: -5, scale: 1.2, duration: Math.max(0.5, E.quiz - E.verse - 0.6), ease: "sine.inOut" }, E.verse + 0.55);
+
+      // ================================================================ 8. QUIZ (the drop)
+      settle("#lf-verse", "#sh-verse", E.quiz - 0.12);
+      tl.to("#tintSun", { opacity: 0, duration: 0.15 }, E.quiz);
+      tl.to("#tintSky", { opacity: 1, duration: 0.15 }, E.quiz);
+      tl.fromTo("#flash", { opacity: 0.85 }, { opacity: 0, duration: 0.5, ease: "power2.out", immediateRender: false }, E.quiz);
+      swap("#sc-quiz", E.quiz - 0.02, 0.2);
+      tl.set(["#lf-ans", "#ans-flat"], { opacity: 1 }, E.quiz - 0.02);  // the answer starts unselected
+      tl.fromTo("#ans-sel", { opacity: 0 }, { opacity: 1, duration: 0.06 }, E.q_tap);
+      tl.fromTo("#ans-ok", { opacity: 0 }, { opacity: 1, duration: 0.08 }, E.q_ok);
+      tl.to("#cam", { y: -40, rotationX: 9, rotationY: 12, rotation: 2, scale: 1.16, duration: 0.45, ease: "back.out(1.6)" }, E.quiz);
+      shake(E.quiz, 12);
+      tl.fromTo("#tapQ", { scale: 0.3, opacity: 1 }, { scale: 1.9, opacity: 0, duration: 0.5, ease: "power2.out", immediateRender: false }, E.q_tap);
+      tl.fromTo("#lf-ans", { z: 0, scale: 1 }, { z: 160, scale: 1.05, duration: 0.4, ease: "back.out(2)" }, E.q_tap);
+      tl.fromTo("#ex-sheet", { y: 420 }, { y: 0, duration: 0.45, ease: "expo.out" }, E.q_ok + 0.05);
+      // "apprendre la Bible": the streak and the levels pop out in front
+      tl.set("#lf-stats", { opacity: 1 }, E.learn);
+      tl.fromTo("#lf-stats", { z: 0, y: 200, scale: 0.5, rotationX: 30 }, { z: 320, y: 0, scale: 1, rotationX: -4, duration: 0.6, ease: "back.out(1.6)" }, E.learn);
+      burst("#confC .conf", E.learn + 0.45, 540, 980, 600, 620);
+      tl.to("#cam", { y: 0, rotationY: 6, scale: 1.12, duration: Math.max(0.4, E.end - E.quiz - 0.55), ease: "sine.inOut" }, E.quiz + 0.45);
+
+      // ================================================================ 9. END: the logo, free, the stores
+      tl.to("#cam", { y: 1900, rotationX: 40, rotationY: -20, rotation: 8, scale: 0.9, duration: 0.5, ease: "power3.in" }, E.end - 0.05);
+      tl.to("#tintSky", { opacity: 0, duration: 0.6 }, E.end);
+      sway("#splashw9", "y", 6, 2.6, E.splash9, D);
+      burst("#confD .conf", E.free + 0.05, 540, 820, 640, 640);
+      tl.fromTo("#slogan9", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, E.free + 0.5);
+      tl.fromTo("#stores9 .store", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(2.2)" }, E.stores);
+      tl.fromTo("#mini1", { y: 800, rotation: -4 }, { y: 0, rotation: -11, duration: 0.9, ease: "expo.out" }, E.stores + 0.2);
+      tl.fromTo("#mini2", { y: 800, rotation: 4 }, { y: 0, rotation: 11, duration: 0.9, ease: "expo.out" }, E.stores + 0.32);
+      sway("#mini1", "y", 10, 2.8, E.stores + 1.15, D);
+      sway("#mini2", "y", 10, 3.2, E.stores + 1.25, D, 1.4);
 
       // ---------------------------------------------------------------- captions: label, then the punch
       document.querySelectorAll(".beat").forEach((b) => {

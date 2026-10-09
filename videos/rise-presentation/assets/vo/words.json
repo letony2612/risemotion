@@ -1,405 +1,410 @@
 {
  "l1": {
   "text": "Ta foi, tu la vis que le dimanche ?",
-  "audio": "d5c7b393c7943418e5ae759ba3109b484691665f",
+  "audio": "7540e03ac0965eb510c04c43910bb380e866871d",
   "words": [
    {
     "w": "Ta",
     "start": 0.0,
-    "end": 0.2
+    "end": 0.23
    },
    {
     "w": "foi,",
-    "start": 0.21,
-    "end": 0.39
+    "start": 0.24,
+    "end": 0.57
    },
    {
     "w": "tu",
-    "start": 0.39,
-    "end": 0.5
+    "start": 0.72,
+    "end": 0.84
    },
    {
     "w": "la",
-    "start": 0.5,
-    "end": 0.67
+    "start": 0.84,
+    "end": 1.01
    },
    {
     "w": "vis",
-    "start": 0.67,
-    "end": 0.8
+    "start": 1.01,
+    "end": 1.205
    },
    {
     "w": "que",
-    "start": 0.8,
-    "end": 0.89
+    "start": 1.26,
+    "end": 1.34
    },
    {
     "w": "le",
-    "start": 0.9,
-    "end": 1.0
+    "start": 1.35,
+    "end": 1.46
    },
    {
     "w": "dimanche ?",
-    "start": 1.0,
-    "end": 1.64
+    "start": 1.46,
+    "end": 1.87
    }
   ]
  },
  "l2": {
   "text": "Avec RISE, tu la vis tous les jours.",
-  "audio": "9d6b048301df969e27c77df4f109f9ee53cd597e",
+  "audio": "410195efe86ad5f29c732d424fda3af89c97136e",
   "words": [
    {
     "w": "Avec",
-    "start": 0.006,
-    "end": 0.29
+    "start": 0.0,
+    "end": 0.51
    },
    {
     "w": "RISE,",
-    "start": 0.29,
-    "end": 0.74
+    "start": 0.51,
+    "end": 0.935
    },
    {
     "w": "tu",
-    "start": 0.74,
-    "end": 0.85
-   },
-   {
-    "w": "la",
-    "start": 0.85,
-    "end": 0.95
-   },
-   {
-    "w": "vis",
-    "start": 0.95,
+    "start": 0.97,
     "end": 1.09
    },
    {
+    "w": "la",
+    "start": 1.09,
+    "end": 1.2
+   },
+   {
+    "w": "vis",
+    "start": 1.2,
+    "end": 1.37
+   },
+   {
     "w": "tous",
-    "start": 1.1,
-    "end": 1.16
+    "start": 1.51,
+    "end": 1.59
    },
    {
     "w": "les",
-    "start": 1.16,
-    "end": 1.34
+    "start": 1.59,
+    "end": 1.83
    },
    {
     "w": "jours.",
-    "start": 1.34,
-    "end": 1.71
+    "start": 1.83,
+    "end": 2.1
    }
   ]
  },
  "l3": {
   "text": "Tu partages ce que Dieu fait dans ta vie.",
-  "audio": "979938a896fcb69aef48581f74c9bedea430e13a",
+  "audio": "691a36d32df5516b8f27d38a0e00a7979ca2c305",
   "words": [
    {
     "w": "Tu",
-    "start": 0.006,
+    "start": 0.0,
     "end": 0.18
    },
    {
     "w": "partages",
     "start": 0.18,
-    "end": 0.72
+    "end": 0.69
    },
    {
     "w": "ce",
-    "start": 0.72,
-    "end": 0.87
+    "start": 0.69,
+    "end": 0.84
    },
    {
     "w": "que",
-    "start": 0.87,
-    "end": 1.03
+    "start": 0.84,
+    "end": 0.98
    },
    {
     "w": "Dieu",
-    "start": 1.03,
-    "end": 1.21
+    "start": 0.98,
+    "end": 1.1
    },
    {
     "w": "fait",
-    "start": 1.21,
-    "end": 1.32
+    "start": 1.11,
+    "end": 1.2
    },
    {
     "w": "dans",
-    "start": 1.32,
-    "end": 1.49
+    "start": 1.2,
+    "end": 1.36
    },
    {
     "w": "ta",
-    "start": 1.49,
-    "end": 1.62
+    "start": 1.36,
+    "end": 1.64
    },
    {
     "w": "vie.",
-    "start": 1.62,
-    "end": 1.85
+    "start": 1.64,
+    "end": 1.86
    }
   ]
  },
  "l4": {
   "text": "Un coup dur ? Tes frères et sœurs prient pour toi.",
-  "audio": "008b28d215e172b0bff3517d87d96b1a6bf62fa2",
+  "audio": "7c20c6fa73ba43e81d8f4a91c3d86f9fb16a5b32",
   "words": [
    {
     "w": "Un",
-    "start": 0.006,
-    "end": 0.21
+    "start": 0.0,
+    "end": 0.16
    },
    {
     "w": "coup",
-    "start": 0.21,
-    "end": 0.35
+    "start": 0.16,
+    "end": 0.28
    },
    {
     "w": "dur ?",
-    "start": 0.35,
-    "end": 0.752
+    "start": 0.28,
+    "end": 0.605
    },
    {
     "w": "Tes",
-    "start": 0.82,
-    "end": 0.99
+    "start": 0.69,
+    "end": 0.86
    },
    {
     "w": "frères",
-    "start": 0.99,
-    "end": 1.18
+    "start": 0.86,
+    "end": 1.03
    },
    {
     "w": "et",
-    "start": 1.18,
-    "end": 1.34
+    "start": 1.03,
+    "end": 1.17
    },
    {
     "w": "sœurs",
-    "start": 1.35,
-    "end": 1.56
+    "start": 1.18,
+    "end": 1.41
    },
    {
     "w": "prient",
-    "start": 1.57,
-    "end": 1.76
+    "start": 1.42,
+    "end": 1.66
    },
    {
     "w": "pour",
-    "start": 1.76,
-    "end": 1.92
+    "start": 1.66,
+    "end": 1.83
    },
    {
     "w": "toi.",
-    "start": 1.92,
-    "end": 2.2
+    "start": 1.83,
+    "end": 2.12
    }
   ]
  },
  "l5": {
   "text": "Et quand Dieu répond… tout le monde célèbre !",
-  "audio": "bc5c75c064e2f097f14208527affd6bd148bd88b",
+  "audio": "d1a5bdeb46c4053e13993d30b02f27cb93a4eaf8",
   "words": [
    {
     "w": "Et",
-    "start": 0.006,
-    "end": 0.16
+    "start": 0.0,
+    "end": 0.281
    },
    {
     "w": "quand",
-    "start": 0.16,
-    "end": 0.32
+    "start": 0.281,
+    "end": 0.505
    },
    {
     "w": "Dieu",
-    "start": 0.32,
-    "end": 0.49
+    "start": 0.505,
+    "end": 0.695
    },
    {
     "w": "répond…",
-    "start": 0.49,
-    "end": 0.83
+    "start": 0.695,
+    "end": 1.078
    },
    {
     "w": "tout",
-    "start": 0.83,
-    "end": 0.88
+    "start": 1.078,
+    "end": 1.295
    },
    {
     "w": "le",
-    "start": 0.88,
-    "end": 0.92
+    "start": 1.295,
+    "end": 1.38
    },
    {
     "w": "monde",
-    "start": 0.93,
-    "end": 1.16
+    "start": 1.345,
+    "end": 1.68
    },
    {
     "w": "célèbre !",
-    "start": 1.16,
-    "end": 1.79
+    "start": 1.68,
+    "end": 2.26
    }
   ]
  },
  "l6": {
   "text": "Trouve ton groupe : louange, étude biblique, jeunes.",
-  "audio": "b39d46cf3f57ecb289e5145d7940e4d3758d8f05",
+  "audio": "4dc5e2de1f17569bb4c4d31596280844fba9502a",
   "words": [
    {
     "w": "Trouve",
     "start": 0.0,
-    "end": 0.3
+    "end": 0.43
    },
    {
     "w": "ton",
-    "start": 0.3,
-    "end": 0.49
+    "start": 0.43,
+    "end": 0.58
    },
    {
     "w": "groupe :",
-    "start": 0.49,
-    "end": 0.842
+    "start": 0.58,
+    "end": 0.882
    },
    {
     "w": "louange,",
-    "start": 0.88,
-    "end": 1.34
+    "start": 1.01,
+    "end": 1.609
    },
    {
     "w": "étude",
-    "start": 1.34,
-    "end": 1.68
+    "start": 1.62,
+    "end": 1.93
    },
    {
     "w": "biblique,",
-    "start": 1.68,
-    "end": 2.01
+    "start": 1.93,
+    "end": 2.38
    },
    {
     "w": "jeunes.",
-    "start": 2.02,
-    "end": 2.45
+    "start": 2.4,
+    "end": 2.91
    }
   ]
  },
  "l7": {
   "text": "Chaque matin, ta Parole du jour.",
-  "audio": "587c5032f9c0f91d3667f3224794b066568249e0",
+  "audio": "8c973df803d5f8748cf6b1fadee68426174a1aea",
   "words": [
    {
     "w": "Chaque",
-    "start": 0.006,
-    "end": 0.25
+    "start": 0.0,
+    "end": 0.44
    },
    {
     "w": "matin,",
-    "start": 0.26,
-    "end": 0.64
+    "start": 0.45,
+    "end": 0.852
    },
    {
     "w": "ta",
-    "start": 0.64,
-    "end": 0.79
+    "start": 0.99,
+    "end": 1.17
    },
    {
     "w": "Parole",
-    "start": 0.79,
-    "end": 1.09
+    "start": 1.2,
+    "end": 1.54
    },
    {
     "w": "du",
-    "start": 1.09,
-    "end": 1.2
+    "start": 1.54,
+    "end": 1.65
    },
    {
     "w": "jour.",
-    "start": 1.2,
-    "end": 1.59
+    "start": 1.65,
+    "end": 1.98
    }
   ]
  },
  "l8": {
-  "text": "Un kwiz par jour : toute la Bible en un an !",
-  "audio": "44ceb026e9cbad827ae80e7e5605d8863609bd50",
+  "text": "Un kwiz par jour pour apprendre la Bible !",
+  "audio": "0036198af7634aaa45b6a8e00b715cb1169a040a",
   "words": [
    {
     "w": "Un",
-    "start": 0.006,
-    "end": 0.21
+    "start": 0.01,
+    "end": 0.23
    },
    {
     "w": "kwiz",
-    "start": 0.21,
-    "end": 0.43
+    "start": 0.24,
+    "end": 0.42
    },
    {
     "w": "par",
-    "start": 0.43,
-    "end": 0.58
+    "start": 0.42,
+    "end": 0.53
    },
    {
-    "w": "jour :",
-    "start": 0.58,
-    "end": 1.05
+    "w": "jour",
+    "start": 0.53,
+    "end": 0.785
    },
    {
-    "w": "toute",
-    "start": 1.12,
-    "end": 1.27
+    "w": "pour",
+    "start": 0.798,
+    "end": 1.02
+   },
+   {
+    "w": "apprendre",
+    "start": 1.02,
+    "end": 1.38
    },
    {
     "w": "la",
-    "start": 1.28,
-    "end": 1.45
+    "start": 1.38,
+    "end": 1.57
    },
    {
-    "w": "Bible",
-    "start": 1.45,
-    "end": 1.72
-   },
-   {
-    "w": "en",
-    "start": 1.72,
-    "end": 1.76
-   },
-   {
-    "w": "un",
-    "start": 1.77,
-    "end": 1.93
-   },
-   {
-    "w": "an !",
-    "start": 1.93,
-    "end": 2.14
+    "w": "Bible !",
+    "start": 1.57,
+    "end": 1.881
    }
   ]
  },
  "l9": {
-  "text": "Télécharge RISE. Élève-toi, ensemble !",
-  "audio": "b4a1d49787c170f695cbdf4ae79420bda301b07a",
+  "text": "Télécharge RISE, c'est cent pour cent gratuit !",
+  "audio": "cacb0b2bbaf320c6d83def1881ae57e5d1630766",
   "words": [
    {
     "w": "Télécharge",
-    "start": 0.006,
-    "end": 0.55
+    "start": 0.23,
+    "end": 0.73
    },
    {
-    "w": "RISE.",
-    "start": 0.55,
-    "end": 1.02
+    "w": "RISE,",
+    "start": 0.73,
+    "end": 1.18
    },
    {
-    "w": "Élève-toi,",
-    "start": 1.05,
+    "w": "c'est",
+    "start": 1.16,
     "end": 1.52
    },
    {
-    "w": "ensemble !",
+    "w": "cent",
     "start": 1.52,
-    "end": 2.02
+    "end": 1.76
+   },
+   {
+    "w": "pour",
+    "start": 1.76,
+    "end": 1.89
+   },
+   {
+    "w": "cent",
+    "start": 1.89,
+    "end": 2.08
+   },
+   {
+    "w": "gratuit !",
+    "start": 2.08,
+    "end": 2.39
    }
   ]
  }

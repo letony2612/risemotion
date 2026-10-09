@@ -47,14 +47,22 @@ def hearts(n=6):
                    for _ in range(n))
 
 
+def mflames(n=8):
+    return "".join('<img class="mflame" src="assets/ui/flame.png" alt="" style="left: 77px; top: 286px" />' for _ in range(n))
+
+
 def confetti(n=26):
     return "".join('<span class="conf"></span>' for _ in range(n))
 
 
-def nbsp(text):
-    """French spacing: the space before ? ! : ; stays with its word."""
-    for p in "?!:;":
-        text = text.replace(f" {p}", f" {p}")
+def nbsp(text, short=False):
+    """French spacing: the space before ? ! : ; % stays with its word; with short=True, words of up to
+    three letters also hold on to the next one, so a punch line never breaks after "du" or "ta"."""
+    for p in "?!:;%":
+        text = text.replace(f" {p}", f"\u00a0{p}")
+    if short:
+        words = text.split(" ")
+        text = "".join(w + ("\u00a0" if len(w) <= 3 and i + 1 < len(words) else " ") for i, w in enumerate(words)).strip()
     return text
 
 
@@ -78,8 +86,9 @@ def beats(W, duration):
             text = T.PUNCH_TEXT.get((line, a)) or " ".join(w["w"] for w in words[a: b + 1])
             text = text.rstrip(",:")
             u = times[pi + 1] if pi + 1 < len(times) else end
-            parts.append(f'<div class="row p"><span class="punch" data-t="{times[pi]}" data-u="{round(u, 3)}">'
-                         f'{html.escape(nbsp(text))}</span></div>')
+            cls = "punch long" if len(text) > 18 else "punch"
+            parts.append(f'<div class="row p"><span class="{cls}" data-t="{times[pi]}" data-u="{round(u, 3)}">'
+                         f'{html.escape(nbsp(text, short=True))}</span></div>')
         out.append(f'      <div id="beat{bi}" class="clip beat" data-start="{start}" data-duration="{round(end - start, 3)}" '
                    f'data-track-index="8">{"".join(parts)}</div>')
     return "\n".join(out)
@@ -108,7 +117,7 @@ def audio_tags(duration):
         tags.append(f'      <audio id="vo-{key}" src="assets/vo/{key}.wav" data-start="{start}" data-duration="{dur}" '
                     f'data-track-index="10" data-volume="1"></audio>')
     tags.append(f'      <audio id="music" src="assets/audio/music.wav" data-start="0" data-duration="{duration}" '
-                f'data-track-index="11" data-volume="0.45"></audio>')
+                f'data-track-index="11" data-volume="0.55"></audio>')
     tags.append(f'      <audio id="sfx" src="assets/audio/sfx.wav" data-start="0" data-duration="{duration}" '
                 f'data-track-index="12" data-volume="0.75"></audio>')
     return "\n".join(tags)
@@ -133,10 +142,13 @@ def main():
         "@@DURATION@@": str(duration),
         "@@SPLASH2_START@@": str(E["splash2"]),
         "@@SPLASH2_DUR@@": str(round(splash_end - E["splash2"], 3)),
+        "@@SPLASH9_START@@": str(E["splash9"]),
+        "@@SPLASH9_DUR@@": str(round(max(0.1, min(duration, E["splash9"] + 5.6) - E["splash9"]), 3)),
+        "@@MFLAMES@@": mflames(),
         **positions(),
     }
     for k, v in rep.items():
-        assert k in tpl, k
+        assert k in tpl or k.startswith(("@@POS:", "@@SPOS:")), k  # not every piece casts a shadow
         tpl = tpl.replace(k, v)
     assert "@@" not in tpl, tpl[tpl.index("@@") - 40: tpl.index("@@") + 40]
     (ROOT / "index.html").write_text(tpl)
