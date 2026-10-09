@@ -4,6 +4,8 @@ Every sound is synthesized here (no samples, nothing to license). Files in
 assets/sfx/<name>.wav override the synthesized sound of the same name, so a
 better recorded or generated effect can be dropped in without touching code.
 Usage: python3 tools/sfx.py  -> writes assets/audio/sfx.wav from timeline.CUES
+       python3 tools/sfx.py --apple  -> assets/audio/sfx_apple.wav: the Apple-style cue sheet, played with the
+       sounds generated for it (assets/sfx_apple, made by prepare_sfx_apple.py); "<name>_rev" plays one backwards
 """
 import sys
 from pathlib import Path
@@ -18,6 +20,8 @@ import timeline  # noqa: E402
 
 SR = 44100
 ROOT = Path(__file__).resolve().parents[1]
+STYLE = "apple" if "--apple" in sys.argv else ""
+SAMPLES = ROOT / "assets" / ("sfx_apple" if STYLE else "sfx")
 rng = np.random.default_rng(11)
 
 
@@ -321,8 +325,10 @@ LIB = {
 def load(name, cache={}):
     if name in cache:
         return cache[name]
-    override = ROOT / "assets" / "sfx" / f"{name}.wav"
-    if override.exists():
+    override = SAMPLES / f"{name}.wav"
+    if name.endswith("_rev"):
+        x = load(name[:-4])[::-1].copy()
+    elif override.exists():
         x, sr = sf.read(override, always_2d=True)
         if sr != SR:
             from scipy.signal import resample_poly
@@ -355,11 +361,11 @@ def render(cues, duration):
 if __name__ == "__main__":
     W = timeline.words()
     E = timeline.events(W)
-    C = timeline.cues(E, W)
+    C = timeline.cues(E, W, style=STYLE)
     y = render(C, timeline.DURATION)
     # the effects step back while the voice speaks (build.py also carves the voice's bands out of them)
     # only a slight dip under the voice: the effects are short, and they should be heard
     y = y * (1 - (1 - 10 ** (-4 / 20)) * timeline.voice_activity(len(y), SR, attack=0.03, release=0.15))[:, None]
     (ROOT / "assets" / "audio").mkdir(parents=True, exist_ok=True)
-    sf.write(ROOT / "assets" / "audio" / "sfx.wav", y * 0.8, SR)
+    sf.write(ROOT / "assets" / "audio" / ("sfx_apple.wav" if STYLE else "sfx.wav"), y * 0.8, SR)
     print("sfx cues:", len(C), "peak", float(np.max(np.abs(y))))

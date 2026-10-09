@@ -213,9 +213,11 @@ def events(_W=None):
     return E
 
 
-def cues(E=E, W=W):
+def cues(E=E, W=W, style=""):
     """Sound design cue sheet: (time, sound, gain). No sparkle or bell sounds (shimmer, chime, success):
     not liked, and bells sit right in the voice's band."""
+    if style == "apple":
+        return _cues_apple(E, W)
     c = []
     # captions: a light tick when a setup label lands, a swish under each punch line
     for line, setup, punches in BEATS:
@@ -249,6 +251,51 @@ def cues(E=E, W=W):
     # the hits land a hair before the word they underline, so the word itself stays clear
     c += [(E["together"], "suck", 0.5), (E["w_rise9"] - 0.08, "impact", 0.6), (E["free"], "impact_soft", 0.5),
           (E["appstore"], "pop", 0.5), (E["gplay"], "pop2", 0.5)]
+    return sorted(c)
+
+
+def _cues_apple(E, W):
+    """The Apple-style cut (build.py --apple): fewer, softer sounds, all generated for this video
+    (assets/sfx_apple): a tap where a finger touches, a swish when a screen or a sheet slides, a bubble pop
+    when a card comes out, a whoosh between scenes, a deep impact on the logo and on the drop. Each one sits
+    on its motion in the template (the whoosh peaks 0.22 s in, the impact 0.11 s in, the swish 0.1 s in)."""
+    pops = ("pop", "pop2", "pop3", "pop4")
+    c = []
+    # captions: only a breath of air under each punch line, nothing on the lead-ins
+    for line, setup, punches in BEATS:
+        for a, _ in punches:
+            c.append((W[line][a]["t"] - 0.05, "swish", 0.3))
+    # 1. intro: the three cards, the step back, RISE, the phone
+    c += [(E["c_share"] - 0.05, "pop", 0.6), (E["c_meet"] - 0.05, "pop2", 0.6), (E["c_grow"] - 0.05, "pop3", 0.6),
+          (E["intro_back"] + 0.1, "whoosh", 0.4), (E["logo_land"] - 0.11, "impact", 0.7), (E["phone_in"] - 0.1, "whoosh", 0.6)]
+    # 2. feed: the three pieces lift, the comments come in
+    c += [(E["q_feed"] - 0.05, "pop", 0.55), (E["t_feed"] - 0.05, "pop2", 0.55), (E["r_feed"] - 0.05, "pop3", 0.55)]
+    c += [(E["enc"] + 0.05 + i * 0.25, pops[(i + 3) % 4], 0.5) for i in range(3)]
+    # 3. groups: the tab, the four rows, the four messages
+    c += [(E["groups_tap"], "tap", 0.65), (E["groups"] - 0.03, "swish", 0.55)]
+    c += [(E["rows"] + i * 0.1, "tick", 0.4) for i in range(4)]
+    talk = max(0.3, (E["chat_end"] - E["chat"]) / 4)
+    c += [(E["chat"] + i * talk, pops[i], 0.55) for i in range(4)]
+    # 4. prayer: the tab, the request, the sheet up and down, "Je prie", one tick per person praying
+    c += [(E["pray_tap"], "tap", 0.65), (E["pray"] - 0.03, "swish", 0.55), (E["lift_prayer"], "pop", 0.55),
+          (E["sheet_up"] - 0.08, "swish", 0.55), (E["confier"], "tap", 0.65), (E["jeprie"] - 0.3, "swish", 0.4),
+          (E["jeprie"] + 0.2, "tap", 0.65)]
+    t0, dur = E["jeprie"] + 0.25, max(0.5, E["upd1"] - E["jeprie"])  # the count's tween (power1.inOut, 3 -> 14)
+    for k in range(3, 14):
+        v = (k + 0.5 - 3) / 11
+        p = math.sqrt(v / 2) if v < 0.5 else 1 - math.sqrt(2 * (1 - v)) / 2
+        c.append((t0 + p * dur, "tick2" if k % 2 else "tick", 0.3))
+    c += [(E["upd1"], "pop3", 0.55), (E["upd2"], "pop4", 0.55)]
+    # 5. explorer, then the quiz on the drop
+    c += [(E["explore_tap"], "tap", 0.65), (E["verse"] - 0.03, "swish", 0.55), (E["verse_lift"], "pop2", 0.55),
+          (E["quiz"] - 0.08, "tap", 0.65), (E["quiz"] - 0.11, "impact", 0.75), (E["q_tap"], "tap", 0.7),
+          (E["q_ok"], "pop4", 0.65), (E["learn"] - 0.05, "swish", 0.55)]
+    # 6. recap: the phone drops away, four screens, they gather, the logo, the stores
+    c += [(E["end"] - 0.1, "whoosh", 0.6)]
+    c += [(E[k] - 0.05, pops[i], 0.6) for i, k in enumerate(("v1", "v2", "v3", "v4"))]
+    hit = E["w_rise9"] - 0.11
+    c += [(E["together"], "swish", 0.45), (hit - 0.63, "whoosh_rev", 0.45), (hit, "impact", 0.75),
+          (E["appstore"] - 0.05, "pop", 0.6), (E["gplay"] - 0.05, "pop2", 0.6)]
     return sorted(c)
 
 

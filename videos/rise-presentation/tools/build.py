@@ -4,6 +4,7 @@ python3 tools/build.py              -> index.html (+ sound design and music beds
 python3 tools/build.py --no-audio   -> index.html only
 python3 tools/build.py --until 6.6  -> a preview cut at 6.6 s (the edit itself is unchanged)
 python3 tools/build.py --white      -> the same film on a plain white background
+python3 tools/build.py --apple      -> the Apple-style cut: white, black headlines, softer motion, its own sound effects
 """
 import html
 import json
@@ -17,6 +18,7 @@ import timeline as T  # noqa: E402
 from lifts import LIFTS  # noqa: E402
 
 ROOT = T.ROOT
+APPLE = "--apple" in sys.argv
 SCREEN_W, BEZEL = 600, 18  # the phone screen in the composition (captures are 1080 px wide)
 
 
@@ -109,10 +111,12 @@ def audio_tags(duration):
         dur = round(min(sf.info(str(f)).duration, duration - start), 3)
         tags.append(f'      <audio id="vo-{key}" src="assets/vo/{key}.wav" data-start="{start}" data-duration="{dur}" '
                     f'data-track-index="10" data-volume="1"></audio>')
+    # the Apple cut has fewer, sparser effects: music and effects a touch higher keep the same balance (~10 dB under the voice)
+    music_vol, sfx, sfx_vol = ("0.7", "sfx_apple", "0.9") if APPLE else ("0.6", "sfx", "0.7")
     tags.append(f'      <audio id="music" src="assets/audio/music.wav" data-start="0" data-duration="{duration}" '
-                f'data-track-index="11" data-volume="0.6"></audio>')
-    tags.append(f'      <audio id="sfx" src="assets/audio/sfx.wav" data-start="0" data-duration="{duration}" '
-                f'data-track-index="12" data-volume="0.7"></audio>')
+                f'data-track-index="11" data-volume="{music_vol}"></audio>')
+    tags.append(f'      <audio id="sfx" src="assets/audio/{sfx}.wav" data-start="0" data-duration="{duration}" '
+                f'data-track-index="12" data-volume="{sfx_vol}"></audio>')
     return "\n".join(tags)
 
 
@@ -130,9 +134,9 @@ def main():
         "@@CONFETTI@@": confetti(),
         "@@BEATS@@": beats(W, duration),
         "@@AUDIO@@": audio_tags(duration),
-        "/*@@DATA@@*/": "const E = " + json.dumps(E) + f"; const D = {duration};",
+        "/*@@DATA@@*/": "const E = " + json.dumps(E) + f"; const D = {duration}; const APPLE = {json.dumps(APPLE)};",
         "@@DURATION@@": str(duration),
-        "@@ROOT_CLASS@@": "white" if "--white" in sys.argv else "",
+        "@@ROOT_CLASS@@": "white apple" if APPLE else "white" if "--white" in sys.argv else "",
         "@@SPLASH2_START@@": str(E["splash2"]),
         "@@SPLASH2_DUR@@": str(round(splash_end - E["splash2"], 3)),
         "@@SPLASH9_START@@": str(E["splash9"]),
@@ -149,7 +153,7 @@ def main():
     print(f"index.html written: {duration}s (film {T.DURATION}s), {len(E)} events")
     if "--no-audio" not in sys.argv:
         import subprocess
-        subprocess.run([sys.executable, str(ROOT / "tools" / "sfx.py")], check=True)
+        subprocess.run([sys.executable, str(ROOT / "tools" / "sfx.py"), *(["--apple"] if APPLE else [])], check=True)
         subprocess.run([sys.executable, str(ROOT / "tools" / "compose_music.py")], check=True)
     # duck the music under the voice (HyperFrames voice-over carve)
     import subprocess

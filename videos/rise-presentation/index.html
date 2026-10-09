@@ -116,6 +116,29 @@
       #root.white #phone .frame { box-shadow: 0 70px 120px rgba(0, 0, 0, 0.2), 0 18px 36px rgba(0, 0, 0, 0.1), inset 0 0 0 3px #3a332c; }
       #root.white .icard { box-shadow: 0 40px 80px rgba(0, 0, 0, 0.14), 0 10px 24px rgba(0, 0, 0, 0.08), 0 0 0 2px #f0f0f0; }
       #root.white .mini { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.16); }
+
+      /* ---------- variant: Apple-style cut (build.py --apple, on the white background) ----------
+         black headlines under a grey lead-in, a frosted band behind them, no confetti, soft greys */
+      #scrim { display: none; height: 660px; background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 60%, rgba(255, 255, 255, 0) 100%);
+        backdrop-filter: blur(22px); -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 100%); }
+      #root.apple #scrim { display: block; }
+      #root.apple #bg { background: linear-gradient(180deg, #ffffff 0%, #ffffff 50%, #f5f5f7 100%); }
+      #root.apple .row.s { top: 176px; }
+      #root.apple .row.p { top: 246px; }
+      #root.apple .setup { padding: 0; border-radius: 0; background: none; box-shadow: none; filter: blur(0px);
+        font-weight: 600; font-size: 46px; letter-spacing: -0.015em; color: #6e6e73; }
+      #root.apple .setup b { font-weight: 700; color: #b64400; }
+      #root.apple .punch { max-width: 980px; padding: 0 24px 8px; border-radius: 0; background: none; box-shadow: none; text-shadow: none; filter: blur(0px);
+        font-weight: 800; font-size: 104px; line-height: 1.04; letter-spacing: -0.045em; text-transform: none; color: #1d1d1f; }
+      #root.apple .punch.long { font-size: 90px; }
+      #root.apple .icard { filter: blur(0px); }
+      #root.apple .lsh { background: rgba(0, 0, 0, 0.2); }
+      #root.apple .tapr { border: none; background: rgba(29, 29, 31, 0.16); }
+      #root.apple .rg, #root.apple .conf, #root.apple .heart, #root.apple .mflame { display: none; }
+      #root.apple #slogan9 { font-weight: 700; font-size: 70px; letter-spacing: -0.04em; color: #1d1d1f; }
+      #root.apple #slogan9 em { color: #b64400; }
+      #root.apple .store { padding: 20px 42px 22px; border-radius: 22px; background: #1d1d1f; font-weight: 600; font-size: 38px; letter-spacing: -0.01em;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18); }
     </style>
   </head>
   <body>
@@ -233,6 +256,7 @@
       </div>
       <div id="confD" class="layer"><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span></div>
       <div id="flash" class="layer"></div>
+      <div id="scrim" class="layer"></div>
 
       <!-- captions: a setup label, then the punch line on its first word -->
       <div id="beat0" class="clip beat" data-start="0.17" data-duration="4.371" data-track-index="8"><div class="row s"><span class="setup">Tu cherches un endroit pour</span></div><div class="row p"><span class="punch" data-t="1.27" data-u="2.34">partager ta foi</span></div><div class="row p"><span class="punch long" data-t="2.34" data-u="3.66">rencontrer d&#x27;autres chrétiens</span></div><div class="row p"><span class="punch" data-t="3.66" data-u="4.541">et grandir ?</span></div></div>
@@ -268,7 +292,7 @@
     </div>
 
     <script>
-      const E = {"hook": 0.0, "c_share": 1.31, "c_meet": 2.38, "c_grow": 3.7, "intro_back": 4.615, "logo_land": 5.625, "splash2": 4.775, "phone_in": 6.125, "share": 6.371, "q_feed": 8.741, "t_feed": 9.601, "r_feed": 10.501, "enc": 11.351, "groups_tap": 14.476, "groups": 14.596, "rows": 15.606, "chat": 16.316, "chat_end": 18.444, "pray_tap": 18.691, "pray": 18.811, "lift_prayer": 20.731, "sheet_up": 22.081, "confier": 22.941, "jeprie": 23.691, "stamp": 23.691, "upd1": 24.981, "upd2": 25.281, "answer": 24.981, "explore_tap": 26.724, "verse": 26.844, "verse_lift": 28.244, "quiz": 28.814, "q_tap": 29.754, "q_ok": 30.124, "learn": 30.634, "end": 32.374, "v1": 32.544, "v2": 33.334, "v3": 34.134, "v4": 34.784, "together": 35.324, "w_rise9": 37.494, "splash9": 36.644, "dl": 41.19, "free": 42.06, "appstore": 42.865, "gplay": 43.56, "stores": 42.865}; const D = 45.6;
+      const E = {"hook": 0.0, "c_share": 1.31, "c_meet": 2.38, "c_grow": 3.7, "intro_back": 4.615, "logo_land": 5.625, "splash2": 4.775, "phone_in": 6.125, "share": 6.371, "q_feed": 8.741, "t_feed": 9.601, "r_feed": 10.501, "enc": 11.351, "groups_tap": 14.476, "groups": 14.596, "rows": 15.606, "chat": 16.316, "chat_end": 18.444, "pray_tap": 18.691, "pray": 18.811, "lift_prayer": 20.731, "sheet_up": 22.081, "confier": 22.941, "jeprie": 23.691, "stamp": 23.691, "upd1": 24.981, "upd2": 25.281, "answer": 24.981, "explore_tap": 26.724, "verse": 26.844, "verse_lift": 28.244, "quiz": 28.814, "q_tap": 29.754, "q_ok": 30.124, "learn": 30.634, "end": 32.374, "v1": 32.544, "v2": 33.334, "v3": 34.134, "v4": 34.784, "together": 35.324, "w_rise9": 37.494, "splash9": 36.644, "dl": 41.19, "free": 42.06, "appstore": 42.865, "gplay": 43.56, "stores": 42.865}; const D = 45.6; const APPLE = false;
       const tl = gsap.timeline({ paused: true });
       // index-seeded pseudo-random (deterministic)
       const rnd = (i, s = 1) => { const x = Math.sin(i * 127.1 + s * 311.7) * 43758.5453; return x - Math.floor(x); };
@@ -278,7 +302,11 @@
         const set = () => gsap.set(sel, { [prop]: amp * Math.sin((o.p / period) * Math.PI * 2 + phase) });
         tl.fromTo(o, { p: 0 }, { p: t1 - t0, duration: t1 - t0, ease: "none", onUpdate: set, immediateRender: false }, t0);
       };
+      // the Apple-style cut (APPLE): no overshoot anywhere, pieces come out less far, no confetti
+      const pop = (k) => (APPLE ? "power3.out" : `back.out(${k})`);
+      const LZ = APPLE ? 0.7 : 1;
       const burst = (sel, t, cx, cy, spread = 520, up = 620) => {
+        if (APPLE) return;
         document.querySelectorAll(sel).forEach((el, i) => {
           const a = rnd(i, 3) * Math.PI * 2, v = 0.45 + rnd(i, 5) * 0.55;
           const dx = Math.cos(a) * spread * v, dy = -Math.abs(Math.sin(a)) * up * v - 120;
@@ -290,13 +318,13 @@
       // a piece of the screen lifts toward the camera; its shadow stays on the glass
       const lift = (card, shadow, t, z = 170, s = 1.06, rx = -5, dur = 0.6) => {
         tl.set(card, { opacity: 1 }, t);
-        tl.fromTo(card, { z: 0, scale: 1, rotationX: 0 }, { z, scale: s, rotationX: rx, duration: dur, ease: "back.out(1.7)" }, t);
+        tl.fromTo(card, { z: 0, scale: 1, rotationX: 0 }, { z: z * LZ, scale: 1 + (s - 1) * LZ, rotationX: rx * LZ, duration: dur, ease: pop(1.7) }, t);
         if (shadow) tl.fromTo(shadow, { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1.04, duration: dur, ease: "power2.out" }, t);
       };
       // a second lift of the same piece starts from where settle() left it
       const relift = (card, shadow, t, z = 170, s = 1.06, rx = -5, dur = 0.45) => {
         tl.set(card, { opacity: 1 }, t);
-        tl.to(card, { z, scale: s, rotationX: rx, duration: dur, ease: "back.out(1.7)" }, t);
+        tl.to(card, { z: z * LZ, scale: 1 + (s - 1) * LZ, rotationX: rx * LZ, duration: dur, ease: pop(1.7) }, t);
         if (shadow) tl.to(shadow, { opacity: 1, scale: 1.04, duration: dur, ease: "power2.out" }, t);
       };
       const settle = (card, shadow, t) => {
@@ -306,13 +334,17 @@
       };
       // a card of the app floats out beside the phone, and later leaves
       const floatIn = (sel, t, z, r, dx = 260) => {
-        tl.set(sel, { opacity: 1 }, t);
-        tl.fromTo(sel, { x: dx, z: 0, scale: 0.5, rotation: r * 4 }, { x: 0, z, scale: 1, rotation: r, duration: 0.55, ease: "back.out(1.8)" }, t);
+        if (!APPLE) tl.set(sel, { opacity: 1 }, t);
+        tl.fromTo(sel, { x: APPLE ? dx * 0.45 : dx, z: 0, scale: APPLE ? 0.82 : 0.5, rotation: r * (APPLE ? 1.5 : 4), ...(APPLE ? { opacity: 0 } : {}) },
+          { x: 0, z: z * LZ, scale: 1, rotation: APPLE ? r * 0.5 : r, ...(APPLE ? { opacity: 1 } : {}), duration: 0.55, ease: pop(1.8) }, t);
       };
       const floatOut = (sels, t, dx = -900) => tl.to(sels, { x: dx, opacity: 0, duration: 0.3, ease: "power3.in", stagger: 0.04 }, t);
-      const tap = (sel, t) => tl.fromTo(sel, { scale: 0.3, opacity: 1 }, { scale: 1.9, opacity: 0, duration: 0.5, ease: "power2.out", immediateRender: false }, t);
-      const swap = (sel, t, dur = 0.42) => tl.fromTo(sel, { x: 600 }, { x: 0, duration: dur, ease: "expo.out" }, t);
+      // a touch: an amber ring, or in the Apple cut the grey disc of a screen recording
+      const tap = (sel, t) => tl.fromTo(sel, { scale: APPLE ? 0.5 : 0.3, opacity: 1 },
+        { scale: APPLE ? 1.25 : 1.9, opacity: 0, duration: APPLE ? 0.45 : 0.5, ease: "power2.out", immediateRender: false }, t);
+      const swap = (sel, t, dur = 0.42) => tl.fromTo(sel, { x: 600 }, { x: 0, duration: APPLE ? dur * 1.3 : dur, ease: "expo.out" }, t);
       const shake = (t, amp = 10) => {
+        if (APPLE) return;
         const k = [[1, -0.7], [-0.8, 0.6], [0.6, -0.4], [-0.35, 0.25], [0, 0]];
         k.forEach(([x, y], i) => tl.to("#stage", { x: x * amp, y: y * amp, duration: 0.045, ease: "none" }, t + i * 0.045));
       };
@@ -326,17 +358,19 @@
 
       // ================================================================ 1. INTRO: sharing, meeting, growing
       const card = (sel, t, ry, rx, r) => {
-        tl.fromTo(sel, { opacity: 0, scale: 0.35, y: 90, rotationY: ry * 2.2, rotationX: rx * 2, rotation: r * 3 },
-          { opacity: 1, scale: 1, y: 0, rotationY: ry, rotationX: rx, rotation: r, duration: 0.6, ease: "back.out(1.7)" }, t);
+        const k = APPLE ? 1.4 : 1;  // the Apple cut: the cards turn in from closer to their pose, without overshoot
+        tl.fromTo(sel, { opacity: 0, scale: APPLE ? 0.8 : 0.35, y: APPLE ? 70 : 90, rotationY: ry * 2.2 / k, rotationX: rx * 2 / k, rotation: r * 3 / k },
+          { opacity: 1, scale: 1, y: 0, rotationY: ry, rotationX: rx, rotation: r, duration: APPLE ? 0.75 : 0.6, ease: pop(1.7) }, t);
         sway(sel.replace("#ic-", "#w-"), "y", 12, 3.2, t + 0.6, E.phone_in, 0.8);
       };
       card("#ic-composer", E.c_share - 0.05, 16, 6, -5);
       card("#ic-messages", E.c_meet - 0.05, -16, 6, 4);
       card("#ic-stats", E.c_grow - 0.05, 0, 14, -2);
-      // "Et si je te présentais": the cards step back, the logo lights up in front on "RISE"
-      tl.to("#ic-composer", { x: -180, scale: 0.8, opacity: 0.4, duration: 0.7, ease: "power2.inOut" }, E.intro_back);
-      tl.to("#ic-messages", { x: 200, scale: 0.8, opacity: 0.4, duration: 0.7, ease: "power2.inOut" }, E.intro_back + 0.05);
-      tl.to("#ic-stats", { y: 160, scale: 0.8, opacity: 0.4, duration: 0.7, ease: "power2.inOut" }, E.intro_back + 0.1);
+      // "Et si je te présentais": the cards step back (out of focus in the Apple cut), the logo lights up in front on "RISE"
+      const back = APPLE ? { opacity: 0.5, filter: "blur(10px)" } : { opacity: 0.4 };
+      tl.to("#ic-composer", { x: -180, scale: 0.8, ...back, duration: 0.7, ease: "power2.inOut" }, E.intro_back);
+      tl.to("#ic-messages", { x: 200, scale: 0.8, ...back, duration: 0.7, ease: "power2.inOut" }, E.intro_back + 0.05);
+      tl.to("#ic-stats", { y: 160, scale: 0.8, ...back, duration: 0.7, ease: "power2.inOut" }, E.intro_back + 0.1);
       tl.fromTo("#splashw", { scale: 0.92 }, { scale: 1.04, duration: Math.max(0.5, E.phone_in - E.splash2), ease: "sine.out" }, E.splash2);
       // out: the phone rises and pushes everything away
       tl.to(["#ic-composer", "#ic-messages", "#ic-stats"], { y: "-=900", opacity: 0, duration: 0.4, ease: "power3.in", stagger: 0.03 }, E.phone_in);
@@ -357,7 +391,7 @@
       cam(E.t_feed - 0.15, 0.8, { y: -400, rotationX: 9, rotationY: -10, rotation: -1, scale: 1.12 });
       floatIn("#lf-verset", E.r_feed - 0.05, 300, 3, 300);
       // "et on s'encourage dans la foi": hearts on the testimony, the comments fly out, confetti
-      document.querySelectorAll("#hearts .heart").forEach((h, i) => {
+      if (!APPLE) document.querySelectorAll("#hearts .heart").forEach((h, i) => {
         const t = E.enc + i * 0.06, dx = (rnd(i, 2) - 0.5) * 160, up = 120 + rnd(i, 4) * 160;
         tl.fromTo(h, { x: 0, y: 0, scale: 0.3, opacity: 0 }, { x: dx * 0.5, y: -up * 0.45, scale: 1.1, opacity: 1, duration: 0.3, ease: "power2.out" }, t);
         tl.to(h, { x: dx, y: -up, scale: 0.7, opacity: 0, duration: 0.7, ease: "sine.in" }, t + 0.3);
@@ -407,7 +441,7 @@
       // "prie pour ceux des autres": the request lifts again, its button is tapped, the count climbs
       relift("#lf-maman", "#sh-maman", E.jeprie - 0.05, 180, 1.06, -5);
       tl.fromTo("#tapM", { scale: 0.3, opacity: 1 }, { scale: 1.9, opacity: 0, duration: 0.55, ease: "power2.out", immediateRender: false }, E.jeprie + 0.2);
-      document.querySelectorAll("#mflames .mflame").forEach((f, i) => {
+      if (!APPLE) document.querySelectorAll("#mflames .mflame").forEach((f, i) => {
         const t = E.jeprie + 0.25 + i * 0.09, dx = (rnd(i, 2) - 0.5) * 220, h = 160 + rnd(i, 4) * 170;
         tl.fromTo(f, { x: 0, y: 0, scale: 0.4, opacity: 0 }, { x: dx * 0.4, y: -h * 0.35, scale: 1.1, opacity: 1, duration: 0.28, ease: "power2.out" }, t);
         tl.to(f, { x: dx, y: -h, scale: 0.6, opacity: 0, duration: 0.8, ease: "sine.in" }, t + 0.28);
@@ -439,15 +473,15 @@
       tl.fromTo("#tapJd", { scale: 0.4, opacity: 0.9 }, { scale: 1.2, opacity: 0, duration: 0.45, ease: "power2.out", immediateRender: false }, E.quiz - 0.08);
       tl.to("#tintSun", { opacity: 0, duration: 0.15 }, E.quiz);
       tl.to("#tintSky", { opacity: 1, duration: 0.15 }, E.quiz);
-      tl.fromTo("#flash", { opacity: 0.85 }, { opacity: 0, duration: 0.5, ease: "power2.out", immediateRender: false }, E.quiz);
+      if (!APPLE) tl.fromTo("#flash", { opacity: 0.85 }, { opacity: 0, duration: 0.5, ease: "power2.out", immediateRender: false }, E.quiz);
       swap("#sc-quiz", E.quiz - 0.02, 0.2);
       tl.set(["#lf-ans", "#ans-flat"], { opacity: 1 }, E.quiz - 0.02);  // the answer starts unselected
       tl.fromTo("#ans-sel", { opacity: 0 }, { opacity: 1, duration: 0.06 }, E.q_tap);
       tl.fromTo("#ans-ok", { opacity: 0 }, { opacity: 1, duration: 0.08 }, E.q_ok);
-      cam(E.quiz, 0.45, { y: -40, rotationX: 9, rotationY: 12, rotation: 2, scale: 1.16 }, "back.out(1.6)");
+      cam(E.quiz, 0.45, { y: -40, rotationX: 9, rotationY: 12, rotation: 2, scale: 1.16 }, APPLE ? "expo.out" : "back.out(1.6)");
       shake(E.quiz, 12);
       tap("#tapQ", E.q_tap);
-      tl.fromTo("#lf-ans", { z: 0, scale: 1 }, { z: 160, scale: 1.05, duration: 0.4, ease: "back.out(2)" }, E.q_tap);
+      tl.fromTo("#lf-ans", { z: 0, scale: 1 }, { z: 160 * LZ, scale: 1 + 0.05 * LZ, duration: 0.4, ease: pop(2) }, E.q_tap);
       // "et découvre la Bible autrement": the answer explained, confetti
       tl.fromTo("#ex-sheet", { y: 420 }, { y: 0, duration: 0.45, ease: "expo.out" }, E.learn);
       burst("#confB .conf", E.learn + 0.1, 540, 980, 600, 620);
@@ -457,7 +491,7 @@
       cam(E.end - 0.05, 0.5, { y: 1900, rotationX: 40, rotationY: -20, rotation: 8, scale: 0.9 }, "power3.in");
       tl.to("#tintSky", { opacity: 0, duration: 0.6 }, E.end);
       [["#m1", E.v1, -6], ["#m2", E.v2, 5], ["#m3", E.v3, -4], ["#m4", E.v4, 6]].forEach(([id, t, r]) => {
-        tl.fromTo(id, { opacity: 0, scale: 0.3, y: 120, rotation: r * 3 }, { opacity: 1, scale: 0.86, y: 0, rotation: r, duration: 0.5, ease: "back.out(2)" }, t - 0.05);
+        tl.fromTo(id, { opacity: 0, scale: APPLE ? 0.7 : 0.3, y: 120, rotation: r * (APPLE ? 1.5 : 3) }, { opacity: 1, scale: 0.86, y: 0, rotation: r, duration: 0.5, ease: pop(2) }, t - 0.05);
         tl.to(id, { rotation: 0, scale: 1, duration: 0.6, ease: "power2.inOut" }, E.together);
       });
       // "et grandir ensemble": they gather into a fan at the bottom, the logo takes the centre
@@ -471,23 +505,26 @@
       tl.set("#logo9", { opacity: 1 }, E.splash9 + 5.4);  // under the clip's last frames, so the hand-off is seamless
       tl.fromTo("#slogan9", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, E.w_rise9 + 0.7);
       burst("#confD .conf", E.w_rise9 + 0.05, 540, 760, 640, 640);
-      tl.fromTo("#st-app", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(2.2)" }, E.appstore - 0.05);
-      tl.fromTo("#st-play", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(2.2)" }, E.gplay - 0.05);
+      tl.fromTo("#st-app", { scale: APPLE ? 0.85 : 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: pop(2.2) }, E.appstore - 0.05);
+      tl.fromTo("#st-play", { scale: APPLE ? 0.85 : 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: pop(2.2) }, E.gplay - 0.05);
       ["#m1", "#m2", "#m3", "#m4"].forEach((id, i) => sway(id, "y", 8, 2.6 + i * 0.3, E.together + 0.9, D, i));
 
       // ---------------------------------------------------------------- captions: label, then the punch
+      // (the Apple cut: the words rise into focus and leave by blurring away, nothing bounces)
       document.querySelectorAll(".beat").forEach((b) => {
         const t0 = parseFloat(b.dataset.start), t1 = t0 + parseFloat(b.dataset.duration);
         const s = b.querySelector(".setup");
         if (s) {
-          tl.fromTo(s, { scale: 0.55, y: 26, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.32, ease: "back.out(2.4)" }, t0);
-          tl.to(s, { y: -30, opacity: 0, duration: 0.12, ease: "power2.in" }, t1 - 0.12);
+          tl.fromTo(s, APPLE ? { y: 22, opacity: 0, filter: "blur(10px)" } : { scale: 0.55, y: 26, opacity: 0 },
+            APPLE ? { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power3.out" } : { scale: 1, y: 0, opacity: 1, duration: 0.32, ease: "back.out(2.4)" }, t0);
+          tl.to(s, APPLE ? { opacity: 0, filter: "blur(8px)", duration: 0.16, ease: "power1.in" } : { y: -30, opacity: 0, duration: 0.12, ease: "power2.in" }, t1 - (APPLE ? 0.16 : 0.12));
         }
         b.querySelectorAll(".punch").forEach((p) => {
           const a = parseFloat(p.dataset.t), u = parseFloat(p.dataset.u);
-          tl.fromTo(p, { scale: 0.25, rotation: -5, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.38, ease: "back.out(2.6)" }, a);
-          tl.to(p, { scale: 1.035, duration: Math.max(0.12, u - a - 0.55), ease: "sine.inOut" }, a + 0.4);
-          tl.to(p, { scale: 0.8, opacity: 0, duration: 0.1, ease: "power2.in" }, u - 0.1);
+          tl.fromTo(p, APPLE ? { y: 46, opacity: 0, filter: "blur(16px)" } : { scale: 0.25, rotation: -5, opacity: 0 },
+            APPLE ? { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.38, ease: "power3.out" } : { scale: 1, rotation: 0, opacity: 1, duration: 0.38, ease: "back.out(2.6)" }, a);
+          tl.to(p, { scale: APPLE ? 1.02 : 1.035, duration: Math.max(0.12, u - a - 0.55), ease: "sine.inOut" }, a + 0.4);
+          tl.to(p, APPLE ? { opacity: 0, filter: "blur(10px)", duration: 0.1, ease: "power1.in" } : { scale: 0.8, opacity: 0, duration: 0.1, ease: "power2.in" }, u - 0.1);
         });
       });
 
