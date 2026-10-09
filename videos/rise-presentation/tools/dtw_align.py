@@ -6,6 +6,7 @@ boundaries onto the fluent reading, and dynamic time warping on MFCCs and loudne
 out of both sides) then maps them onto the real take. Words that follow a pause are finally set on
 the pause's end, where the voice audibly resumes.
 """
+import os
 import re
 from functools import lru_cache
 from pathlib import Path
@@ -16,7 +17,9 @@ CACHE = Path.home() / ".cache" / "hyperframes" / "tts"
 MODEL = CACHE / "models" / "kokoro-v1.0.onnx"
 SR = 16000
 HOP = 160  # 10 ms
-SAY = {"RISE": "Raïze"}  # Kokoro spells capitals out
+LANG = os.environ.get("RISE_LANG", "fr")  # see timeline.py
+VOICE, LANG_CODE = {"fr": ("ff_siwis", "fr-fr"), "en": ("af_heart", "en-us")}[LANG]
+SAY = {"fr": {"RISE": "Raïze"}, "en": {"RISE": "Rise"}}[LANG]  # Kokoro spells capitals out
 PUNCT = re.compile(r"[,:;.…!?»]+")
 
 
@@ -42,7 +45,7 @@ def words_of(text):
     return out
 
 
-def reference(text, voice="ff_siwis", speed=1.0):
+def reference(text, voice=VOICE, speed=1.0):
     """Kokoro reading of the line: audio at SR and each word's (start, end) in it.
 
     Kokoro's own phoneme durations drift from its audio by up to 0.2 s, so the word boundaries come
@@ -52,11 +55,11 @@ def reference(text, voice="ff_siwis", speed=1.0):
     k = kokoro()
     to16 = lambda a, sr: librosa.resample(np.asarray(a, dtype=np.float32), orig_sr=sr, target_sr=SR)
     said = " ".join(say(t) for t in text.split())
-    fluent = to16(*k.create(said, voice=voice, lang="fr-fr", speed=speed))
+    fluent = to16(*k.create(said, voice=voice, lang=LANG_CODE, speed=speed))
     pieces, bounds, t = [], [], 0.0
     gap = np.zeros(int(0.03 * SR), dtype=np.float32)
     for w in words_of(said):  # punctuation stays on its word, for its intonation
-        a = to16(*k.create(w, voice=voice, lang="fr-fr", speed=speed))
+        a = to16(*k.create(w, voice=voice, lang=LANG_CODE, speed=speed))
         pieces += [a, gap]
         bounds.append((t, t + len(a) / SR))
         t += (len(a) + len(gap)) / SR

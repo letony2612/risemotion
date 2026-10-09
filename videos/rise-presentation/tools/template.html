@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="@@LANG@@">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, height=1920" />
@@ -224,7 +224,7 @@
             <!-- 4. prayer: Rebecca's request, the replies -->
             <div id="lf-maman" class="lift" style="@@POS:prayer_maman@@">
               <div class="card"><img src="assets/lift/prayer_maman.png" alt="" /></div>
-              <span id="cnt" class="cnt">3 personnes prient</span>
+              <span id="cnt" class="cnt">3 @@PRAYING@@</span>
               <span id="tapM" class="tapr" style="left: 77px; top: 286px"></span>
               <div id="mflames">@@MFLAMES@@</div>
             </div>
@@ -263,10 +263,10 @@
           <img id="logo9" src="assets/brand/rise_splash_last.png" alt="" />
           <video id="splash9" class="clip" src="assets/brand/rise_splash_light.webm" muted playsinline data-start="@@SPLASH9_START@@" data-duration="@@SPLASH9_DUR@@" data-track-index="4"></video>
         </div>
-        <div id="slogan9">Élève-toi. <em>Ensemble.</em></div>
+        <div id="slogan9">@@SLOGAN@@</div>
         <div id="stores9">
-          <img id="st-app" class="store" src="assets/brand/badge_app_store_fr.png" alt="Télécharger dans l'App Store" />
-          <img id="st-play" class="store" src="assets/brand/badge_google_play_fr.png" alt="Disponible sur Google Play" />
+          <img id="st-app" class="store" src="assets/brand/@@BADGE_APP@@" alt="@@BADGE_APP_ALT@@" />
+          <img id="st-play" class="store" src="assets/brand/@@BADGE_PLAY@@" alt="@@BADGE_PLAY_ALT@@" />
         </div>
       </div>
       <div id="confD" class="layer">@@CONFETTI@@</div>
@@ -410,11 +410,13 @@
       rows.forEach(([c, s], i) => {
         lift(c, s, E.rows + i * 0.1, 130, 1.04, -4, 0.45);
         tl.fromTo(c + " .rg", { opacity: 0 }, { opacity: 1, duration: 0.15 }, E.rows + i * 0.1);
-        tl.to(c + " .rg", { opacity: 0, duration: 0.15 }, E.chat - 0.1 + i * 0.05);
-        settle(c, s, E.chat - 0.1 + i * 0.05);
+        const down = Math.max(E.chat - 0.1 + i * 0.05, E.rows + i * 0.1 + 0.46);  // never before its own lift is done
+        tl.to(c + " .rg", { opacity: 0, duration: 0.15 }, down);
+        settle(c, s, down);
       });
       // "avec des chrétiens qui ont les mêmes passions que toi": the group talks
-      const talk = Math.max(0.3, (E.chat_end - E.chat) / 4);
+      // one message per beat; the last one lands before the prayer tab is tapped
+      const talk = Math.max(0.3, Math.min((E.chat_end - E.chat) / 4, (E.pray_tap - 0.76 - E.chat) / 3));
       floatIn("#lf-ch1", E.chat, 260, -2, -280);
       floatIn("#lf-ch2", E.chat + talk, 300, 1.5, -280);
       floatIn("#lf-ch3", E.chat + talk * 2, 340, -1.5, 280);
@@ -444,7 +446,7 @@
       });
       const praying = { n: 3 };
       tl.fromTo(praying, { n: 3 }, { n: 14, duration: Math.max(0.5, E.upd1 - E.jeprie), ease: "power1.inOut",
-        onUpdate: () => { document.getElementById("cnt").textContent = `${Math.round(praying.n)} personnes prient`; } }, E.jeprie + 0.25);
+        onUpdate: () => { document.getElementById("cnt").textContent = `${Math.round(praying.n)} ${PRAYING}`; } }, E.jeprie + 0.25);
       // "on n'est pas appelés à avancer seuls": the replies come in, the light warms
       floatIn("#lf-upd1", E.upd1, 260, -2);
       floatIn("#lf-upd2", E.upd2, 300, 1.5, -260);

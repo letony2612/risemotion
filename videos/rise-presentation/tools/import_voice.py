@@ -7,6 +7,7 @@ because one pause inside a line can be longer than the one between two). Inside 
 brought up to an ad pace (at most TEMPO_MAX faster, pitch kept), and the voice
 gets a light broadcast polish so it sits on top of the music.
 Usage: python3 tools/import_voice.py path/to/voice.mp3 [--semitones -2] [--tempo 1.0]
+  (RISE_LANG=en in front for the English version: its lines, into assets/vo_en/)
   --semitones: shift the voice (formants kept, a touch warmer) when a take sounds too high
   --tempo: force the pace (1.0 keeps a take that already has the right energy as it was read)
 Then: python3 tools/build.py  (and check the scene windows it prints)
@@ -189,19 +190,19 @@ def main(path, semitones=0.0, force_tempo=None):
         from pedalboard import time_stretch
         segs = {k: time_stretch(s.astype(np.float32)[None, :], SR, stretch_factor=tempo)[0] for k, s in segs.items()}
     segs = polish(segs)
-    (ROOT / "assets" / "vo").mkdir(parents=True, exist_ok=True)
+    T.VO.mkdir(parents=True, exist_ok=True)
     take, t = {}, 0.0
     for i, k in enumerate(keys):
         seg = fade_edges(np.asarray(segs[k], dtype=np.float64))
-        sf.write(ROOT / "assets" / "vo" / f"{k}.wav", seg, SR)
+        sf.write(T.VO / f"{k}.wav", seg, SR)
         if i:
             t += (natural[k][0] - natural[keys[i - 1]][1]) / tempo  # the take's own breath, at the new pace
         take[k] = {"start": round(t, 3), "end": round(t + len(seg) / SR, 3)}
         t += len(seg) / SR
         r = weights[i] / (len(seg) / SR)
         print(f"{k}: {len(seg) / SR:5.2f}s  {r:4.1f} syll/s  {T.LINES[k][1][:56]}")
-    (ROOT / "assets" / "vo" / "take.json").write_text(json.dumps(take, indent=1))
-    print("line positions written to assets/vo/take.json (rebuild to re-time the edit)")
+    (T.VO / "take.json").write_text(json.dumps(take, indent=1))
+    print(f"line positions written to {T.VO.relative_to(ROOT)}/take.json (rebuild to re-time the edit)")
 
 
 if __name__ == "__main__":

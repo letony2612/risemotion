@@ -17,7 +17,7 @@ import timeline as T  # noqa: E402
 
 SR = 44100
 ROOT = T.ROOT
-OUT = ROOT / "assets" / "audio" / "music.wav"
+OUT = ROOT / "assets" / "audio" / f"music{T.SUFFIX}.wav"
 BEAT = 60 / T.BPM
 BAR = 4 * BEAT
 L = T.DURATION + 1.0

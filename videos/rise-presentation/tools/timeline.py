@@ -9,9 +9,12 @@ sound design from cues() and compose_music.py follows the same sections, so
 picture, sound effects and music cannot drift apart.
 
 To swap the voice: python3 tools/import_voice.py take.mp3 && python3 tools/build.py
+The English version: RISE_LANG=en python3 tools/import_voice.py take.mp3 && python3 tools/build.py --lang en
+(its own lines, captions and word anchors below, its own voice folder and audio beds).
 """
 import json
 import math
+import os
 import sys
 from pathlib import Path
 
@@ -24,9 +27,12 @@ BPM = 120  # tempo of the synthesized bed (compose_music.py)
 MAX_GAP = 0.3  # longest breath kept between two lines
 MAX_DURATION = 46.0  # the script: 40 to 45 s
 MUSIC = ROOT / "assets" / "audio" / "music_track.json"  # an imported track (tools/import_music.py)
+LANG = os.environ.get("RISE_LANG", "fr")  # the version being built: "fr", or "en" (build.py --lang en)
+SUFFIX = "" if LANG == "fr" else f"_{LANG}"  # the other versions keep their own voice folder and audio beds
+VO = ROOT / "assets" / f"vo{SUFFIX}"
 
 # Voice-over lines: (text as spoken, text shown in the captions). Same number of words in both.
-LINES = {
+_LINES = {"fr": {
     "l1": ("Tu cherches un endroit pour partager ta foi, rencontrer d'autres chrétiens et grandir ?",
            "Tu cherches un endroit pour partager ta foi, rencontrer d'autres chrétiens et grandir ?"),
     "l2": ("Et si je te présentais RISE ?", "Et si je te présentais RISE ?"),
@@ -42,11 +48,21 @@ LINES = {
            "Partager, échanger, prier, apprendre… et grandir ensemble : c'est ça, RISE, le réseau social pensé pour les chrétiens !"),
     "l8": ("Rejoins-nous : télécharge RISE gratuitement sur l'App Store et Google Play !",
            "Rejoins-nous : télécharge RISE gratuitement sur l'App Store et Google Play !"),
-}
+}, "en": {k: (t, t) for k, t in {
+    "l1": "Looking for a place to share your faith, meet other Christians and grow?",
+    "l2": "Then let me introduce you to RISE!",
+    "l3": "It all starts in the feed: a question, a testimony, a reflection… and we lift each other up in faith!",
+    "l4": "And when something speaks to you, go deeper: join groups with Christians who share your passions.",
+    "l5": "Because community also means carrying each other… share your prayer requests, pray for others: we were never meant to walk alone.",
+    "l6": "And to grow in the Word every day, test what you know with quizzes… and discover the Bible in a whole new way!",
+    "l7": "Share, connect, pray, learn… and grow together: that's RISE, the social network made for Christians!",
+    "l8": "Join us: download RISE for free on the App Store and Google Play!",
+}.items()}}
+LINES = _LINES[LANG]
 
 # Captions in two tiers, as in a social ad: a small setup label, then the punch line, which lands on
 # its first word. (line, setup word range or None, punch word ranges swapped in place one by one)
-BEATS = [
+_BEATS = {"fr": [
     ("l1", (0, 4), [(5, 7), (8, 10), (11, 12)]),
     ("l2", (0, 4), []),  # the RISE logo lights up on its word
     ("l3", (0, 6), [(7, 8), (9, 10), (11, 12)]),
@@ -65,7 +81,43 @@ BEATS = [
     ("l7", (7, 9), [(10, 12), (13, 16)]),
     ("l8", (0, 0), [(1, 3)]),
     ("l8", (4, 9), []),  # the store badges carry it
-]
+], "en": [
+    ("l1", (0, 4), [(5, 7), (8, 10), (11, 12)]),
+    ("l2", (0, 5), []),
+    ("l3", (0, 5), [(6, 7), (8, 9), (10, 11)]),
+    ("l3", None, [(12, 19)]),
+    ("l4", (0, 5), [(6, 7)]),
+    ("l4", (8, 9), [(10, 11)]),
+    ("l4", None, [(12, 15)]),
+    ("l5", (0, 3), [(4, 6)]),
+    ("l5", (7, 10), [(11, 13)]),
+    ("l5", (14, 16), [(17, 20)]),
+    ("l6", (0, 2), [(3, 7)]),
+    ("l6", (8, 11), [(12, 13)]),
+    ("l6", (14, 15), [(16, 22)]),
+    ("l7", None, [(0, 0), (1, 1), (2, 2), (3, 3)]),
+    ("l7", None, [(4, 6)]),
+    ("l7", (7, 8), [(9, 11), (12, 14)]),
+    ("l8", (0, 1), [(2, 5)]),
+    ("l8", (6, 12), []),
+]}
+BEATS = _BEATS[LANG]
+# The words the edit is keyed to: event -> (line, word index[, nudge in seconds]), in each language's own sentences
+_ANCHORS = {
+    "fr": {"c_share": ("l1", 5), "c_meet": ("l1", 8), "c_grow": ("l1", 11), "logo_land": ("l2", 5),
+           "q_feed": ("l3", 7), "t_feed": ("l3", 9), "r_feed": ("l3", 11), "enc": ("l3", 13),
+           "groups_tap": ("l4", 6), "rows": ("l4", 9), "chat": ("l4", 12),
+           "lift_prayer": ("l5", 7), "sheet_up": ("l5", 12), "confier": ("l5", 16), "jeprie": ("l5", 17), "upd1": ("l5", 22),
+           "verse_lift": ("l6", 7), "quiz": ("l6", 8), "q_tap": ("l6", 13), "q_ok": ("l6", 15), "learn": ("l6", 16),
+           "together": ("l7", 4), "w_rise9": ("l7", 9), "dl": ("l8", 1), "free": ("l8", 3), "appstore": ("l8", 5), "gplay": ("l8", 8)},
+    "en": {"c_share": ("l1", 5), "c_meet": ("l1", 8), "c_grow": ("l1", 11), "logo_land": ("l2", 6),
+           "q_feed": ("l3", 6), "t_feed": ("l3", 8), "r_feed": ("l3", 10), "enc": ("l3", 12),
+           "groups_tap": ("l4", 6), "rows": ("l4", 8), "chat": ("l4", 10),
+           "lift_prayer": ("l5", 4), "sheet_up": ("l5", 7), "confier": ("l5", 10), "jeprie": ("l5", 11), "upd1": ("l5", 14),
+           "verse_lift": ("l6", 5), "quiz": ("l6", 8), "q_tap": ("l6", 12), "q_ok": ("l6", 13, 0.25), "learn": ("l6", 14),
+           "together": ("l7", 4), "w_rise9": ("l7", 8), "dl": ("l8", 2), "free": ("l8", 5), "appstore": ("l8", 8), "gplay": ("l8", 11)},
+}
+A = _ANCHORS[LANG]
 PUNCH_TEXT = {}  # (line, first word) -> text shown instead of the words (same timing)
 HERO = ("l1", "l2")  # the hook: its captions sit large in the middle of the frame, the lead-in typed word by word
 
@@ -81,7 +133,7 @@ def _tokens(text):
 
 
 def _natural_gaps():
-    take = ROOT / "assets" / "vo" / "take.json"
+    take = VO / "take.json"
     keys = list(LINES)
     gaps = {k: 0.25 for k in keys}
     if take.exists():
@@ -113,10 +165,10 @@ def _align(k, spoken, f, cache):
 
 def _plan():
     dur, rel = {}, {}
-    cache_file = ROOT / "assets" / "vo" / "words.json"
+    cache_file = VO / "words.json"
     cache = json.loads(cache_file.read_text()) if cache_file.exists() else {}
     for k, (spoken, shown) in LINES.items():
-        f = ROOT / "assets" / "vo" / f"{k}.wav"
+        f = VO / f"{k}.wav"
         dur[k] = sf.info(str(f)).duration
         words = _align(k, spoken, f, cache)
         shown_words = _tokens(shown)
@@ -127,6 +179,7 @@ def _plan():
     music = json.loads(MUSIC.read_text()) if MUSIC.exists() else None
     V, E = {}, {}
     wt = lambda k, i: V[k] + rel[k][i][1]
+    at = lambda name: wt(*A[name][:2]) + (A[name][2] if len(A[name]) > 2 else 0.0)  # an anchor word, plus its nudge
     end = lambda k: V[k] + dur[k]
     keys = list(LINES)
     # the read never waits for the picture: each line follows the previous one after its breath
@@ -137,49 +190,49 @@ def _plan():
     # 1. hook: the phone is there from the first frame; a card of the app comes out of it on each phrase,
     #    then it dips away and the RISE logo lights up
     E["hook"] = 0.0
-    E["c_share"], E["c_meet"], E["c_grow"] = wt("l1", 5), wt("l1", 8), wt("l1", 11)
+    E["c_share"], E["c_meet"], E["c_grow"] = at("c_share"), at("c_meet"), at("c_grow")
     E["intro_back"] = V["l2"]
-    E["logo_land"] = wt("l2", 5)  # RISE
+    E["logo_land"] = at("logo_land")  # RISE
     E["splash2"] = E["logo_land"] - 0.85  # the logo animation: its letters burst out 0.85 s in
     E["phone_in"] = max(V["l3"] - 0.3, E["logo_land"] + 0.5)
     # 2. the feed: a question, a testimony, a reflection lift out; everybody encourages
     E["share"] = V["l3"]
-    E["q_feed"], E["t_feed"], E["r_feed"] = wt("l3", 7), wt("l3", 9), wt("l3", 11)
-    E["enc"] = wt("l3", 13)
+    E["q_feed"], E["t_feed"], E["r_feed"] = at("q_feed"), at("t_feed"), at("r_feed")
+    E["enc"] = at("enc")
     # 3. groups: the tab is tapped on "va plus loin", the groups lift, their members talk
-    E["groups_tap"] = wt("l4", 6) - 0.12
+    E["groups_tap"] = at("groups_tap") - 0.12
     E["groups"] = E["groups_tap"] + 0.12
-    E["rows"] = wt("l4", 9)
-    E["chat"] = wt("l4", 12)
+    E["rows"] = at("rows")
+    E["chat"] = at("chat")
     E["chat_end"] = end("l4")
     # 4. prayer: the tab, a request lifts, the sheet to share one, then praying for others
     E["pray_tap"] = V["l5"] - 0.05
     E["pray"] = E["pray_tap"] + 0.12
-    E["lift_prayer"] = wt("l5", 7)  # porter
-    E["sheet_up"] = wt("l5", 12)  # partage
-    E["confier"] = wt("l5", 16)  # prière
-    E["jeprie"] = wt("l5", 17)  # prie pour ceux des autres
+    E["lift_prayer"] = at("lift_prayer")  # porter / carrying
+    E["sheet_up"] = at("sheet_up")  # partage / share
+    E["confier"] = at("confier")  # prière / requests
+    E["jeprie"] = at("jeprie")  # prie pour ceux des autres / pray for others
     E["stamp"] = E["jeprie"]
-    E["upd1"] = wt("l5", 22)  # on n'est pas appelés à avancer seuls
+    E["upd1"] = at("upd1")  # on n'est pas appelés à avancer seuls / we were never meant…
     E["upd2"] = E["upd1"] + 0.3
     E["answer"] = E["upd1"]
     # 5. quiz: Explorer, the verse, then "teste" starts a quiz as the music drops
     E["explore_tap"] = V["l6"] - 0.05
     E["verse"] = E["explore_tap"] + 0.12
-    E["verse_lift"] = wt("l6", 7)  # Parole
-    E["quiz"] = wt("l6", 8) - 0.05  # teste
-    E["q_tap"] = wt("l6", 13)  # avec
-    E["q_ok"] = wt("l6", 15) + 0.05  # quiz
-    E["learn"] = wt("l6", 16)  # et découvre la Bible autrement
+    E["verse_lift"] = at("verse_lift")  # Parole / Word
+    E["quiz"] = at("quiz") - 0.05  # teste / test
+    E["q_tap"] = at("q_tap")  # avec / with
+    E["q_ok"] = at("q_ok") + 0.05  # quiz / quizzes
+    E["learn"] = at("learn")  # et découvre… / and discover…
     # 6. recap and call to action
     E["end"] = V["l7"] - 0.12
     E["v1"], E["v2"], E["v3"], E["v4"] = (wt("l7", i) for i in range(4))
-    E["together"] = wt("l7", 4)
-    E["w_rise9"] = wt("l7", 9)
+    E["together"] = at("together")
+    E["w_rise9"] = at("w_rise9")
     E["splash9"] = E["w_rise9"] - 0.85
-    E["dl"] = wt("l8", 1)
-    E["free"] = wt("l8", 3)
-    E["appstore"], E["gplay"] = wt("l8", 5), wt("l8", 8)
+    E["dl"] = at("dl")
+    E["free"] = at("free")
+    E["appstore"], E["gplay"] = at("appstore"), at("gplay")
     E["stores"] = E["appstore"]
     duration = math.ceil((end("l8") + 1.3) * 10) / 10
     if music:  # a little longer, so the track ends on its own last hit
@@ -193,8 +246,11 @@ def _plan():
     return E, V, W, duration, dur
 
 
-E, VO_START, W, DURATION, VO_DUR = _plan()
-S = {k: E[k] for k in ("hook", "share", "pray", "answer", "groups", "verse", "quiz", "end")}
+if all((VO / f"{k}.wav").exists() for k in LINES):
+    E, VO_START, W, DURATION, VO_DUR = _plan()
+else:  # a version without its voice yet: tools/import_voice.py fills VO first
+    E, VO_START, W, DURATION, VO_DUR = {}, {}, {}, 0.0, {}
+S = {k: E[k] for k in ("hook", "share", "pray", "answer", "groups", "verse", "quiz", "end") if k in E}
 
 
 def words():
@@ -270,7 +326,7 @@ def _cues_apple(E, W):
     c += [(E["q_feed"], "tap2", 0.3), (E["t_feed"], "tap", 0.3), (E["r_feed"], "tap2", 0.3),
           (E["enc"] + 0.1, "tap", 0.25), (E["enc"] + 0.6, "tap2", 0.25)]
     # 3. groups: the tab, the screen, the rows, the messages
-    talk = max(0.3, (E["chat_end"] - E["chat"]) / 4)
+    talk = max(0.3, min((E["chat_end"] - E["chat"]) / 4, (E["pray_tap"] - 0.76 - E["chat"]) / 3))
     c += [(E["groups_tap"], "tap", 0.55), (E["groups"] - 0.1, "air", 0.35), (E["rows"] + 0.05, "tap2", 0.25)]
     c += [(E["chat"] + i * talk + 0.05, ("tap2", "tap")[i % 2], 0.25) for i in range(4)]
     # 4. prayer: the tab, the request, the sheet up, "Confier", the sheet down, "Je prie", the replies
