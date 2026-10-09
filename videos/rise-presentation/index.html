@@ -30,15 +30,15 @@
       .bk { position: absolute; display: block; border-radius: 50%; }
       #flash { background: #fff; opacity: 0; }
 
-      /* ---------- 1. intro: three cards of the app in space, then the logo ---------- */
-      #intro { perspective: 2200px; perspective-origin: 540px 1000px; }
+      /* ---------- 1. hook: the phone from the first frame, a card of the app out of it per phrase, then the logo ---------- */
+      #intro { perspective: 2200px; perspective-origin: 540px 1250px; }
       .icw { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-style: preserve-3d; }
       .icard { position: absolute; display: block; border-radius: 26px; overflow: hidden; background: var(--paper); opacity: 0;
         box-shadow: 0 40px 80px rgba(90, 55, 20, 0.22), 0 10px 24px rgba(90, 55, 20, 0.12); }
       .icard img { display: block; width: 100%; height: 100%; }
-      #ic-composer { left: 50px; top: 560px; width: 560px; height: 412px; }
-      #ic-messages { left: 520px; top: 760px; width: 500px; height: 449px; }
-      #ic-stats { left: 250px; top: 1260px; width: 560px; height: 318px; }
+      #ic-composer { left: 150px; top: 930px; width: 780px; height: 574px; }
+      #ic-messages { left: 170px; top: 905px; width: 740px; height: 665px; }
+      #ic-stats { left: 140px; top: 975px; width: 800px; height: 454px; }
       #splashw { position: absolute; left: 156px; top: 700px; width: 768px; height: 400px; }
       #splash2 { position: absolute; left: 0; top: 0; width: 768px; height: 400px; display: block; }
 
@@ -108,6 +108,13 @@
         text-shadow: 0 4px 0 rgba(140, 62, 0, 0.35);
         box-shadow: 0 10px 0 #a24f03, 0 26px 46px rgba(162, 79, 3, 0.3); }
       .punch.long { font-size: 80px; }
+      .setup .w { display: inline-block; }
+      .beat.hero { height: 1000px; }
+      .beat.hero .row.s { top: 500px; }
+      .beat.hero .row.p { top: 598px; }
+      .beat.hero .setup { padding: 16px 34px 18px; font-size: 54px; }
+      .beat.hero .punch { font-size: 100px; }
+      .beat.hero .punch.long { max-width: 1010px; font-size: 76px; }
 
       /* ---------- variant: plain white background (build.py --white) ---------- */
       #root.white, #root.white #bg { background: #fff; }
@@ -131,6 +138,11 @@
       #root.apple .punch { max-width: 980px; padding: 0 24px 8px; border-radius: 0; background: none; box-shadow: none; text-shadow: none; filter: blur(0px);
         font-weight: 800; font-size: 104px; line-height: 1.04; letter-spacing: -0.045em; text-transform: none; color: #1d1d1f; }
       #root.apple .punch.long { font-size: 90px; }
+      #root.apple .beat.hero .row.s { top: 500px; }
+      #root.apple .beat.hero .row.p { top: 580px; }
+      #root.apple .beat.hero .setup { font-size: 56px; }
+      #root.apple .beat.hero .punch { font-size: 120px; }
+      #root.apple .beat.hero .punch.long { font-size: 100px; }
       #root.apple .icard { filter: blur(0px); }
       #root.apple .lsh { background: rgba(0, 0, 0, 0.2); }
       #root.apple .tapr { border: none; background: rgba(29, 29, 31, 0.16); }
@@ -153,12 +165,7 @@
       <div id="tintSky" class="layer tint"></div>
       <div id="bokeh" class="layer"><span class="bk" style="left: -160px; top: 120px; width: 520px; height: 520px; background: radial-gradient(closest-side, rgba(255, 190, 110, 0.34) 0%, rgba(255, 190, 110, 0.29) 62%, rgba(255, 190, 110, 0) 100%)"></span><span class="bk" style="left: 760px; top: 40px; width: 380px; height: 380px; background: radial-gradient(closest-side, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.72) 62%, rgba(255, 255, 255, 0) 100%)"></span><span class="bk" style="left: 820px; top: 560px; width: 300px; height: 300px; background: radial-gradient(closest-side, rgba(255, 205, 140, 0.4) 0%, rgba(255, 205, 140, 0.34) 62%, rgba(255, 205, 140, 0) 100%)"></span><span class="bk" style="left: -80px; top: 900px; width: 260px; height: 260px; background: radial-gradient(closest-side, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.68) 62%, rgba(255, 255, 255, 0) 100%)"></span><span class="bk" style="left: 600px; top: 1180px; width: 560px; height: 560px; background: radial-gradient(closest-side, rgba(255, 180, 100, 0.26) 0%, rgba(255, 180, 100, 0.22) 62%, rgba(255, 180, 100, 0) 100%)"></span><span class="bk" style="left: 80px; top: 1500px; width: 360px; height: 360px; background: radial-gradient(closest-side, rgba(255, 214, 150, 0.34) 0%, rgba(255, 214, 150, 0.29) 62%, rgba(255, 214, 150, 0) 100%)"></span><span class="bk" style="left: 880px; top: 1600px; width: 240px; height: 240px; background: radial-gradient(closest-side, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.64) 62%, rgba(255, 255, 255, 0) 100%)"></span><span class="bk" style="left: 380px; top: 300px; width: 160px; height: 160px; background: radial-gradient(closest-side, rgba(255, 226, 180, 0.5) 0%, rgba(255, 226, 180, 0.42) 62%, rgba(255, 226, 180, 0) 100%)"></span><span class="bk" style="left: 300px; top: 1750px; width: 200px; height: 200px; background: radial-gradient(closest-side, rgba(255, 200, 120, 0.3) 0%, rgba(255, 200, 120, 0.26) 62%, rgba(255, 200, 120, 0) 100%)"></span></div>
 
-      <!-- ===================== 1. INTRO: sharing, meeting, growing; then RISE ===================== -->
-      <div id="intro" class="layer">
-        <div id="w-composer" class="icw"><div id="ic-composer" class="icard"><img src="assets/lift/composer.png" alt="" /></div></div>
-        <div id="w-messages" class="icw"><div id="ic-messages" class="icard"><img src="assets/lift/messages.png" alt="" /></div></div>
-        <div id="w-stats" class="icw"><div id="ic-stats" class="icard"><img src="assets/ui/quiz_stats.png" alt="" /></div></div>
-      </div>
+      <!-- ===================== 1. HOOK: the logo, between the phone's dip and its return ===================== -->
       <div id="splashw">
         <video id="splash2" class="clip" src="assets/brand/rise_splash_light.webm" muted playsinline data-start="4.775" data-duration="1.85" data-track-index="3"></video>
       </div>
@@ -238,6 +245,13 @@
         </div>
       </div>
 
+      <!-- 1. hook: sharing, meeting, growing; each card comes out of the phone, in front of it -->
+      <div id="intro" class="layer">
+        <div id="w-composer" class="icw" data-layout-allow-overflow><div id="ic-composer" class="icard"><img src="assets/lift/composer.png" alt="" /></div></div>
+        <div id="w-messages" class="icw" data-layout-allow-overflow><div id="ic-messages" class="icard"><img src="assets/lift/messages.png" alt="" /></div></div>
+        <div id="w-stats" class="icw" data-layout-allow-overflow><div id="ic-stats" class="icard"><img src="assets/ui/quiz_stats.png" alt="" /></div></div>
+      </div>
+
       <div id="confA" class="layer"><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span></div>
       <div id="confB" class="layer"><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span><span class="conf"></span></div>
 
@@ -259,8 +273,8 @@
       <div id="scrim" class="layer"></div>
 
       <!-- captions: a setup label, then the punch line on its first word -->
-      <div id="beat0" class="clip beat" data-start="0.17" data-duration="4.371" data-track-index="8"><div class="row s"><span class="setup">Tu cherches un endroit pour</span></div><div class="row p"><span class="punch" data-t="1.27" data-u="2.34">partager ta foi</span></div><div class="row p"><span class="punch long" data-t="2.34" data-u="3.66">rencontrer d&#x27;autres chrétiens</span></div><div class="row p"><span class="punch" data-t="3.66" data-u="4.541">et grandir ?</span></div></div>
-      <div id="beat1" class="clip beat" data-start="4.541" data-duration="1.787" data-track-index="8"><div class="row s"><span class="setup">Et si je te présentais</span></div></div>
+      <div id="beat0" class="clip beat hero" data-start="0.0" data-duration="4.541" data-track-index="8"><div class="row s"><span class="setup"><span class="w" data-t="0.19">Tu</span> <span class="w" data-t="0.32">cherches</span> <span class="w" data-t="0.53">un</span> <span class="w" data-t="0.72">endroit</span> <span class="w" data-t="1.07">pour</span></span></div><div class="row p"><span class="punch" data-t="1.27" data-u="2.34">partager ta foi</span></div><div class="row p"><span class="punch long" data-t="2.34" data-u="3.66">rencontrer d&#x27;autres chrétiens</span></div><div class="row p"><span class="punch" data-t="3.66" data-u="4.541">et grandir ?</span></div></div>
+      <div id="beat1" class="clip beat hero" data-start="4.541" data-duration="1.787" data-track-index="8"><div class="row s"><span class="setup"><span class="w" data-t="4.561">Et</span> <span class="w" data-t="4.715">si</span> <span class="w" data-t="4.815">je</span> <span class="w" data-t="4.955">te</span> <span class="w" data-t="5.095">présentais</span></span></div></div>
       <div id="beat2" class="clip beat" data-start="6.328" data-duration="4.943" data-track-index="8"><div class="row s"><span class="setup">Ici, tout commence sur le fil d&#x27;actu :</span></div><div class="row p"><span class="punch" data-t="8.701" data-u="9.561">une question</span></div><div class="row p"><span class="punch" data-t="9.561" data-u="10.461">un témoignage</span></div><div class="row p"><span class="punch" data-t="10.461" data-u="11.271">une réflexion…</span></div></div>
       <div id="beat3" class="clip beat" data-start="11.271" data-duration="1.925" data-track-index="8"><div class="row p"><span class="punch long" data-t="11.311" data-u="13.196">et on s&#x27;encourage dans la foi !</span></div></div>
       <div id="beat4" class="clip beat" data-start="13.196" data-duration="2.33" data-track-index="8"><div class="row s"><span class="setup">Et quand un sujet te touche,</span></div><div class="row p"><span class="punch" data-t="14.556" data-u="15.526">va plus loin</span></div></div>
@@ -356,31 +370,38 @@
         sway(b, "y", 18 + rnd(i, 3) * 34, 5 + rnd(i, 5) * 3, 0, D, rnd(i, 8) * 6);
       });
 
-      // ================================================================ 1. INTRO: sharing, meeting, growing
-      const card = (sel, t, ry, rx, r) => {
-        const k = APPLE ? 1.4 : 1;  // the Apple cut: the cards turn in from closer to their pose, without overshoot
-        tl.fromTo(sel, { opacity: 0, scale: APPLE ? 0.8 : 0.35, y: APPLE ? 70 : 90, rotationY: ry * 2.2 / k, rotationX: rx * 2 / k, rotation: r * 3 / k },
-          { opacity: 1, scale: 1, y: 0, rotationY: ry, rotationX: rx, rotation: r, duration: APPLE ? 0.75 : 0.6, ease: pop(1.7) }, t);
-        sway(sel.replace("#ic-", "#w-"), "y", 12, 3.2, t + 0.6, E.phone_in, 0.8);
+      // ================================================================ 1. HOOK: the app from the first frame
+      // on each phrase a card of the app comes out of the phone toward us; the next one swipes it away
+      // (the new card lands on top of the old one, which slides away whole: no two half-faded cards)
+      const hookCard = (sel, t, tOut, r, last = false) => {
+        const w = sel.replace("#ic-", "#w-");
+        tl.set(sel, { opacity: 1 }, t);
+        tl.fromTo(w, { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power1.out" }, t);
+        tl.fromTo(sel, { y: 340, scale: 0.5, rotationX: 38, rotationY: 0, rotation: 0 },
+          { y: 0, scale: 1, rotationX: 5, rotationY: r * 2.5, rotation: r, duration: 0.6, ease: pop(1.5) }, t);
+        tl.to(sel, last ? { y: 1100, rotationX: 30, duration: 0.5, ease: "power3.in" }
+          : { x: -1100, rotationY: -40, rotation: r - 6, ...(APPLE ? { filter: "blur(6px)" } : {}), duration: 0.34, ease: "power3.in" }, tOut);
+        tl.set(sel, { opacity: 0 }, tOut + 0.5);  // off the frame: hidden, not parked
+        sway(w, "y", 10, 2.8, t, tOut + 0.5, 0.8);
       };
-      card("#ic-composer", E.c_share - 0.05, 16, 6, -5);
-      card("#ic-messages", E.c_meet - 0.05, -16, 6, 4);
-      card("#ic-stats", E.c_grow - 0.05, 0, 14, -2);
-      // "Et si je te présentais": the cards step back (out of focus in the Apple cut), the logo lights up in front on "RISE"
-      const back = APPLE ? { opacity: 0.5, filter: "blur(10px)" } : { opacity: 0.4 };
-      tl.to("#ic-composer", { x: -180, scale: 0.8, ...back, duration: 0.7, ease: "power2.inOut" }, E.intro_back);
-      tl.to("#ic-messages", { x: 200, scale: 0.8, ...back, duration: 0.7, ease: "power2.inOut" }, E.intro_back + 0.05);
-      tl.to("#ic-stats", { y: 160, scale: 0.8, ...back, duration: 0.7, ease: "power2.inOut" }, E.intro_back + 0.1);
+      hookCard("#ic-composer", E.c_share - 0.05, E.c_meet - 0.14, -3);
+      hookCard("#ic-messages", E.c_meet - 0.05, E.c_grow - 0.14, 3);
+      hookCard("#ic-stats", E.c_grow - 0.05, E.intro_back, -2, true);
+      // "Et si je te présentais": the phone dips out of the frame (below), the logo lights up on "RISE"
       tl.fromTo("#splashw", { scale: 0.92 }, { scale: 1.04, duration: Math.max(0.5, E.phone_in - E.splash2), ease: "sine.out" }, E.splash2);
-      // out: the phone rises and pushes everything away
-      tl.to(["#ic-composer", "#ic-messages", "#ic-stats"], { y: "-=900", opacity: 0, duration: 0.4, ease: "power3.in", stagger: 0.03 }, E.phone_in);
+      // out: the phone comes back up and pushes the logo away
       tl.to("#splashw", { y: -800, scale: 0.85, opacity: 0, duration: 0.38, ease: "power3.in" }, E.phone_in);
 
       // ================================================================ THE PHONE (one object, never still)
       sway("#phone", "rotationY", 2.6, 4.2, 0, D);
       sway("#phone", "rotationX", 1.7, 5.3, 0, D, 1.1);
       sway("#phone", "y", 12, 3.6, 0, D, 2.0);
-      tl.set("#cam", { y: 1700, rotationX: 42, rotationY: -26, rotation: 6, scale: 0.9 }, 0);
+      // the hook: on the first frame the phone is already there, low in the frame, swinging up into place
+      tl.set("#cam", { y: 560, rotationX: 30, rotationY: -26, rotation: 6, scale: 0.84 }, 0);
+      cam(0, 1.15, { y: 260, rotationX: 14, rotationY: -12, rotation: 2, scale: 0.92 }, "power3.out");
+      cam(1.15, E.intro_back - 1.2, { y: 230, rotationX: 10, rotationY: 10, rotation: -1.5, scale: 0.95 }, "sine.inOut");
+      cam(E.intro_back, 0.6, { y: 1700, rotationX: 42, rotationY: -26, rotation: 6, scale: 0.9 }, "power3.in");
+      // then it rises again for the tour
       cam(E.phone_in, 0.9, { y: 40, rotationX: 12, rotationY: -18, rotation: -3, scale: 1.0 }, "expo.out");
       cam(E.phone_in + 0.9, E.q_feed - E.phone_in - 1.0, { y: 20, rotationY: -12, rotation: -1.5, scale: 1.04 }, "sine.inOut");
 
@@ -515,8 +536,14 @@
         const t0 = parseFloat(b.dataset.start), t1 = t0 + parseFloat(b.dataset.duration);
         const s = b.querySelector(".setup");
         if (s) {
-          tl.fromTo(s, APPLE ? { y: 22, opacity: 0, filter: "blur(10px)" } : { scale: 0.55, y: 26, opacity: 0 },
-            APPLE ? { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power3.out" } : { scale: 1, y: 0, opacity: 1, duration: 0.32, ease: "back.out(2.4)" }, t0);
+          // the hook types its lead-in word by word, on the voice (in the Apple cut, words alone, no label behind)
+          const words = s.querySelectorAll(".w");
+          if (!(APPLE && words.length))
+            tl.fromTo(s, APPLE ? { y: 22, opacity: 0, filter: "blur(10px)" } : { scale: 0.55, y: 26, opacity: 0 },
+              APPLE ? { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power3.out" } : { scale: 1, y: 0, opacity: 1, duration: 0.32, ease: "back.out(2.4)" }, t0);
+          words.forEach((w) => tl.fromTo(w, APPLE ? { y: 18, opacity: 0, filter: "blur(8px)" } : { y: 22, scale: 0.6, opacity: 0 },
+            APPLE ? { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power3.out" } : { y: 0, scale: 1, opacity: 1, duration: 0.24, ease: "back.out(2.6)" },
+            parseFloat(w.dataset.t)));
           tl.to(s, APPLE ? { opacity: 0, filter: "blur(8px)", duration: 0.16, ease: "power1.in" } : { y: -30, opacity: 0, duration: 0.12, ease: "power2.in" }, t1 - (APPLE ? 0.16 : 0.12));
         }
         b.querySelectorAll(".punch").forEach((p) => {

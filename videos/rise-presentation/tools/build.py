@@ -62,17 +62,25 @@ def nbsp(text, short=False):
 
 
 def beats(W, duration):
-    """Two-tier captions: a setup label from the beat's first word, then each punch line on its own first word."""
+    """Two-tier captions: a setup label from the beat's first word, then each punch line on its own first word.
+    The hook's beats (T.HERO) sit large in the middle of the frame and type their setup in word by word,
+    the first one from the very first frame."""
     out, starts = [], []
     for line, setup, punches in T.BEATS:
         first = (setup or punches[0])[0]
         starts.append(round(W[line][first]["t"] - 0.08, 3))
+    starts[0] = 0.0  # something on screen from the first frame
     for bi, (line, setup, punches) in enumerate(T.BEATS):
         words = W[line]
         start = starts[bi]
         end = starts[bi + 1] if bi + 1 < len(starts) else duration
+        hero = line in T.HERO
         parts = []
-        if setup:
+        if setup and hero:
+            spans = [f'<span class="w" data-t="{max(start, round(w["t"] - 0.06, 3))}">{html.escape(w["w"])}</span>'
+                     for w in words[setup[0]: setup[1] + 1]]
+            parts.append(f'<div class="row s"><span class="setup">{" ".join(spans).replace("RISE", "<b>RISE</b>")}</span></div>')
+        elif setup:
             text = " ".join(w["w"] for w in words[setup[0]: setup[1] + 1])
             text = html.escape(nbsp(text)).replace("RISE", "<b>RISE</b>")
             parts.append(f'<div class="row s"><span class="setup">{text}</span></div>')
@@ -84,7 +92,7 @@ def beats(W, duration):
             cls = "punch long" if len(text) > 18 else "punch"
             parts.append(f'<div class="row p"><span class="{cls}" data-t="{times[pi]}" data-u="{round(u, 3)}">'
                          f'{html.escape(nbsp(text, short=True))}</span></div>')
-        out.append(f'      <div id="beat{bi}" class="clip beat" data-start="{start}" data-duration="{round(end - start, 3)}" '
+        out.append(f'      <div id="beat{bi}" class="clip beat{" hero" if hero else ""}" data-start="{start}" data-duration="{round(end - start, 3)}" '
                    f'data-track-index="8">{"".join(parts)}</div>')
     return "\n".join(out)
 

@@ -3,10 +3,13 @@
 Each entry: the capture shown on the phone screen, the piece's box in its 1080x2400 pixels, and an
 optional patch painted with the page colour (e.g. a floating button that overlaps the piece).
 build.py places every piece exactly over its spot on the screen, so it lifts off its own pixels.
+Pieces in SHEETS are floating sheets captured over the app's own dimmed backdrop: everything outside
+their rounded outline is made transparent (the video dims the screen behind them itself).
 Usage: python3 tools/lifts.py  -> assets/lift/<name>.png
 """
 from pathlib import Path
 
+import numpy as np
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +42,41 @@ LIFTS = {
     "quiz_answer": ("17_quiz_question.png", (52, 623, 1029, 770), None),
     "quiz_exact": ("18_quiz_reponse.png", (0, 1660, 1080, 2330), None),
 }
+SHEETS = {"confier_sheet"}
+
+
+def sheet_cutout(im):
+    """RGBA: the sheet's rounded rectangle, found on its bright surface, with an anti-aliased edge; the
+    dimmed backdrop around it transparent, and the rim (a blend of sheet and backdrop) repainted with the
+    sheet's own colour so no dark line is left."""
+    a = np.asarray(im).astype(float)
+    lum = a.mean(axis=2)
+    h, w = lum.shape
+    bright = lum > 170
+    xs = np.where(bright[h // 2])[0]
+    x0, x1 = xs.min(), xs.max() + 1
+    y0 = 0
+    # the corner radius from the left edge's inset near the top: r = (o + d) + sqrt(2 o d)
+    radii = []
+    for d in range(15, 45, 5):
+        row = np.where(bright[y0 + d])[0]
+        o = row.min() - x0
+        if o > 0:
+            radii.append(o + d + np.sqrt(2 * o * d))
+    r = float(np.median(radii))
+    # the bottom: the last sheet row in a column just past the corner (content in between does not matter)
+    y1 = np.where(bright[:, int(x0 + r + 10)])[0].max() + 1
+    yy, xx = np.mgrid[0:h, 0:w] + 0.5
+    cx, cy, hw, hh = (x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2
+    qx, qy = np.abs(xx - cx) - (hw - r), np.abs(yy - cy) - (hh - r)
+    dist = np.hypot(np.maximum(qx, 0), np.maximum(qy, 0)) + np.minimum(np.maximum(qx, qy), 0) - r
+    alpha = np.clip(0.5 - dist, 0, 1)
+    surface = np.median(a[(dist < -6) & (dist > -12) & bright], axis=0)
+    rim = dist > -3
+    a[rim] = surface
+    out = np.dstack([a, alpha * 255]).round().astype(np.uint8)
+    print(f"  sheet {x0}-{x1} x {y0}-{y1}, corner radius {r:.0f}, surface {surface.round()}")
+    return Image.fromarray(out, "RGBA")
 
 
 def main():
@@ -47,6 +85,8 @@ def main():
         im = Image.open(CAP / cap).convert("RGB").crop(box)
         if patch:
             im.paste(PAGE, patch)
+        if name in SHEETS:
+            im = sheet_cutout(im)
         im.save(OUT / f"{name}.png")
         print(name, im.size)
 

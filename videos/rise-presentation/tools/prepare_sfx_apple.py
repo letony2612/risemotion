@@ -1,9 +1,11 @@
-"""Effects for the Apple-style cut (build.py --apple), from the sounds generated with ElevenLabs Sound Effects.
+"""Effects for the Apple-style cut (build.py --apple), from sounds generated with ElevenLabs Sound Effects.
 
 The raw takes are in RISE_presentation/6_sons_apple/ (original sounds made for this video, not Apple's own).
-Some takes hold several hits (three ticks, four pops): each hit is cut out on its own, faded at both ends
-and peak-normalized. The impact is almost all sub (40-80 Hz), which a phone speaker cannot play: a soft
-saturation gives it harmonics an octave or two up, so it is heard everywhere.
+Three soft, natural sounds only (bright clicks, ticks and swishes tired the ear): a muted fingertip tap
+(two takes of it, from one file that holds two taps), a breath of air (the whoosh with its highs rolled
+off), and a deep impact. Each is cut on its hit, faded at both ends and peak-normalized. The impact is
+almost all sub (40-80 Hz), which a phone speaker cannot play: a soft saturation gives it a few harmonics
+an octave or two up, so it is heard everywhere.
 Usage: python3 tools/prepare_sfx_apple.py  -> assets/sfx_apple/<name>.wav
 """
 import subprocess
@@ -74,31 +76,22 @@ def save(name, y):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    # a crisp tap; its two channels are unrelated noise, so one channel, centred
-    tap = load("tap")
-    ch = int(np.argmax(np.abs(tap).max(axis=0)))
-    save("tap", cut(np.repeat(tap[:, ch:ch + 1], 2, axis=1), 0, 0.2, fade=0.08))
-    # three ticks in the take: the loudest is the tick, the one before it a softer variant
-    tk = load("tick")
-    h = sorted(hits(tk, floor=24), key=lambda s: s[2])
-    save("tick", cut(tk, h[-1][0], h[-1][1] + 0.03, fade=0.025))
-    save("tick2", cut(tk, h[-2][0], h[-2][1] + 0.03, fade=0.025))
-    # four bubble pops: one per sound, in the take's order
-    pp = load("pop")
-    h = hits(pp, floor=30)[:4]
-    for i, (a, b, _) in enumerate(h):
-        stop = min(b + 0.02, h[i + 1][0] - 0.006) if i + 1 < len(h) else b + 0.02  # not into the next pop
-        save("pop" if i == 0 else f"pop{i + 1}", cut(pp, a, stop, fade=0.02))
-    # the swish and the whoosh, without their silent tails
-    save("swish", cut(load("swish"), 0, 0.42, fade=0.15))
-    save("whoosh", cut(load("whoosh"), 0, 0.85, fade=0.3))
+    for old in OUT.glob("*.wav"):
+        old.unlink()
+    # the fingertip tap: the take holds a faint tap then a clear one; both, cut on their hits
+    tp = load("tap_soft")
+    h = hits(tp, floor=30)
+    save("tap", board(cut(tp, h[-1][0], h[-1][1] + 0.08, fade=0.06), LowpassFilter(4000)))
+    save("tap2", board(cut(tp, h[0][0], min(h[0][1] + 0.06, h[-1][0] - 0.01), fade=0.04), LowpassFilter(4000)))
+    # a breath of air: the whoosh, its highs rolled off, its lowest rumble too
+    save("air", board(cut(load("whoosh"), 0, 0.85, fade=0.3), HighpassFilter(90), LowpassFilter(2500), LowpassFilter(2500)))
     # the impact: the long rumble shortened; its sub, saturated on its own, adds harmonics at 200-800 Hz
     # (the ear hears the boom's pitch from them on a phone speaker) that die away within half a second,
-    # so the voice is clear again right after the hit; a little warmth at 110 Hz
+    # so the voice is clear again right after the hit; a little warmth at 110 Hz, no highs
     im = cut(load("impact"), 0, 1.7, fade=0.7)
     im = board(norm(im), HighpassFilter(28))
-    harm = board(np.tanh(board(im, LowpassFilter(150)) * 6.0), HighpassFilter(180), HighpassFilter(180), LowpassFilter(1500))
-    harm *= np.exp(-np.arange(len(harm)) / SR / 0.22)[:, None]
+    harm = board(np.tanh(board(im, LowpassFilter(150)) * 6.0), HighpassFilter(180), HighpassFilter(180), LowpassFilter(1000))
+    harm *= 0.6 * np.exp(-np.arange(len(harm)) / SR / 0.22)[:, None]
     save("impact", board(im + harm, PeakFilter(110, 3.0, 1.0)))
 
 
