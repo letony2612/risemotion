@@ -104,7 +104,8 @@ _BEATS = {"fr": [
 BEATS = _BEATS[LANG]
 # The words the edit is keyed to: event -> (line, word index[, nudge in seconds]), in each language's own sentences
 _ANCHORS = {
-    "fr": {"c_share": ("l1", 5), "c_meet": ("l1", 8), "c_grow": ("l1", 11), "logo_land": ("l2", 5),
+    # c_share leads "partager" a little: the read runs "ta foi" straight into "rencontrer", and the first card needs its moment
+    "fr": {"c_share": ("l1", 5, -0.2), "c_meet": ("l1", 8), "c_grow": ("l1", 11), "logo_land": ("l2", 5),
            "q_feed": ("l3", 7), "t_feed": ("l3", 9), "r_feed": ("l3", 11), "enc": ("l3", 13),
            "groups_tap": ("l4", 6), "rows": ("l4", 9), "chat": ("l4", 12),
            "lift_prayer": ("l5", 7), "sheet_up": ("l5", 12), "confier": ("l5", 16), "jeprie": ("l5", 17), "upd1": ("l5", 22),
