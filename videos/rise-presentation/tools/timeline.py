@@ -33,8 +33,8 @@ VO = ROOT / "assets" / f"vo{SUFFIX}"
 
 # Voice-over lines: (text as spoken, text shown in the captions). Same number of words in both.
 _LINES = {"fr": {
-    "l1": ("Tu cherches un endroit pour partager ta foi, rencontrer d'autres chrétiens et grandir dans la foi ?",
-           "Tu cherches un endroit pour partager ta foi, rencontrer d'autres chrétiens et grandir dans la foi ?"),
+    "l1": ("Tu cherches un endroit pour partager, rencontrer d'autres chrétiens et grandir dans la foi ?",
+           "Tu cherches un endroit pour partager, rencontrer d'autres chrétiens et grandir dans la foi ?"),
     "l2": ("Et si je te présentais RISE ?", "Et si je te présentais RISE ?"),
     "l3": ("Ici, tout commence sur le fil d'actu : une question, un témoignage, une réflexion… et on s'encourage dans la foi !",
            "Ici, tout commence sur le fil d'actu : une question, un témoignage, une réflexion… et on s'encourage dans la foi !"),
@@ -63,7 +63,7 @@ LINES = _LINES[LANG]
 # Captions in two tiers, as in a social ad: a small setup label, then the punch line, which lands on
 # its first word. (line, setup word range or None, punch word ranges swapped in place one by one)
 _BEATS = {"fr": [
-    ("l1", (0, 4), [(5, 7), (8, 10), (11, 15)]),
+    ("l1", (0, 4), [(5, 5), (6, 8), (9, 13)]),
     ("l2", (0, 4), []),  # the RISE logo lights up on its word
     ("l3", (0, 6), [(7, 8), (9, 10), (11, 12)]),
     ("l3", None, [(13, 18)]),
@@ -104,8 +104,8 @@ _BEATS = {"fr": [
 BEATS = _BEATS[LANG]
 # The words the edit is keyed to: event -> (line, word index[, nudge in seconds]), in each language's own sentences
 _ANCHORS = {
-    # c_share leads "partager" a little: the read runs "ta foi" straight into "rencontrer", and the first card needs its moment
-    "fr": {"c_share": ("l1", 5, -0.2), "c_meet": ("l1", 8), "c_grow": ("l1", 11), "logo_land": ("l2", 5),
+    # c_share leads "partager" a little: the read goes straight on into "rencontrer", and the first card needs its moment
+    "fr": {"c_share": ("l1", 5, -0.2), "c_meet": ("l1", 6), "c_grow": ("l1", 9), "logo_land": ("l2", 5),
            "q_feed": ("l3", 7), "t_feed": ("l3", 9), "r_feed": ("l3", 11), "enc": ("l3", 13),
            "groups_tap": ("l4", 6), "rows": ("l4", 9), "chat": ("l4", 12),
            "lift_prayer": ("l5", 7), "sheet_up": ("l5", 12), "confier": ("l5", 16), "jeprie": ("l5", 17), "upd1": ("l5", 22),
@@ -120,7 +120,7 @@ _ANCHORS = {
 }
 A = _ANCHORS[LANG]
 # (line, first word) -> text shown instead of the words (same timing); a no-break space picks where a long one wraps
-PUNCH_TEXT = {("l1", 11): "et grandir dans\u00a0la\u00a0foi ?"} if LANG == "fr" else {}
+PUNCH_TEXT = {("l1", 9): "et grandir dans\u00a0la\u00a0foi ?"} if LANG == "fr" else {}
 HERO = ("l1", "l2")  # the hook: its captions sit large in the middle of the frame, the lead-in typed word by word
 
 

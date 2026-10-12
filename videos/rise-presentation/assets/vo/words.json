@@ -1,6 +1,6 @@
 {
  "l1": {
-  "text": "Tu cherches un endroit pour partager ta foi, rencontrer d'autres chrétiens et grandir dans la foi ?",
+  "text": "Tu cherches un endroit pour partager, rencontrer d'autres chrétiens et grandir dans la foi ?",
   "audio": "ec7fdef1a4877c366e1351d6d6c203634e97ca97",
   "words": [
    {
@@ -26,32 +26,22 @@
    {
     "w": "pour",
     "start": 0.81,
-    "end": 0.995
+    "end": 0.98
    },
    {
-    "w": "partager",
+    "w": "partager,",
     "start": 1.01,
-    "end": 1.54
-   },
-   {
-    "w": "ta",
-    "start": 1.54,
-    "end": 1.73
-   },
-   {
-    "w": "foi,",
-    "start": 1.74,
     "end": 1.81
    },
    {
     "w": "rencontrer",
     "start": 1.82,
-    "end": 2.36
+    "end": 2.35
    },
    {
     "w": "d'autres",
-    "start": 2.36,
-    "end": 2.71
+    "start": 2.35,
+    "end": 2.7
    },
    {
     "w": "chrétiens",
@@ -66,17 +56,17 @@
    {
     "w": "grandir",
     "start": 3.34,
-    "end": 3.72
+    "end": 3.74
    },
    {
     "w": "dans",
-    "start": 3.72,
-    "end": 3.76
+    "start": 3.74,
+    "end": 3.85
    },
    {
     "w": "la",
-    "start": 3.77,
-    "end": 4.02
+    "start": 3.85,
+    "end": 4.03
    },
    {
     "w": "foi ?",
