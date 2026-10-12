@@ -33,8 +33,8 @@ VO = ROOT / "assets" / f"vo{SUFFIX}"
 
 # Voice-over lines: (text as spoken, text shown in the captions). Same number of words in both.
 _LINES = {"fr": {
-    "l1": ("Tu cherches un endroit pour partager ta foi, rencontrer d'autres chrétiens et grandir ?",
-           "Tu cherches un endroit pour partager ta foi, rencontrer d'autres chrétiens et grandir ?"),
+    "l1": ("Tu cherches un endroit pour partager ta foi, rencontrer d'autres chrétiens et grandir dans la foi ?",
+           "Tu cherches un endroit pour partager ta foi, rencontrer d'autres chrétiens et grandir dans la foi ?"),
     "l2": ("Et si je te présentais RISE ?", "Et si je te présentais RISE ?"),
     "l3": ("Ici, tout commence sur le fil d'actu : une question, un témoignage, une réflexion… et on s'encourage dans la foi !",
            "Ici, tout commence sur le fil d'actu : une question, un témoignage, une réflexion… et on s'encourage dans la foi !"),
@@ -63,7 +63,7 @@ LINES = _LINES[LANG]
 # Captions in two tiers, as in a social ad: a small setup label, then the punch line, which lands on
 # its first word. (line, setup word range or None, punch word ranges swapped in place one by one)
 _BEATS = {"fr": [
-    ("l1", (0, 4), [(5, 7), (8, 10), (11, 12)]),
+    ("l1", (0, 4), [(5, 7), (8, 10), (11, 15)]),
     ("l2", (0, 4), []),  # the RISE logo lights up on its word
     ("l3", (0, 6), [(7, 8), (9, 10), (11, 12)]),
     ("l3", None, [(13, 18)]),
@@ -119,7 +119,8 @@ _ANCHORS = {
            "together": ("l7", 4), "w_rise9": ("l7", 8), "dl": ("l8", 2), "free": ("l8", 5), "appstore": ("l8", 8), "gplay": ("l8", 11)},
 }
 A = _ANCHORS[LANG]
-PUNCH_TEXT = {}  # (line, first word) -> text shown instead of the words (same timing)
+# (line, first word) -> text shown instead of the words (same timing); a no-break space picks where a long one wraps
+PUNCH_TEXT = {("l1", 11): "et grandir dans\u00a0la\u00a0foi ?"} if LANG == "fr" else {}
 HERO = ("l1", "l2")  # the hook: its captions sit large in the middle of the frame, the lead-in typed word by word
 
 
