@@ -49,8 +49,8 @@ _LINES = {"fr": {
     "l8": ("Rejoins-nous : télécharge RISE gratuitement sur l'App Store et Google Play !",
            "Rejoins-nous : télécharge RISE gratuitement sur l'App Store et Google Play !"),
 }, "en": {k: (t, t) for k, t in {
-    "l1": "Looking for a place to share your faith, meet other Christians and grow?",
-    "l2": "Then let me introduce you to RISE!",
+    "l1": "Looking for a place to share, meet other Christians and grow in your faith?",
+    "l2": "What if I introduced you to RISE?",
     "l3": "It all starts in the feed: a question, a testimony, a reflection… and we lift each other up in faith!",
     "l4": "And when something speaks to you, go deeper: join groups with Christians who share your passions.",
     "l5": "Because community also means carrying each other… share your prayer requests, pray for others: we were never meant to walk alone.",
@@ -82,7 +82,7 @@ _BEATS = {"fr": [
     ("l8", (0, 0), [(1, 3)]),
     ("l8", (4, 9), []),  # the store badges carry it
 ], "en": [
-    ("l1", (0, 4), [(5, 7), (8, 10), (11, 12)]),
+    ("l1", (0, 4), [(5, 5), (6, 8), (9, 13)]),
     ("l2", (0, 5), []),
     ("l3", (0, 5), [(6, 7), (8, 9), (10, 11)]),
     ("l3", None, [(12, 19)]),
@@ -104,14 +104,14 @@ _BEATS = {"fr": [
 BEATS = _BEATS[LANG]
 # The words the edit is keyed to: event -> (line, word index[, nudge in seconds]), in each language's own sentences
 _ANCHORS = {
-    # c_share leads "partager" a little: the read goes straight on into "rencontrer", and the first card needs its moment
+    # c_share leads "partager" / "share" a little: both reads go straight on into the next phrase, and the first card needs its moment
     "fr": {"c_share": ("l1", 5, -0.2), "c_meet": ("l1", 6), "c_grow": ("l1", 9), "logo_land": ("l2", 5),
            "q_feed": ("l3", 7), "t_feed": ("l3", 9), "r_feed": ("l3", 11), "enc": ("l3", 13),
            "groups_tap": ("l4", 6), "rows": ("l4", 9), "chat": ("l4", 12),
            "lift_prayer": ("l5", 7), "sheet_up": ("l5", 12), "confier": ("l5", 16), "jeprie": ("l5", 17), "upd1": ("l5", 22),
            "verse_lift": ("l6", 7), "quiz": ("l6", 8), "q_tap": ("l6", 13), "q_ok": ("l6", 15), "learn": ("l6", 16),
            "together": ("l7", 4), "w_rise9": ("l7", 9), "dl": ("l8", 1), "free": ("l8", 3), "appstore": ("l8", 5), "gplay": ("l8", 8)},
-    "en": {"c_share": ("l1", 5), "c_meet": ("l1", 8), "c_grow": ("l1", 11), "logo_land": ("l2", 6),
+    "en": {"c_share": ("l1", 5, -0.25), "c_meet": ("l1", 6), "c_grow": ("l1", 9), "logo_land": ("l2", 6),
            "q_feed": ("l3", 6), "t_feed": ("l3", 8), "r_feed": ("l3", 10), "enc": ("l3", 12),
            "groups_tap": ("l4", 6), "rows": ("l4", 8), "chat": ("l4", 10),
            "lift_prayer": ("l5", 4), "sheet_up": ("l5", 7), "confier": ("l5", 10), "jeprie": ("l5", 11), "upd1": ("l5", 14),
@@ -120,7 +120,8 @@ _ANCHORS = {
 }
 A = _ANCHORS[LANG]
 # (line, first word) -> text shown instead of the words (same timing); a no-break space picks where a long one wraps
-PUNCH_TEXT = {("l1", 9): "et grandir dans\u00a0la\u00a0foi ?"} if LANG == "fr" else {}
+PUNCH_TEXT = {"fr": {("l1", 9): "et grandir dans\u00a0la\u00a0foi ?"},
+              "en": {("l1", 9): "and grow in\u00a0your\u00a0faith?"}}[LANG]
 HERO = ("l1", "l2")  # the hook: its captions sit large in the middle of the frame, the lead-in typed word by word
 
 

@@ -1,689 +1,694 @@
 {
  "l1": {
-  "text": "Looking for a place to share your faith, meet other Christians and grow?",
-  "audio": "cac5f04d1753501e192458bea7b4d0deec1c55d3",
+  "text": "Looking for a place to share, meet other Christians and grow in your faith?",
+  "audio": "7ea267f7b7e1a58ffcea42aa38ce56be93b768ac",
   "words": [
    {
     "w": "Looking",
     "start": 0.0,
-    "end": 0.37
+    "end": 0.35
    },
    {
     "w": "for",
-    "start": 0.37,
-    "end": 0.56
+    "start": 0.35,
+    "end": 0.53
    },
    {
     "w": "a",
-    "start": 0.56,
-    "end": 0.61
+    "start": 0.53,
+    "end": 0.58
    },
    {
     "w": "place",
-    "start": 0.62,
-    "end": 0.93
+    "start": 0.59,
+    "end": 0.85
    },
    {
     "w": "to",
-    "start": 0.94,
-    "end": 1.06
+    "start": 0.86,
+    "end": 1.04
    },
    {
-    "w": "share",
-    "start": 1.06,
-    "end": 1.34
-   },
-   {
-    "w": "your",
-    "start": 1.34,
-    "end": 1.58
-   },
-   {
-    "w": "faith,",
-    "start": 1.58,
-    "end": 2.165
+    "w": "share,",
+    "start": 1.04,
+    "end": 1.625
    },
    {
     "w": "meet",
-    "start": 2.18,
-    "end": 2.35
+    "start": 1.66,
+    "end": 1.88
    },
    {
     "w": "other",
-    "start": 2.35,
-    "end": 2.6
+    "start": 1.88,
+    "end": 2.14
    },
    {
     "w": "Christians",
-    "start": 2.61,
-    "end": 3.51
+    "start": 2.14,
+    "end": 2.75
    },
    {
     "w": "and",
-    "start": 3.51,
-    "end": 3.69
+    "start": 2.76,
+    "end": 2.95
    },
    {
-    "w": "grow?",
-    "start": 3.69,
-    "end": 4.15
+    "w": "grow",
+    "start": 2.95,
+    "end": 3.16
+   },
+   {
+    "w": "in",
+    "start": 3.17,
+    "end": 3.23
+   },
+   {
+    "w": "your",
+    "start": 3.23,
+    "end": 3.45
+   },
+   {
+    "w": "faith?",
+    "start": 3.46,
+    "end": 3.72
    }
   ]
  },
  "l2": {
-  "text": "Then let me introduce you to RISE!",
-  "audio": "e4c523a29a642b4820e01c2256104aaaa82bc605",
+  "text": "What if I introduced you to RISE?",
+  "audio": "0ad091106b16bcfe95128078feab8df204707fad",
   "words": [
    {
-    "w": "Then",
-    "start": 0.06,
-    "end": 0.31
+    "w": "What",
+    "start": 0.0,
+    "end": 0.32
    },
    {
-    "w": "let",
-    "start": 0.31,
-    "end": 0.5
+    "w": "if",
+    "start": 0.32,
+    "end": 0.39
    },
    {
-    "w": "me",
-    "start": 0.5,
-    "end": 0.66
+    "w": "I",
+    "start": 0.4,
+    "end": 0.58
    },
    {
-    "w": "introduce",
-    "start": 0.66,
-    "end": 1.12
+    "w": "introduced",
+    "start": 0.58,
+    "end": 1.02
    },
    {
     "w": "you",
-    "start": 1.12,
-    "end": 1.22
+    "start": 1.02,
+    "end": 1.18
    },
    {
     "w": "to",
-    "start": 1.22,
-    "end": 1.45
+    "start": 1.18,
+    "end": 1.39
    },
    {
-    "w": "RISE!",
-    "start": 1.46,
-    "end": 2.23
+    "w": "RISE?",
+    "start": 1.4,
+    "end": 2.02
    }
   ]
  },
  "l3": {
   "text": "It all starts in the feed: a question, a testimony, a reflection… and we lift each other up in faith!",
-  "audio": "407eda1faa9d0e18406b1634e82a6a5e8c39414b",
+  "audio": "7b963cc69ba1cfff43b33d94900f19958c385a7b",
   "words": [
    {
     "w": "It",
-    "start": 0.0,
-    "end": 0.22
+    "start": 0.006,
+    "end": 0.2
    },
    {
     "w": "all",
-    "start": 0.23,
-    "end": 0.47
+    "start": 0.21,
+    "end": 0.44
    },
    {
     "w": "starts",
-    "start": 0.47,
-    "end": 0.76
+    "start": 0.44,
+    "end": 0.73
    },
    {
     "w": "in",
-    "start": 0.77,
-    "end": 0.92
+    "start": 0.74,
+    "end": 0.88
    },
    {
     "w": "the",
-    "start": 0.92,
-    "end": 1.04
+    "start": 0.88,
+    "end": 1.02
    },
    {
     "w": "feed:",
-    "start": 1.04,
-    "end": 1.55
+    "start": 1.02,
+    "end": 1.585
    },
    {
     "w": "a",
-    "start": 1.61,
-    "end": 1.71
+    "start": 1.66,
+    "end": 1.757
    },
    {
     "w": "question,",
-    "start": 1.71,
-    "end": 2.41
+    "start": 1.757,
+    "end": 2.49
    },
    {
     "w": "a",
-    "start": 2.42,
-    "end": 2.515
+    "start": 2.5,
+    "end": 2.605
    },
    {
     "w": "testimony,",
-    "start": 2.53,
-    "end": 3.33
+    "start": 2.635,
+    "end": 3.5
    },
    {
     "w": "a",
-    "start": 3.34,
-    "end": 3.43
+    "start": 3.51,
+    "end": 3.59
    },
    {
     "w": "reflection…",
-    "start": 3.43,
-    "end": 3.96
+    "start": 3.59,
+    "end": 4.13
    },
    {
     "w": "and",
-    "start": 3.96,
-    "end": 4.14
+    "start": 4.13,
+    "end": 4.62
    },
    {
     "w": "we",
-    "start": 4.29,
-    "end": 4.685
+    "start": 4.62,
+    "end": 4.87
    },
    {
     "w": "lift",
-    "start": 4.71,
-    "end": 4.98
+    "start": 4.89,
+    "end": 5.155
    },
    {
     "w": "each",
-    "start": 4.98,
-    "end": 5.13
+    "start": 5.155,
+    "end": 5.3
    },
    {
     "w": "other",
-    "start": 5.13,
-    "end": 5.38
+    "start": 5.3,
+    "end": 5.56
    },
    {
     "w": "up",
-    "start": 5.38,
-    "end": 5.52
+    "start": 5.56,
+    "end": 5.71
    },
    {
     "w": "in",
-    "start": 5.53,
-    "end": 5.76
+    "start": 5.72,
+    "end": 5.94
    },
    {
     "w": "faith!",
-    "start": 5.76,
-    "end": 6.11
+    "start": 5.94,
+    "end": 6.32
    }
   ]
  },
  "l4": {
   "text": "And when something speaks to you, go deeper: join groups with Christians who share your passions.",
-  "audio": "b26468de62348850830f3224006cabf34003671d",
+  "audio": "af044e610348d6fba1db9a999bcffae3db02ec31",
   "words": [
    {
     "w": "And",
-    "start": 0.0,
-    "end": 0.15
+    "start": 0.006,
+    "end": 0.16
    },
    {
     "w": "when",
-    "start": 0.15,
-    "end": 0.29
+    "start": 0.16,
+    "end": 0.31
    },
    {
     "w": "something",
-    "start": 0.29,
-    "end": 0.63
+    "start": 0.31,
+    "end": 0.67
    },
    {
     "w": "speaks",
-    "start": 0.63,
-    "end": 1.01
+    "start": 0.67,
+    "end": 1.02
    },
    {
     "w": "to",
-    "start": 1.02,
-    "end": 1.11
+    "start": 1.03,
+    "end": 1.14
    },
    {
     "w": "you,",
-    "start": 1.11,
-    "end": 1.532
+    "start": 1.14,
+    "end": 1.575
    },
    {
     "w": "go",
-    "start": 1.59,
-    "end": 1.82
+    "start": 1.64,
+    "end": 1.875
    },
    {
     "w": "deeper:",
-    "start": 1.82,
-    "end": 2.557
+    "start": 1.875,
+    "end": 2.657
    },
    {
     "w": "join",
-    "start": 2.64,
-    "end": 2.93
+    "start": 2.76,
+    "end": 3.07
    },
    {
     "w": "groups",
-    "start": 2.93,
-    "end": 3.2
+    "start": 3.07,
+    "end": 3.35
    },
    {
     "w": "with",
-    "start": 3.2,
-    "end": 3.34
+    "start": 3.35,
+    "end": 3.49
    },
    {
     "w": "Christians",
-    "start": 3.34,
-    "end": 3.83
+    "start": 3.49,
+    "end": 3.98
    },
    {
     "w": "who",
-    "start": 3.83,
-    "end": 3.95
+    "start": 3.98,
+    "end": 4.09
    },
    {
     "w": "share",
-    "start": 3.95,
-    "end": 4.28
+    "start": 4.09,
+    "end": 4.41
    },
    {
     "w": "your",
-    "start": 4.28,
-    "end": 4.42
+    "start": 4.41,
+    "end": 4.53
    },
    {
     "w": "passions.",
-    "start": 4.43,
-    "end": 5.15
+    "start": 4.54,
+    "end": 5.16
    }
   ]
  },
  "l5": {
   "text": "Because community also means carrying each other… share your prayer requests, pray for others: we were never meant to walk alone.",
-  "audio": "cb037adf4dcf910aa436b516559e104ba3522d7c",
+  "audio": "1ab072294f47654c887d7b0cacfbda393c677ce3",
   "words": [
    {
     "w": "Because",
     "start": 0.0,
-    "end": 0.35
+    "end": 0.34
    },
    {
     "w": "community",
-    "start": 0.36,
-    "end": 1.012
+    "start": 0.35,
+    "end": 1.01
    },
    {
     "w": "also",
-    "start": 1.03,
+    "start": 1.02,
     "end": 1.45
    },
    {
     "w": "means",
     "start": 1.45,
-    "end": 1.68
+    "end": 1.725
    },
    {
     "w": "carrying",
-    "start": 1.69,
-    "end": 2.17
+    "start": 1.74,
+    "end": 2.21
    },
    {
     "w": "each",
-    "start": 2.17,
-    "end": 2.38
+    "start": 2.21,
+    "end": 2.42
    },
    {
     "w": "other…",
-    "start": 2.38,
-    "end": 2.97
+    "start": 2.42,
+    "end": 3.1
    },
    {
     "w": "share",
-    "start": 3.06,
-    "end": 3.33
+    "start": 3.1,
+    "end": 3.35
    },
    {
     "w": "your",
-    "start": 3.33,
-    "end": 3.5
+    "start": 3.35,
+    "end": 3.52
    },
    {
     "w": "prayer",
-    "start": 3.5,
+    "start": 3.52,
     "end": 3.8
    },
    {
     "w": "requests,",
     "start": 3.8,
-    "end": 4.535
+    "end": 4.58
    },
    {
     "w": "pray",
-    "start": 4.56,
-    "end": 4.85
+    "start": 4.58,
+    "end": 4.87
    },
    {
     "w": "for",
-    "start": 4.86,
-    "end": 4.98
+    "start": 4.88,
+    "end": 5.02
    },
    {
     "w": "others:",
-    "start": 4.99,
-    "end": 5.73
+    "start": 5.03,
+    "end": 5.775
    },
    {
     "w": "we",
-    "start": 5.82,
-    "end": 5.91
+    "start": 5.87,
+    "end": 5.97
    },
    {
     "w": "were",
-    "start": 5.91,
-    "end": 6.01
+    "start": 5.97,
+    "end": 6.06
    },
    {
     "w": "never",
-    "start": 6.01,
-    "end": 6.37
+    "start": 6.06,
+    "end": 6.41
    },
    {
     "w": "meant",
-    "start": 6.37,
-    "end": 6.7
+    "start": 6.41,
+    "end": 6.725
    },
    {
     "w": "to",
-    "start": 6.71,
-    "end": 6.85
+    "start": 6.74,
+    "end": 6.88
    },
    {
     "w": "walk",
-    "start": 6.85,
-    "end": 7.04
+    "start": 6.88,
+    "end": 7.07
    },
    {
     "w": "alone.",
-    "start": 7.04,
+    "start": 7.07,
     "end": 7.53
    }
   ]
  },
  "l6": {
   "text": "And to grow in the Word every day, test what you know with quizzes… and discover the Bible in a whole new way!",
-  "audio": "2c510f5fd6f6693c4f61279a8458e8b5fc8ce6fb",
+  "audio": "7baeb8be4bf74512cbd7dc82d9818c45738c5c0c",
   "words": [
    {
     "w": "And",
     "start": 0.0,
-    "end": 0.17
+    "end": 0.16
    },
    {
     "w": "to",
-    "start": 0.18,
-    "end": 0.32
+    "start": 0.17,
+    "end": 0.3
    },
    {
     "w": "grow",
-    "start": 0.32,
-    "end": 0.6
+    "start": 0.3,
+    "end": 0.61
    },
    {
     "w": "in",
-    "start": 0.6,
-    "end": 0.81
+    "start": 0.61,
+    "end": 0.82
    },
    {
     "w": "the",
-    "start": 0.81,
-    "end": 0.85
+    "start": 0.82,
+    "end": 0.86
    },
    {
     "w": "Word",
-    "start": 0.86,
-    "end": 1.14
+    "start": 0.87,
+    "end": 1.152
    },
    {
     "w": "every",
-    "start": 1.15,
-    "end": 1.48
+    "start": 1.17,
+    "end": 1.55
    },
    {
     "w": "day,",
-    "start": 1.48,
-    "end": 1.945
+    "start": 1.55,
+    "end": 2.097
    },
    {
     "w": "test",
-    "start": 1.98,
-    "end": 2.26
+    "start": 2.13,
+    "end": 2.41
    },
    {
     "w": "what",
-    "start": 2.27,
-    "end": 2.39
+    "start": 2.42,
+    "end": 2.55
    },
    {
     "w": "you",
-    "start": 2.39,
-    "end": 2.66
+    "start": 2.55,
+    "end": 2.83
    },
    {
     "w": "know",
-    "start": 2.66,
-    "end": 2.7
+    "start": 2.83,
+    "end": 2.88
    },
    {
     "w": "with",
-    "start": 2.71,
-    "end": 2.84
+    "start": 2.88,
+    "end": 3.03
    },
    {
     "w": "quizzes…",
-    "start": 2.84,
-    "end": 3.44
+    "start": 3.03,
+    "end": 3.675
    },
    {
     "w": "and",
-    "start": 3.49,
-    "end": 3.61
+    "start": 3.8,
+    "end": 3.9
    },
    {
     "w": "discover",
-    "start": 3.61,
-    "end": 4.12
+    "start": 3.9,
+    "end": 4.39
    },
    {
     "w": "the",
-    "start": 4.12,
-    "end": 4.24
+    "start": 4.39,
+    "end": 4.51
    },
    {
     "w": "Bible",
-    "start": 4.24,
-    "end": 4.62
-   },
-   {
-    "w": "in",
-    "start": 4.63,
-    "end": 4.68
-   },
-   {
-    "w": "a",
-    "start": 4.68,
+    "start": 4.51,
     "end": 4.89
    },
    {
+    "w": "in",
+    "start": 4.9,
+    "end": 4.96
+   },
+   {
+    "w": "a",
+    "start": 4.95,
+    "end": 5.16
+   },
+   {
     "w": "whole",
-    "start": 4.89,
-    "end": 5.24
+    "start": 5.16,
+    "end": 5.51
    },
    {
     "w": "new",
-    "start": 5.25,
-    "end": 5.45
+    "start": 5.52,
+    "end": 5.7
    },
    {
     "w": "way!",
-    "start": 5.45,
-    "end": 5.79
+    "start": 5.7,
+    "end": 6.08
    }
   ]
  },
  "l7": {
   "text": "Share, connect, pray, learn… and grow together: that's RISE, the social network made for Christians!",
-  "audio": "2b0a3dab54b643dd61a2c565c6b6d9854f49053e",
+  "audio": "fbd05d308869edc09e266061e2909633bc07cacb",
   "words": [
    {
     "w": "Share,",
     "start": 0.0,
-    "end": 0.684
+    "end": 0.665
    },
    {
     "w": "connect,",
-    "start": 0.71,
-    "end": 1.47
+    "start": 0.68,
+    "end": 1.46
    },
    {
     "w": "pray,",
     "start": 1.5,
-    "end": 2.13
+    "end": 2.142
    },
    {
     "w": "learn…",
-    "start": 2.13,
-    "end": 2.69
+    "start": 2.17,
+    "end": 2.93
    },
    {
     "w": "and",
-    "start": 2.69,
-    "end": 3.11
+    "start": 2.93,
+    "end": 3.13
    },
    {
     "w": "grow",
-    "start": 3.11,
-    "end": 3.43
+    "start": 3.13,
+    "end": 3.48
    },
    {
     "w": "together:",
-    "start": 3.44,
-    "end": 4.11
+    "start": 3.49,
+    "end": 4.2
    },
    {
     "w": "that's",
-    "start": 4.26,
-    "end": 4.48
+    "start": 4.37,
+    "end": 4.61
    },
    {
     "w": "RISE,",
-    "start": 4.49,
-    "end": 5.11
+    "start": 4.62,
+    "end": 5.23
    },
    {
     "w": "the",
-    "start": 5.14,
-    "end": 5.31
+    "start": 5.26,
+    "end": 5.43
    },
    {
     "w": "social",
-    "start": 5.31,
-    "end": 5.65
+    "start": 5.43,
+    "end": 5.78
    },
    {
     "w": "network",
-    "start": 5.65,
-    "end": 6.04
+    "start": 5.78,
+    "end": 6.2
    },
    {
     "w": "made",
-    "start": 6.04,
-    "end": 6.35
+    "start": 6.2,
+    "end": 6.54
    },
    {
     "w": "for",
-    "start": 6.36,
-    "end": 6.47
+    "start": 6.55,
+    "end": 6.67
    },
    {
     "w": "Christians!",
-    "start": 6.47,
-    "end": 7.13
+    "start": 6.68,
+    "end": 7.28
    }
   ]
  },
  "l8": {
   "text": "Join us: download RISE for free on the App Store and Google Play!",
-  "audio": "553321957b6bf5c5d45a4fc00cb6296f11cc17bb",
+  "audio": "f47a40cd55fcdd79d6e4cf5ba99cbc78c7190a96",
   "words": [
    {
     "w": "Join",
-    "start": 0.006,
-    "end": 0.44
+    "start": 0.0,
+    "end": 0.64
    },
    {
     "w": "us:",
-    "start": 0.44,
-    "end": 0.86
+    "start": 0.64,
+    "end": 1.16
    },
    {
     "w": "download",
-    "start": 0.89,
-    "end": 1.33
+    "start": 1.23,
+    "end": 1.66
    },
    {
     "w": "RISE",
-    "start": 1.34,
-    "end": 1.67
+    "start": 1.66,
+    "end": 1.99
    },
    {
     "w": "for",
-    "start": 1.67,
-    "end": 1.95
-   },
-   {
-    "w": "free",
-    "start": 1.95,
+    "start": 1.99,
     "end": 2.26
    },
    {
-    "w": "on",
+    "w": "free",
     "start": 2.26,
-    "end": 2.42
+    "end": 2.57
+   },
+   {
+    "w": "on",
+    "start": 2.57,
+    "end": 2.74
    },
    {
     "w": "the",
-    "start": 2.42,
-    "end": 2.49
+    "start": 2.74,
+    "end": 2.82
    },
    {
     "w": "App",
-    "start": 2.49,
-    "end": 2.67
+    "start": 2.82,
+    "end": 3.0
    },
    {
     "w": "Store",
-    "start": 2.67,
-    "end": 3.01
+    "start": 3.0,
+    "end": 3.37
    },
    {
     "w": "and",
-    "start": 3.02,
-    "end": 3.14
+    "start": 3.38,
+    "end": 3.52
    },
    {
     "w": "Google",
-    "start": 3.14,
-    "end": 3.43
+    "start": 3.52,
+    "end": 3.83
    },
    {
     "w": "Play!",
-    "start": 3.44,
-    "end": 3.66
+    "start": 3.84,
+    "end": 4.05
    }
   ]
  }
