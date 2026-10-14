@@ -6,147 +6,114 @@
   <body>
     <template>
       <style>
-        @font-face { font-family: "Inter Display"; font-weight: 700; src: url("assets/fonts/InterDisplay-Bold.otf") format("opentype"); }
-        @font-face { font-family: "Inter Display"; font-weight: 600; src: url("assets/fonts/InterDisplay-SemiBold.otf") format("opentype"); }
-        #root {
-          position: absolute;
-          inset: 0;
-          --ink-sky: #111111;
-          --ink-sun: #ffffff;
-          --amber: #b64400;
-        }
-        .w {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 1080px;
-          height: 1920px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding-bottom: 120px;
-          box-sizing: border-box;
-          visibility: hidden;
-          font-family: "Inter Display", sans-serif;
-          font-weight: 700;
-          letter-spacing: -0.05em;
-          line-height: 0.9;
-          white-space: nowrap;
-        }
-        .on-sky { color: var(--ink-sky); }
-        .on-amber { color: var(--ink-sun); }
-        .big { display: block; }
-        .top { display: block; margin-bottom: -0.02em; }
-        #w4 .big { filter: url(#breakup-filter); }
-        #w5 .big { filter: url(#streak-filter); }
-        .logo-box { position: relative; width: 640px; }
-        #logo { display: block; width: 640px; height: auto; }
-        .glow {
-          position: absolute;
-          left: 179px;
-          top: -38px;
-          width: 120px;
-          height: 160px;
-          border-radius: 50%;
-          background: radial-gradient(closest-side, rgba(255, 170, 60, 0.85), rgba(255, 170, 60, 0));
-          filter: blur(14px);
-        }
-        .slogan {
-          margin-top: 54px;
-          font-family: "Inter Display", sans-serif;
-          font-weight: 700;
-          font-size: 70px;
-          letter-spacing: -0.04em;
-          color: #1d1d1f;
-        }
-        .slogan em { font-style: normal; color: var(--amber); }
+        @font-face { font-family: "Rise Sans"; font-weight: 700; src: url("assets/fonts/FreeSansBold.ttf") format("truetype"); }
+        #root { position: absolute; inset: 0; }
+        .card { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; visibility: hidden; }
+        .layer { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+        .layer svg { position: absolute; left: 0; top: 0; overflow: visible; }
+        text { font-family: "Rise Sans", sans-serif; font-weight: 700; letter-spacing: -0.035em; }
+        .logo { position: absolute; height: auto; }
+        #c12-a { filter: url(#c12-smear-f); }
+        #c15-a { filter: url(#c15-smear-f); }
+        #c20-a { filter: url(#c20-smear-f); }
+        #c28-a { filter: url(#c28-smear-f); }
       </style>
       <div id="root" data-composition-id="mots" data-width="1080" data-height="1920">
-        <svg width="0" height="0" style="position: absolute">
-          <filter id="breakup-filter" x="-20%" y="-40%" width="140%" height="180%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="4" />
-            <feDisplacementMap id="breakup" in="SourceGraphic" scale="0" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-          <filter id="streak-filter" x="-30%" y="-10%" width="160%" height="120%">
-            <feGaussianBlur id="streak" stdDeviation="0 0" />
-          </filter>
-        </svg>
-        <div id="w0" class="w on-sky" data-layout-allow-overflow><div class="big" style="font-size: 290px">r</div></div>
-        <div id="w1" class="w on-amber" data-layout-allow-overflow><div class="big" style="font-size: 290px">ri</div></div>
-        <div id="w2" class="w on-sky" data-layout-allow-overflow><div class="big" style="font-size: 290px">ris</div></div>
-        <div id="w3" class="w on-amber" data-layout-allow-overflow><div class="big" style="font-size: 290px">rise.</div></div>
-        <div id="w4" class="w on-sky" data-layout-allow-overflow><div class="big" style="font-size: 560px">rise.</div></div>
-        <div id="w5" class="w on-amber pair" data-layout-allow-overflow><div class="top" style="font-size: 121.8px">le réseau</div><div class="big" style="font-size: 290px">social</div></div>
-        <div id="w6" class="w on-sky" data-layout-allow-overflow><div class="big" style="font-size: 239.3px">chrétien.</div></div>
-        <div id="w7" class="w on-amber" data-layout-allow-overflow><div class="big" style="font-size: 263.4px">partage</div></div>
-        <div id="w8" class="w on-sky" data-layout-allow-overflow><div class="big" style="font-size: 252.2px">entraide</div></div>
-        <div id="w9" class="w on-amber" data-layout-allow-overflow><div class="big" style="font-size: 290px">prière</div></div>
-        <div id="w10" class="w on-sky" data-layout-allow-overflow><div class="big" style="font-size: 290px">quiz</div></div>
-        <div id="w11" class="w on-amber" data-layout-allow-overflow><div class="big" style="font-size: 290px">verset</div></div>
-        <div id="w12" class="w on-sky" data-layout-allow-overflow><div class="big" style="font-size: 290px">créé</div></div>
-        <div id="w13" class="w on-amber pair" data-layout-allow-overflow><div class="top" style="font-size: 106.1px">par un</div><div class="big" style="font-size: 252.7px">chrétien</div></div>
-        <div id="w14" class="w on-sky" data-layout-allow-overflow><div class="big" style="font-size: 290px">pour</div></div>
-        <div id="w15" class="w on-amber pair" data-layout-allow-overflow><div class="top" style="font-size: 89.1px">les</div><div class="big" style="font-size: 212.2px">chrétiens.</div></div>
-        <div id="w16" class="w on-sky logo"><div class="logo-box"><span id="glow" class="glow"></span><img id="logo" src="assets/rise_logo.png" alt="RISE" /></div><div id="slogan" class="slogan">Élève-toi. <em>Ensemble.</em></div></div>
+        <svg width="0" height="0" style="position: absolute"><filter id="c12-smear-f" x="-30%" y="-10%" width="160%" height="120%"><feGaussianBlur id="c12-smear" stdDeviation="0 0" /></filter><filter id="c15-smear-f" x="-30%" y="-10%" width="160%" height="120%"><feGaussianBlur id="c15-smear" stdDeviation="0 0" /></filter><filter id="c20-smear-f" x="-30%" y="-10%" width="160%" height="120%"><feGaussianBlur id="c20-smear" stdDeviation="0 0" /></filter><filter id="c28-smear-f" x="-30%" y="-10%" width="160%" height="120%"><feGaussianBlur id="c28-smear" stdDeviation="0 0" /></filter></svg>
+        <div id="c0" class="card" data-layout-allow-overflow><div id="c0-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="503.5" y="980.2" style="font-size: 186.0px; fill: #0b0b0c">r</text></svg></div></div>
+        <div id="c1" class="card" data-layout-allow-overflow><div id="c1-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="460.8" y="980.2" style="font-size: 186.0px; fill: #ffffff">ri.</text></svg></div></div>
+        <div id="c2" class="card" data-layout-allow-overflow><div id="c2-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="433.2" y="980.2" style="font-size: 186.0px; fill: #0b0b0c">ris</text></svg></div></div>
+        <div id="c3" class="card" data-layout-allow-overflow><div id="c3-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="363.2" y="980.2" style="font-size: 186.0px; fill: #ffffff">rise.</text></svg></div></div>
+        <div id="c4" class="card" data-layout-allow-overflow><div id="c4-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><defs><filter id="c4-feather" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10" /></filter><mask id="c4-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1080" height="1920"><rect x="0" y="0" width="1080" height="1920" fill="#fff" /><g filter="url(#c4-feather)"><circle id="c4-blob0" cx="600" cy="930" r="0" fill="#000" /><circle id="c4-blob1" cx="470" cy="860" r="0" fill="#000" /><circle id="c4-blob2" cx="760" cy="1000" r="0" fill="#000" /><circle id="c4-blob3" cx="330" cy="990" r="0" fill="#000" /><circle id="c4-blob4" cx="880" cy="850" r="0" fill="#000" /><circle id="c4-blob5" cx="200" cy="860" r="0" fill="#000" /><circle id="c4-blob6" cx="300" cy="720" r="0" fill="#000" /><circle id="c4-blob7" cx="965" cy="1010" r="0" fill="#000" /></g></mask></defs><text mask="url(#c4-mask)" class="" x="25.0" y="1076.3" style="font-size: 541.8px; fill: #0b0b0c">rise.</text></svg></div></div>
+        <div id="c5" class="card"></div>
+        <div id="c6" class="card" data-layout-allow-overflow><div id="c6-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="161.1" y="980.2" style="font-size: 186.0px; fill: #ffffff">le réseau</text></svg></div></div>
+        <div id="c9" class="card" data-layout-allow-overflow><div id="c9-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="161.1" y="980.2" style="font-size: 186.0px; fill: #0b0b0c">le réseau</text></svg></div><div id="c9-b" class="layer" style="transform-origin: 540px 997px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="104.1" y="1241.2" style="font-size: 334.8px; fill: #0b0b0c">social</text></svg></div></div>
+        <div id="c12" class="card" data-layout-allow-overflow><div id="c12-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="184.7" y="980.2" style="font-size: 186.0px; fill: #ffffff">chrétien.</text></svg></div></div>
+        <div id="c14" class="card" data-layout-allow-overflow><div id="c14-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="222.6" y="980.2" style="font-size: 186.0px; fill: #0b0b0c">partage</text></svg></div></div>
+        <div id="c15" class="card" data-layout-allow-overflow><div id="c15-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="203.3" y="980.2" style="font-size: 186.0px; fill: #ffffff">entraide</text></svg></div></div>
+        <div id="c16" class="card" data-layout-allow-overflow><div id="c16-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="295.8" y="980.2" style="font-size: 186.0px; fill: #0b0b0c">prière</text></svg></div></div>
+        <div id="c17" class="card" data-layout-allow-overflow><div id="c17-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="363.2" y="980.2" style="font-size: 186.0px; fill: #ffffff">quiz</text></svg></div></div>
+        <div id="c18" class="card" data-layout-allow-overflow><div id="c18-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="282.5" y="980.2" style="font-size: 186.0px; fill: #0b0b0c">verset</text></svg></div></div>
+        <div id="c20" class="card" data-layout-allow-overflow><div id="c20-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="355.3" y="980.2" style="font-size: 186.0px; fill: #ffffff">créé</text></svg></div></div>
+        <div id="c22" class="card" data-layout-allow-overflow><div id="c22-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="271.4" y="980.2" style="font-size: 186.0px; fill: #0b0b0c">par un</text></svg></div></div>
+        <div id="c23" class="card" data-layout-allow-overflow><div id="c23-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="204.7" y="980.2" style="font-size: 186.0px; fill: #ffffff">chrétien</text></svg></div></div>
+        <div id="c24" class="card" data-layout-allow-overflow><div id="c24-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="201.3" y="980.2" style="font-size: 186.0px; fill: #0b0b0c">pour les</text></svg></div></div>
+        <div id="c26" class="card" data-layout-allow-overflow><div id="c26-a" class="layer" style="transform-origin: 540px 930px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="201.3" y="980.2" style="font-size: 186.0px; fill: #ffffff">pour les</text></svg></div><div id="c26-b" class="layer" style="transform-origin: 540px 1002px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text class="" x="137.6" y="1138.2" style="font-size: 186.0px; fill: #ffffff">chrétiens.</text></svg></div></div>
+        <div id="c28" class="card" data-layout-allow-overflow><div id="c28-a" class="layer" style="transform-origin: 540px 890px"><img class="logo" src="assets/rise_logo.png" alt="RISE" style="left: 220px; top: 780px; width: 640px" /></div><div id="c28-b" class="layer" style="transform-origin: 540px 1140px"><svg width="1080" height="1920" viewBox="0 0 1080 1920"><text x="218.7" y="1140.0" style="font-size: 70px; letter-spacing: -0.02em; white-space: pre; fill: #0b0b0c"><tspan id="c28-s0" style="visibility: hidden">Élève-toi.</tspan><tspan id="c28-s1" style="visibility: hidden; fill: #c2410c"> Ensemble.</tspan></text></svg></div></div>
       </div>
       <script>
         window.__timelines = window.__timelines || {};
         const tl = gsap.timeline({ paused: true });
-        tl.set("#w0", { visibility: "visible" }, 0.0);
-        tl.set("#w0", { visibility: "hidden" }, 0.5);
-        tl.set("#w1", { visibility: "visible" }, 0.5);
-        tl.set("#w1", { visibility: "hidden" }, 0.9666666666666667);
-        tl.set("#w2", { visibility: "visible" }, 0.9666666666666667);
-        tl.set("#w2", { visibility: "hidden" }, 1.4666666666666666);
-        tl.set("#w3", { visibility: "visible" }, 1.4666666666666666);
-        tl.set("#w3", { visibility: "hidden" }, 1.9333333333333333);
-        tl.set("#w4", { visibility: "visible" }, 1.9333333333333333);
-        tl.set("#w4", { visibility: "hidden" }, 2.433333333333333);
-        tl.fromTo("#w4 .big", { scale: 1.08 }, { scale: 1, duration: 0.2, ease: "power2.out" }, 1.9333333333333333);
-        tl.fromTo("#breakup", { attr: { scale: 0 } }, { attr: { scale: 90 }, duration: 0.17, ease: "power2.in" }, 2.263);
-        tl.to("#w4 .big", { opacity: 0, duration: 0.17, ease: "power2.in" }, 2.263);
-        tl.set("#w5", { visibility: "visible" }, 2.433333333333333);
-        tl.set("#w5", { visibility: "hidden" }, 2.9);
-        tl.fromTo("#w5 .big", { x: 240 }, { x: 0, duration: 0.2, ease: "power3.out" }, 2.433333333333333);
-        tl.fromTo("#streak", { attr: { stdDeviation: "60 0" } }, { attr: { stdDeviation: "0 0" }, duration: 0.2, ease: "power3.out" }, 2.433333333333333);
-        tl.set("#w6", { visibility: "visible" }, 2.9);
-        tl.set("#w6", { visibility: "hidden" }, 3.8666666666666667);
-        tl.fromTo("#w6 .big", { scale: 0.8 }, { scale: 1, duration: 0.28, ease: "back.out(2.4)" }, 2.9);
-        tl.set("#w7", { visibility: "visible" }, 3.8666666666666667);
-        tl.set("#w7", { visibility: "hidden" }, 4.366666666666666);
-        tl.fromTo("#w7 .big", { scale: 1.07, y: 18 }, { scale: 1, y: 0, duration: 0.22, ease: "power2.out" }, 3.8666666666666667);
-        tl.set("#w8", { visibility: "visible" }, 4.366666666666666);
-        tl.set("#w8", { visibility: "hidden" }, 4.833333333333333);
-        tl.fromTo("#w8 .big", { scale: 1.07, y: -18 }, { scale: 1, y: 0, duration: 0.22, ease: "power2.out" }, 4.366666666666666);
-        tl.set("#w9", { visibility: "visible" }, 4.833333333333333);
-        tl.set("#w9", { visibility: "hidden" }, 5.333333333333333);
-        tl.fromTo("#w9 .big", { scale: 1.07, y: 18 }, { scale: 1, y: 0, duration: 0.22, ease: "power2.out" }, 4.833333333333333);
-        tl.set("#w10", { visibility: "visible" }, 5.333333333333333);
-        tl.set("#w10", { visibility: "hidden" }, 5.8);
-        tl.fromTo("#w10 .big", { scale: 1.07, y: -18 }, { scale: 1, y: 0, duration: 0.22, ease: "power2.out" }, 5.333333333333333);
-        tl.set("#w11", { visibility: "visible" }, 5.8);
-        tl.set("#w11", { visibility: "hidden" }, 6.3);
-        tl.fromTo("#w11 .big", { scale: 1.07, y: 18 }, { scale: 1, y: 0, duration: 0.22, ease: "power2.out" }, 5.8);
-        tl.set("#w12", { visibility: "visible" }, 6.3);
-        tl.set("#w12", { visibility: "hidden" }, 6.766666666666667);
-        tl.fromTo("#w12 .big", { opacity: 0, filter: "blur(18px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16, ease: "power2.out" }, 6.3);
-        tl.set("#w13", { visibility: "visible" }, 6.766666666666667);
-        tl.set("#w13", { visibility: "hidden" }, 7.733333333333333);
-        tl.fromTo("#w13 .top", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 6.766666666666667);
-        tl.fromTo("#w13 .big", { skewX: -16, scaleX: 1.3 }, { skewX: 0, scaleX: 1, duration: 0.24, ease: "power3.out" }, 6.766666666666667);
-        tl.set("#w14", { visibility: "visible" }, 7.733333333333333);
-        tl.set("#w14", { visibility: "hidden" }, 8.233333333333333);
-        tl.set("#w15", { visibility: "visible" }, 8.233333333333333);
-        tl.set("#w15", { visibility: "hidden" }, 9.666666666666666);
-        tl.fromTo("#w15 .top", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power1.out" }, 8.233333333333333);
-        tl.fromTo("#w15 .big", { y: -70, scale: 1.12 }, { y: 0, scale: 1, duration: 0.2, ease: "power4.out" }, 8.233333333333333);
-        tl.set("#w16", { visibility: "visible" }, 9.666666666666666);
-        tl.fromTo("#logo", { opacity: 0, scale: 0.9, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, 9.666666666666666);
-        tl.fromTo("#glow", { opacity: 0, scale: 0.5 }, { opacity: 0.9, scale: 1.1, duration: 0.5, ease: "power2.out" }, 9.717);
-        tl.to("#glow", { opacity: 0.55, scale: 1, duration: 0.9, ease: "sine.inOut" }, 10.217);
-        tl.fromTo("#slogan", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 9.967);
-        tl.fromTo("#w16 .logo-box", { scale: 1 }, { scale: 1.03, duration: 2.033, ease: "none" }, 9.666666666666666);
+        tl.set("#c0", { visibility: "visible" }, 0.0);
+        tl.set("#c0", { visibility: "hidden" }, 0.3);
+        tl.fromTo("#c0-a", { scale: 1.07 }, { scale: 1, duration: 0.3, ease: "power2.out" }, 0.0);
+        tl.set("#c1", { visibility: "visible" }, 0.3);
+        tl.set("#c1", { visibility: "hidden" }, 0.5666666666666667);
+        tl.set("#c2", { visibility: "visible" }, 0.5666666666666667);
+        tl.set("#c2", { visibility: "hidden" }, 0.8666666666666667);
+        tl.set("#c3", { visibility: "visible" }, 0.8666666666666667);
+        tl.set("#c3", { visibility: "hidden" }, 1.1666666666666667);
+        tl.set("#c4", { visibility: "visible" }, 1.1666666666666667);
+        tl.set("#c4", { visibility: "hidden" }, 1.4333333333333333);
+        tl.fromTo("#c4-blob0", { attr: { r: 0 } }, { attr: { r: 270 }, duration: 0.1, ease: "power1.out" }, 1.267);
+        tl.fromTo("#c4-blob1", { attr: { r: 0 } }, { attr: { r: 210 }, duration: 0.1, ease: "power1.out" }, 1.267);
+        tl.fromTo("#c4-blob2", { attr: { r: 0 } }, { attr: { r: 230 }, duration: 0.1, ease: "power1.out" }, 1.3);
+        tl.fromTo("#c4-blob3", { attr: { r: 0 } }, { attr: { r: 200 }, duration: 0.1, ease: "power1.out" }, 1.3);
+        tl.fromTo("#c4-blob4", { attr: { r: 0 } }, { attr: { r: 190 }, duration: 0.1, ease: "power1.out" }, 1.333);
+        tl.fromTo("#c4-blob5", { attr: { r: 0 } }, { attr: { r: 160 }, duration: 0.1, ease: "power1.out" }, 1.333);
+        tl.fromTo("#c4-blob6", { attr: { r: 0 } }, { attr: { r: 130 }, duration: 0.1, ease: "power1.out" }, 1.333);
+        tl.fromTo("#c4-blob7", { attr: { r: 0 } }, { attr: { r: 130 }, duration: 0.1, ease: "power1.out" }, 1.367);
+        tl.set("#c5", { visibility: "visible" }, 1.4333333333333333);
+        tl.set("#c5", { visibility: "hidden" }, 1.7333333333333334);
+        tl.set("#c6", { visibility: "visible" }, 1.7333333333333334);
+        tl.set("#c6", { visibility: "hidden" }, 2.566666666666667);
+        tl.fromTo("#c6-a", { scale: 1.14 }, { scale: 1, duration: 0.833, ease: "power2.out" }, 1.7333333333333334);
+        tl.fromTo("#c6-a", { filter: "blur(16px)" }, { filter: "blur(0px)", duration: 0.1, ease: "power1.in", immediateRender: false }, 1.7333333333333334);
+        tl.set("#c9", { visibility: "visible" }, 2.566666666666667);
+        tl.set("#c9", { visibility: "hidden" }, 3.433333333333333);
+        tl.fromTo("#c9-b", { scale: 1.07 }, { scale: 1, duration: 0.867, ease: "power2.out" }, 2.566666666666667);
+        tl.set("#c12", { visibility: "visible" }, 3.433333333333333);
+        tl.set("#c12", { visibility: "hidden" }, 4.0);
+        tl.fromTo("#c12-a", { scale: 1.12 }, { scale: 1, duration: 0.567, ease: "power3.out" }, 3.433333333333333);
+        tl.fromTo("#c12-smear", { attr: { stdDeviation: "18 0" } }, { attr: { stdDeviation: "0 0" }, duration: 0.067, ease: "power1.in" }, 3.433333333333333);
+        tl.set("#c14", { visibility: "visible" }, 4.0);
+        tl.set("#c14", { visibility: "hidden" }, 4.3);
+        tl.fromTo("#c14-a", { scale: 1.07 }, { scale: 1, duration: 0.3, ease: "power2.out" }, 4.0);
+        tl.set("#c15", { visibility: "visible" }, 4.3);
+        tl.set("#c15", { visibility: "hidden" }, 4.566666666666666);
+        tl.fromTo("#c15-a", { scale: 1.12 }, { scale: 1, duration: 0.267, ease: "power3.out" }, 4.3);
+        tl.fromTo("#c15-smear", { attr: { stdDeviation: "18 0" } }, { attr: { stdDeviation: "0 0" }, duration: 0.067, ease: "power1.in" }, 4.3);
+        tl.set("#c16", { visibility: "visible" }, 4.566666666666666);
+        tl.set("#c16", { visibility: "hidden" }, 4.866666666666666);
+        tl.fromTo("#c16-a", { scale: 1.07 }, { scale: 1, duration: 0.3, ease: "power2.out" }, 4.566666666666666);
+        tl.set("#c17", { visibility: "visible" }, 4.866666666666666);
+        tl.set("#c17", { visibility: "hidden" }, 5.166666666666667);
+        tl.fromTo("#c17-a", { scale: 1.07 }, { scale: 1, duration: 0.3, ease: "power2.out" }, 4.866666666666666);
+        tl.set("#c18", { visibility: "visible" }, 5.166666666666667);
+        tl.set("#c18", { visibility: "hidden" }, 5.733333333333333);
+        tl.fromTo("#c18-a", { scale: 1.14 }, { scale: 1, duration: 0.567, ease: "power2.out" }, 5.166666666666667);
+        tl.fromTo("#c18-a", { filter: "blur(16px)" }, { filter: "blur(0px)", duration: 0.1, ease: "power1.in", immediateRender: false }, 5.166666666666667);
+        tl.set("#c20", { visibility: "visible" }, 5.733333333333333);
+        tl.set("#c20", { visibility: "hidden" }, 6.3);
+        tl.fromTo("#c20-a", { scale: 1.12 }, { scale: 1, duration: 0.567, ease: "power3.out" }, 5.733333333333333);
+        tl.fromTo("#c20-smear", { attr: { stdDeviation: "18 0" } }, { attr: { stdDeviation: "0 0" }, duration: 0.067, ease: "power1.in" }, 5.733333333333333);
+        tl.set("#c22", { visibility: "visible" }, 6.3);
+        tl.set("#c22", { visibility: "hidden" }, 6.566666666666666);
+        tl.fromTo("#c22-a", { scale: 1.07 }, { scale: 1, duration: 0.267, ease: "power2.out" }, 6.3);
+        tl.set("#c23", { visibility: "visible" }, 6.566666666666666);
+        tl.set("#c23", { visibility: "hidden" }, 6.866666666666666);
+        tl.fromTo("#c23-a", { scale: 1.07 }, { scale: 1, duration: 0.3, ease: "power2.out" }, 6.566666666666666);
+        tl.set("#c24", { visibility: "visible" }, 6.866666666666666);
+        tl.set("#c24", { visibility: "hidden" }, 7.433333333333334);
+        tl.fromTo("#c24-a", { scale: 1.07 }, { scale: 1, duration: 0.567, ease: "power2.out" }, 6.866666666666666);
+        tl.set("#c26", { visibility: "visible" }, 7.433333333333334);
+        tl.set("#c26", { visibility: "hidden" }, 8.0);
+        tl.fromTo("#c26-b", { scale: 1.07 }, { scale: 1, duration: 0.567, ease: "power2.out" }, 7.433333333333334);
+        tl.set("#c28", { visibility: "visible" }, 8.0);
+        tl.fromTo("#c28-a", { scale: 1.1 }, { scale: 1, duration: 1.2, ease: "power3.out" }, 8.0);
+        tl.fromTo("#c28-smear", { attr: { stdDeviation: "18 0" } }, { attr: { stdDeviation: "0 0" }, duration: 0.067, ease: "power1.in" }, 8.0);
+        tl.set("#c28-s0", { visibility: "visible" }, 8.566666666666666);
+        tl.set("#c28-s1", { visibility: "visible" }, 9.166666666666666);
         window.__timelines["mots"] = tl;
       </script>
     </template>

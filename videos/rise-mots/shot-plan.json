@@ -1,269 +1,230 @@
 {
  "category": "kinetic-type",
- "duration_s": 11.7,
+ "duration_s": 10.3,
  "fps": 30,
  "canvas": {
   "w": 1080,
   "h": 1920,
   "aspect": "9:16"
  },
- "style": "one big lowercase word at a time, centred; the light flips every word between the RISE sky (blue, soft clouds, blurred cross; black words) and a flame-orange sunrise (white words); hard cuts on the beat; typed letters, a word blown up to the edges that breaks apart, small-over-big pairs, a motion blur; ends on the RISE logo",
+ "style": "the reference reel's grammar: one lowercase word at a time in a Helvetica-style bold tracked tight, all the same size; a hard cut on every eighth note that flips the light between the RISE sky (black words) and dusk grey-blue (white words); words land a little big and settle, some with a focus pull or a horizontal smear; rise typed, blown up to the edges and eaten by blobs, an empty beat; a word landing under the one that stays; logo on the final hit",
  "palette": [
-  "#9fd3f0",
-  "#d9effa",
-  "#e3470a",
-  "#f7801a",
-  "#111111",
+  "#93cdef",
+  "#bfe3f6",
+  "#def1fb",
+  "#d0d1d7",
+  "#95a0e0",
+  "#717480",
+  "#0b0b0c",
   "#ffffff",
-  "#b64400"
+  "#c2410c"
  ],
- "font": "Inter Display 700",
+ "font": "FreeSans Bold (GNU FreeFont, GPL with font exception), letter-spacing -0.035em",
  "beats": [
-  0.0,
-  0.5,
-  0.967,
-  1.467,
-  1.933,
-  2.433,
-  2.9,
-  3.867,
-  4.367,
-  4.833,
-  5.333,
-  5.8,
-  6.3,
-  6.767,
-  7.733,
-  8.233,
-  9.667
+  0.01,
+  0.296,
+  0.581,
+  0.867,
+  1.153,
+  1.439,
+  1.724,
+  2.01,
+  2.296,
+  2.581,
+  2.867,
+  3.153,
+  3.439,
+  3.724,
+  4.01,
+  4.296,
+  4.581,
+  4.867,
+  5.153,
+  5.439,
+  5.724,
+  6.01,
+  6.296,
+  6.581,
+  6.867,
+  7.153,
+  7.439,
+  7.724,
+  8.01,
+  8.296,
+  8.581,
+  8.867,
+  9.153,
+  9.439,
+  9.724,
+  10.01,
+  10.296
  ],
  "export": "mp4",
  "asset_needs": [],
  "block": "caption-kinetic-slam",
  "customize": {
-  "note": "its one-word-per-beat structure, rebuilt by tools/build.py with the sky/sunrise flips, typing, stacked pairs and the logo end"
+  "note": "its one-word-per-beat structure, rebuilt by tools/build.py on the music's eighth notes"
  },
  "content": {
   "scenes": [
    {
-    "id": "w0",
+    "id": "c0",
     "start": 0.0,
-    "end": 0.5,
+    "end": 0.3,
     "text": "r",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "cut",
-    "beats": [
-     0.0
-    ],
+    "motion": "settle",
     "light": "sky"
    },
    {
-    "id": "w1",
-    "start": 0.5,
-    "end": 0.9666666666666667,
-    "text": "ri",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "cut",
-    "beats": [
-     0.5
-    ],
-    "light": "sunrise"
+    "id": "c1",
+    "start": 0.3,
+    "end": 0.5666666666666667,
+    "text": "ri.",
+    "motion": "type",
+    "light": "dusk"
    },
    {
-    "id": "w2",
-    "start": 0.9666666666666667,
-    "end": 1.4666666666666666,
+    "id": "c2",
+    "start": 0.5666666666666667,
+    "end": 0.8666666666666667,
     "text": "ris",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "cut",
-    "beats": [
-     0.9666666666666667
-    ],
+    "motion": "type",
     "light": "sky"
    },
    {
-    "id": "w3",
-    "start": 1.4666666666666666,
-    "end": 1.9333333333333333,
+    "id": "c3",
+    "start": 0.8666666666666667,
+    "end": 1.1666666666666667,
     "text": "rise.",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "cut",
-    "beats": [
-     1.4666666666666666
-    ],
-    "light": "sunrise"
+    "motion": "type",
+    "light": "dusk"
    },
    {
-    "id": "w4",
-    "start": 1.9333333333333333,
-    "end": 2.433333333333333,
+    "id": "c4",
+    "start": 1.1666666666666667,
+    "end": 1.4333333333333333,
     "text": "rise.",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "punch",
-    "beats": [
-     1.9333333333333333
-    ],
+    "motion": "eaten",
     "light": "sky"
    },
    {
-    "id": "w5",
-    "start": 2.433333333333333,
-    "end": 2.9,
+    "id": "c5",
+    "start": 1.4333333333333333,
+    "end": 1.7333333333333334,
+    "text": "",
+    "motion": "empty",
+    "light": "sky"
+   },
+   {
+    "id": "c6",
+    "start": 1.7333333333333334,
+    "end": 2.566666666666667,
+    "text": "le réseau",
+    "motion": "focus",
+    "light": "dusk"
+   },
+   {
+    "id": "c9",
+    "start": 2.566666666666667,
+    "end": 3.433333333333333,
     "text": "le réseau / social",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "mblur",
-    "beats": [
-     2.433333333333333
-    ],
-    "light": "sunrise"
+    "motion": "pair",
+    "light": "sky"
    },
    {
-    "id": "w6",
-    "start": 2.9,
-    "end": 3.8666666666666667,
+    "id": "c12",
+    "start": 3.433333333333333,
+    "end": 4.0,
     "text": "chrétien.",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "pop",
-    "beats": [
-     2.9
-    ],
-    "light": "sky"
+    "motion": "smear",
+    "light": "dusk"
    },
    {
-    "id": "w7",
-    "start": 3.8666666666666667,
-    "end": 4.366666666666666,
+    "id": "c14",
+    "start": 4.0,
+    "end": 4.3,
     "text": "partage",
-    "emphasis_words": [],
-    "emotion": "energetic",
     "motion": "settle",
-    "beats": [
-     3.8666666666666667
-    ],
-    "light": "sunrise"
+    "light": "sky"
    },
    {
-    "id": "w8",
-    "start": 4.366666666666666,
-    "end": 4.833333333333333,
+    "id": "c15",
+    "start": 4.3,
+    "end": 4.566666666666666,
     "text": "entraide",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "settle",
-    "beats": [
-     4.366666666666666
-    ],
-    "light": "sky"
+    "motion": "smear",
+    "light": "dusk"
    },
    {
-    "id": "w9",
-    "start": 4.833333333333333,
-    "end": 5.333333333333333,
+    "id": "c16",
+    "start": 4.566666666666666,
+    "end": 4.866666666666666,
     "text": "prière",
-    "emphasis_words": [],
-    "emotion": "energetic",
     "motion": "settle",
-    "beats": [
-     4.833333333333333
-    ],
-    "light": "sunrise"
+    "light": "sky"
    },
    {
-    "id": "w10",
-    "start": 5.333333333333333,
-    "end": 5.8,
+    "id": "c17",
+    "start": 4.866666666666666,
+    "end": 5.166666666666667,
     "text": "quiz",
-    "emphasis_words": [],
-    "emotion": "energetic",
     "motion": "settle",
-    "beats": [
-     5.333333333333333
-    ],
-    "light": "sky"
+    "light": "dusk"
    },
    {
-    "id": "w11",
-    "start": 5.8,
-    "end": 6.3,
+    "id": "c18",
+    "start": 5.166666666666667,
+    "end": 5.733333333333333,
     "text": "verset",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "settle",
-    "beats": [
-     5.8
-    ],
-    "light": "sunrise"
+    "motion": "focus",
+    "light": "sky"
    },
    {
-    "id": "w12",
-    "start": 6.3,
-    "end": 6.766666666666667,
+    "id": "c20",
+    "start": 5.733333333333333,
+    "end": 6.3,
     "text": "créé",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "blur",
-    "beats": [
-     6.3
-    ],
+    "motion": "smear",
+    "light": "dusk"
+   },
+   {
+    "id": "c22",
+    "start": 6.3,
+    "end": 6.566666666666666,
+    "text": "par un",
+    "motion": "settle",
     "light": "sky"
    },
    {
-    "id": "w13",
-    "start": 6.766666666666667,
-    "end": 7.733333333333333,
-    "text": "par un / chrétien",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "warp",
-    "beats": [
-     6.766666666666667
-    ],
-    "light": "sunrise"
+    "id": "c23",
+    "start": 6.566666666666666,
+    "end": 6.866666666666666,
+    "text": "chrétien",
+    "motion": "settle",
+    "light": "dusk"
    },
    {
-    "id": "w14",
-    "start": 7.733333333333333,
-    "end": 8.233333333333333,
-    "text": "pour",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "cut",
-    "beats": [
-     7.733333333333333
-    ],
+    "id": "c24",
+    "start": 6.866666666666666,
+    "end": 7.433333333333334,
+    "text": "pour les",
+    "motion": "settle",
     "light": "sky"
    },
    {
-    "id": "w15",
-    "start": 8.233333333333333,
-    "end": 9.666666666666666,
-    "text": "les / chrétiens.",
-    "emphasis_words": [],
-    "emotion": "energetic",
-    "motion": "slam",
-    "beats": [
-     8.233333333333333
-    ],
-    "light": "sunrise"
+    "id": "c26",
+    "start": 7.433333333333334,
+    "end": 8.0,
+    "text": "pour les / chrétiens.",
+    "motion": "pair",
+    "light": "dusk"
    },
    {
-    "id": "w16",
-    "start": 9.666666666666666,
-    "end": 11.7,
-    "text": "RISE logo + Élève-toi. Ensemble.",
-    "emphasis_words": [],
-    "emotion": "energetic",
+    "id": "c28",
+    "start": 8.0,
+    "end": 10.3,
+    "text": "RISE · Élève-toi. Ensemble.",
     "motion": "logo",
-    "beats": [
-     9.666666666666666
-    ],
     "light": "sky"
    }
   ]
