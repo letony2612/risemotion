@@ -18,28 +18,32 @@
         window.__timelines = window.__timelines || {};
         const tl = gsap.timeline({ paused: true });
         // both lights drift in together, so a cut changes the light, not the place
-        tl.fromTo(".light", { scale: 1 }, { scale: 1.04, duration: 10.3, ease: "none" }, 0);
+        tl.fromTo(".light", { scale: 1 }, { scale: 1.04, duration: 9.5, ease: "none" }, 0);
         // the sky (black words) and dusk (white words), flipped on every card
         tl.set("#dusk", { visibility: "hidden" }, 0.0);
-        tl.set("#dusk", { visibility: "visible" }, 0.3);
-        tl.set("#dusk", { visibility: "hidden" }, 0.5666666666666667);
-        tl.set("#dusk", { visibility: "visible" }, 0.8666666666666667);
-        tl.set("#dusk", { visibility: "hidden" }, 1.1666666666666667);
-        tl.set("#dusk", { visibility: "hidden" }, 1.4333333333333333);
-        tl.set("#dusk", { visibility: "visible" }, 1.7333333333333334);
-        tl.set("#dusk", { visibility: "hidden" }, 2.566666666666667);
-        tl.set("#dusk", { visibility: "visible" }, 3.433333333333333);
-        tl.set("#dusk", { visibility: "hidden" }, 4.0);
-        tl.set("#dusk", { visibility: "visible" }, 4.3);
-        tl.set("#dusk", { visibility: "hidden" }, 4.566666666666666);
-        tl.set("#dusk", { visibility: "visible" }, 4.866666666666666);
+        tl.set("#dusk", { visibility: "visible" }, 0.7);
+        tl.set("#dusk", { visibility: "hidden" }, 1.3666666666666667);
+        tl.set("#dusk", { visibility: "visible" }, 2.0);
+        tl.set("#dusk", { visibility: "hidden" }, 2.533333333333333);
+        tl.set("#dusk", { visibility: "visible" }, 3.033333333333333);
+        tl.set("#dusk", { visibility: "hidden" }, 3.5);
+        tl.set("#dusk", { visibility: "visible" }, 3.966666666666667);
+        tl.set("#dusk", { visibility: "hidden" }, 4.366666666666666);
+        tl.set("#dusk", { visibility: "visible" }, 4.7);
         tl.set("#dusk", { visibility: "hidden" }, 5.166666666666667);
-        tl.set("#dusk", { visibility: "visible" }, 5.733333333333333);
-        tl.set("#dusk", { visibility: "hidden" }, 6.3);
-        tl.set("#dusk", { visibility: "visible" }, 6.566666666666666);
-        tl.set("#dusk", { visibility: "hidden" }, 6.866666666666666);
-        tl.set("#dusk", { visibility: "visible" }, 7.433333333333334);
-        tl.set("#dusk", { visibility: "hidden" }, 8.0);
+        tl.set("#dusk", { visibility: "visible" }, 5.533333333333333);
+        tl.set("#dusk", { visibility: "hidden" }, 5.866666666666666);
+        tl.set("#dusk", { visibility: "visible" }, 6.2);
+        tl.set("#dusk", { visibility: "hidden" }, 6.533333333333333);
+        tl.set("#dusk", { visibility: "visible" }, 6.866666666666666);
+        tl.set("#dusk", { visibility: "hidden" }, 7.2);
+        tl.set("#dusk", { visibility: "visible" }, 7.5);
+        tl.set("#dusk", { visibility: "hidden" }, 7.8);
+        tl.set("#dusk", { visibility: "visible" }, 8.033333333333333);
+        tl.set("#dusk", { visibility: "hidden" }, 8.333333333333334);
+        tl.set("#dusk", { visibility: "visible" }, 8.6);
+        tl.set("#dusk", { visibility: "hidden" }, 8.866666666666667);
+        tl.set("#dusk", { visibility: "hidden" }, 9.2);
         window.__timelines["fond"] = tl;
       </script>
     </template>

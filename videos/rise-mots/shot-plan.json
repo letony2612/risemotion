@@ -1,13 +1,13 @@
 {
  "category": "kinetic-type",
- "duration_s": 10.3,
+ "duration_s": 9.5,
  "fps": 30,
  "canvas": {
   "w": 1080,
   "h": 1920,
   "aspect": "9:16"
  },
- "style": "the reference reel's grammar: one lowercase word at a time in a Helvetica-style bold tracked tight, all the same size; a hard cut on every eighth note that flips the light between the RISE sky (black words) and dusk grey-blue (white words); words land a little big and settle, some with a focus pull or a horizontal smear; rise typed, blown up to the edges and eaten by blobs, an empty beat; a word landing under the one that stays; logo on the final hit",
+ "style": "the reference reel's edit, cut for cut on its own sound: one lowercase word at a time in a Helvetica-style bold tracked tight, all the same size; every cut flips the light between the RISE sky (black words) and dusk grey-blue (white words); words land a little big and settle, some out of focus or smeared; the statement with a word landing under the one that stays; the list faster and faster; rise typed; the logo blown up and eaten by blobs; an empty silent beat; loop",
  "palette": [
   "#93cdef",
   "#bfe3f6",
@@ -16,215 +16,233 @@
   "#95a0e0",
   "#717480",
   "#0b0b0c",
-  "#ffffff",
-  "#c2410c"
+  "#ffffff"
  ],
  "font": "FreeSans Bold (GNU FreeFont, GPL with font exception), letter-spacing -0.035em",
  "beats": [
-  0.01,
-  0.296,
-  0.581,
-  0.867,
-  1.153,
-  1.439,
-  1.724,
-  2.01,
-  2.296,
-  2.581,
-  2.867,
-  3.153,
-  3.439,
-  3.724,
-  4.01,
-  4.296,
-  4.581,
-  4.867,
-  5.153,
-  5.439,
-  5.724,
-  6.01,
-  6.296,
-  6.581,
-  6.867,
-  7.153,
-  7.439,
-  7.724,
-  8.01,
-  8.296,
-  8.581,
-  8.867,
-  9.153,
-  9.439,
-  9.724,
-  10.01,
-  10.296
+  0.0,
+  0.7,
+  1.3666666666666667,
+  2.0,
+  2.533333333333333,
+  3.033333333333333,
+  3.5,
+  3.966666666666667,
+  4.366666666666666,
+  4.7,
+  5.166666666666667,
+  5.533333333333333,
+  5.866666666666666,
+  6.2,
+  6.533333333333333,
+  6.866666666666666,
+  7.2,
+  7.5,
+  7.8,
+  8.033333333333333,
+  8.333333333333334,
+  8.6,
+  8.866666666666667,
+  9.2
  ],
  "export": "mp4",
  "asset_needs": [],
  "block": "caption-kinetic-slam",
  "customize": {
-  "note": "its one-word-per-beat structure, rebuilt by tools/build.py on the music's eighth notes"
+  "note": "its one-word-per-beat structure, rebuilt by tools/build.py on the reference's own cut times"
  },
  "content": {
   "scenes": [
    {
     "id": "c0",
     "start": 0.0,
-    "end": 0.3,
-    "text": "r",
-    "motion": "settle",
+    "end": 0.7,
+    "text": "le réseau",
+    "motion": "focus",
     "light": "sky"
    },
    {
     "id": "c1",
-    "start": 0.3,
-    "end": 0.5666666666666667,
-    "text": "ri.",
-    "motion": "type",
+    "start": 0.7,
+    "end": 1.3666666666666667,
+    "text": "le réseau / social",
+    "motion": "pair",
     "light": "dusk"
    },
    {
     "id": "c2",
-    "start": 0.5666666666666667,
-    "end": 0.8666666666666667,
-    "text": "ris",
-    "motion": "type",
+    "start": 1.3666666666666667,
+    "end": 2.0,
+    "text": "chrétien.",
+    "motion": "settle",
     "light": "sky"
    },
    {
     "id": "c3",
-    "start": 0.8666666666666667,
-    "end": 1.1666666666666667,
-    "text": "rise.",
-    "motion": "type",
+    "start": 2.0,
+    "end": 2.533333333333333,
+    "text": "créé par un / chrétien",
+    "motion": "stack",
     "light": "dusk"
    },
    {
     "id": "c4",
-    "start": 1.1666666666666667,
-    "end": 1.4333333333333333,
-    "text": "rise.",
-    "motion": "eaten",
+    "start": 2.533333333333333,
+    "end": 3.033333333333333,
+    "text": "pour les",
+    "motion": "settle",
     "light": "sky"
    },
    {
     "id": "c5",
-    "start": 1.4333333333333333,
-    "end": 1.7333333333333334,
-    "text": "",
-    "motion": "empty",
-    "light": "sky"
+    "start": 3.033333333333333,
+    "end": 3.5,
+    "text": "pour les / chrétiens.",
+    "motion": "pair-smear",
+    "light": "dusk"
    },
    {
     "id": "c6",
-    "start": 1.7333333333333334,
-    "end": 2.566666666666667,
-    "text": "le réseau",
-    "motion": "focus",
-    "light": "dusk"
-   },
-   {
-    "id": "c9",
-    "start": 2.566666666666667,
-    "end": 3.433333333333333,
-    "text": "le réseau / social",
-    "motion": "pair",
-    "light": "sky"
-   },
-   {
-    "id": "c12",
-    "start": 3.433333333333333,
-    "end": 4.0,
-    "text": "chrétien.",
-    "motion": "smear",
-    "light": "dusk"
-   },
-   {
-    "id": "c14",
-    "start": 4.0,
-    "end": 4.3,
+    "start": 3.5,
+    "end": 3.966666666666667,
     "text": "partage",
     "motion": "settle",
     "light": "sky"
    },
    {
-    "id": "c15",
-    "start": 4.3,
-    "end": 4.566666666666666,
+    "id": "c7",
+    "start": 3.966666666666667,
+    "end": 4.366666666666666,
     "text": "entraide",
-    "motion": "smear",
+    "motion": "settle",
     "light": "dusk"
    },
    {
-    "id": "c16",
-    "start": 4.566666666666666,
-    "end": 4.866666666666666,
+    "id": "c8",
+    "start": 4.366666666666666,
+    "end": 4.7,
     "text": "prière",
     "motion": "settle",
     "light": "sky"
    },
    {
-    "id": "c17",
-    "start": 4.866666666666666,
+    "id": "c9",
+    "start": 4.7,
     "end": 5.166666666666667,
     "text": "quiz",
     "motion": "settle",
     "light": "dusk"
    },
    {
-    "id": "c18",
+    "id": "c10",
     "start": 5.166666666666667,
-    "end": 5.733333333333333,
+    "end": 5.533333333333333,
     "text": "verset",
-    "motion": "focus",
+    "motion": "settle",
     "light": "sky"
    },
    {
-    "id": "c20",
-    "start": 5.733333333333333,
-    "end": 6.3,
-    "text": "créé",
+    "id": "c11",
+    "start": 5.533333333333333,
+    "end": 5.866666666666666,
+    "text": "groupes",
+    "motion": "settle",
+    "light": "dusk"
+   },
+   {
+    "id": "c12",
+    "start": 5.866666666666666,
+    "end": 6.2,
+    "text": "louange",
+    "motion": "smear",
+    "light": "sky"
+   },
+   {
+    "id": "c13",
+    "start": 6.2,
+    "end": 6.533333333333333,
+    "text": "témoignage",
+    "motion": "settle",
+    "light": "dusk"
+   },
+   {
+    "id": "c14",
+    "start": 6.533333333333333,
+    "end": 6.866666666666666,
+    "text": "foi",
+    "motion": "settle",
+    "light": "sky"
+   },
+   {
+    "id": "c15",
+    "start": 6.866666666666666,
+    "end": 7.2,
+    "text": "amour",
     "motion": "smear",
     "light": "dusk"
    },
    {
-    "id": "c22",
-    "start": 6.3,
-    "end": 6.566666666666666,
-    "text": "par un",
+    "id": "c16",
+    "start": 7.2,
+    "end": 7.5,
+    "text": "joie",
+    "motion": "smear",
+    "light": "sky"
+   },
+   {
+    "id": "c17",
+    "start": 7.5,
+    "end": 7.8,
+    "text": "paix",
+    "motion": "focus",
+    "light": "dusk"
+   },
+   {
+    "id": "c18",
+    "start": 7.8,
+    "end": 8.033333333333333,
+    "text": "r",
     "motion": "settle",
+    "light": "sky"
+   },
+   {
+    "id": "c19",
+    "start": 8.033333333333333,
+    "end": 8.333333333333334,
+    "text": "ri.",
+    "motion": "type",
+    "light": "dusk"
+   },
+   {
+    "id": "c20",
+    "start": 8.333333333333334,
+    "end": 8.6,
+    "text": "ris",
+    "motion": "type",
+    "light": "sky"
+   },
+   {
+    "id": "c21",
+    "start": 8.6,
+    "end": 8.866666666666667,
+    "text": "rise.",
+    "motion": "type",
+    "light": "dusk"
+   },
+   {
+    "id": "c22",
+    "start": 8.866666666666667,
+    "end": 9.2,
+    "text": "RISE (logo)",
+    "motion": "eaten",
     "light": "sky"
    },
    {
     "id": "c23",
-    "start": 6.566666666666666,
-    "end": 6.866666666666666,
-    "text": "chrétien",
-    "motion": "settle",
-    "light": "dusk"
-   },
-   {
-    "id": "c24",
-    "start": 6.866666666666666,
-    "end": 7.433333333333334,
-    "text": "pour les",
-    "motion": "settle",
-    "light": "sky"
-   },
-   {
-    "id": "c26",
-    "start": 7.433333333333334,
-    "end": 8.0,
-    "text": "pour les / chrétiens.",
-    "motion": "pair",
-    "light": "dusk"
-   },
-   {
-    "id": "c28",
-    "start": 8.0,
-    "end": 10.3,
-    "text": "RISE · Élève-toi. Ensemble.",
-    "motion": "logo",
+    "start": 9.2,
+    "end": 9.5,
+    "text": "",
+    "motion": "empty",
     "light": "sky"
    }
   ]
