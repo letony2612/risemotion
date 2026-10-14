@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        .light { position: absolute; inset: 0; overflow: hidden; }
+        #sky { background: linear-gradient(180deg, var(--sky-top), var(--sky-bottom)); }
+        #sunrise { background: linear-gradient(180deg, var(--sun-top), var(--sun-bottom)); visibility: hidden; }
+        .clouds { position: absolute; left: -100px; top: -100px; width: 1280px; height: 2120px; }
+        #sky .clouds { opacity: 0.9; }
+        #sunrise .clouds { opacity: 0.25; }
+        #cross { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; opacity: 0.95; }
+        #root {
+          --sky-top: #9fd3f0;
+          --sky-bottom: #d9effa;
+          --sun-top: #e3470a;
+          --sun-bottom: #f7801a;
+        }
+      </style>
+      <div id="root" data-composition-id="fond" data-width="1080" data-height="1920">
+        <div id="sky" class="light">
+          <img class="clouds" src="assets/clouds_white.png" alt="" data-layout-allow-overflow />
+        </div>
+        <div id="sunrise" class="light">
+          <img class="clouds" src="assets/clouds_warm.png" alt="" data-layout-allow-overflow />
+        </div>
+        <img id="cross" src="assets/cross.png" alt="" data-layout-allow-overflow />
+      </div>
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+        // the clouds drift the whole time, the same in both lights: a cut changes the light, not the place
+        tl.fromTo(".clouds", { x: 0, y: 0 }, { x: -80, y: -40, duration: 11.7, ease: "none" }, 0);
+        tl.fromTo("#cross", { scale: 1 }, { scale: 1.03, duration: 11.7, ease: "none" }, 0);
+        // the light flips at every word: sky (black words), sunrise (white words)
+        tl.set("#sunrise", { visibility: "hidden" }, 0.0);
+        tl.set("#cross", { opacity: 0.95 }, 0.0);
+        tl.set("#sunrise", { visibility: "visible" }, 0.5);
+        tl.set("#cross", { opacity: 0.1 }, 0.5);
+        tl.set("#sunrise", { visibility: "hidden" }, 0.9666666666666667);
+        tl.set("#cross", { opacity: 0.95 }, 0.9666666666666667);
+        tl.set("#sunrise", { visibility: "visible" }, 1.4666666666666666);
+        tl.set("#cross", { opacity: 0.1 }, 1.4666666666666666);
+        tl.set("#sunrise", { visibility: "hidden" }, 1.9333333333333333);
+        tl.set("#cross", { opacity: 0.95 }, 1.9333333333333333);
+        tl.set("#sunrise", { visibility: "visible" }, 2.433333333333333);
+        tl.set("#cross", { opacity: 0.1 }, 2.433333333333333);
+        tl.set("#sunrise", { visibility: "hidden" }, 2.9);
+        tl.set("#cross", { opacity: 0.95 }, 2.9);
+        tl.set("#sunrise", { visibility: "visible" }, 3.8666666666666667);
+        tl.set("#cross", { opacity: 0.1 }, 3.8666666666666667);
+        tl.set("#sunrise", { visibility: "hidden" }, 4.366666666666666);
+        tl.set("#cross", { opacity: 0.95 }, 4.366666666666666);
+        tl.set("#sunrise", { visibility: "visible" }, 4.833333333333333);
+        tl.set("#cross", { opacity: 0.1 }, 4.833333333333333);
+        tl.set("#sunrise", { visibility: "hidden" }, 5.333333333333333);
+        tl.set("#cross", { opacity: 0.95 }, 5.333333333333333);
+        tl.set("#sunrise", { visibility: "visible" }, 5.8);
+        tl.set("#cross", { opacity: 0.1 }, 5.8);
+        tl.set("#sunrise", { visibility: "hidden" }, 6.3);
+        tl.set("#cross", { opacity: 0.95 }, 6.3);
+        tl.set("#sunrise", { visibility: "visible" }, 6.766666666666667);
+        tl.set("#cross", { opacity: 0.1 }, 6.766666666666667);
+        tl.set("#sunrise", { visibility: "hidden" }, 7.733333333333333);
+        tl.set("#cross", { opacity: 0.95 }, 7.733333333333333);
+        tl.set("#sunrise", { visibility: "visible" }, 8.233333333333333);
+        tl.set("#cross", { opacity: 0.1 }, 8.233333333333333);
+        tl.set("#sunrise", { visibility: "hidden" }, 9.666666666666666);
+        tl.set("#cross", { opacity: 0.95 }, 9.666666666666666);
+        window.__timelines["fond"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
