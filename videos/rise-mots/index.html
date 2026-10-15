@@ -9,9 +9,9 @@
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 1080px; height: 1920px; overflow: hidden; background: #bfe3f6; }
       #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
-      #fin { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 540px 860px; }
-      #flash { position: absolute; left: -60px; top: 440px; width: 1200px; height: 840px; visibility: hidden;
-        background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95), rgba(255, 244, 222, 0.55) 45%, rgba(255, 255, 255, 0)); }
+      #fin { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+      #flash { position: absolute; left: -74px; top: 248px; width: 1040px; height: 1040px; visibility: hidden;
+        background: radial-gradient(closest-side, rgba(255, 168, 60, 0.6), rgba(255, 200, 120, 0.25) 45%, rgba(255, 255, 255, 0)); }
       #splashw { position: absolute; left: 146px; top: 600px; width: 787px; height: 410px; transform-origin: 394px 260px; }
       #splash { position: absolute; left: 0; top: 0; width: 787px; height: 410px; display: block; }
       #slogan { position: absolute; left: 0; top: 0; overflow: visible; }
@@ -38,16 +38,8 @@
       const tl = gsap.timeline({ paused: true });
       tl.fromTo("#splashw", { scale: 0.96 }, { scale: 1.03, duration: 3.3, ease: "sine.out" }, 9.2);
       tl.set("#flash", { visibility: "visible" }, 9.666666666666666);
-      tl.fromTo("#flash", { opacity: 0.9, scale: 0.55 }, { opacity: 0, scale: 1.5, duration: 0.8, ease: "power2.out" }, 9.666666666666666);
-      tl.set("#flash", { visibility: "hidden" }, 10.467);
-      tl.to("#fin", { scale: 1.07, duration: 0.033, ease: "none" }, 9.666666666666666);
-      tl.to("#fin", { scale: 1, duration: 0.45, ease: "expo.out" }, 9.7);
-      tl.to("#fin", { x: 14, y: -9, duration: 0.033, ease: "none" }, 9.667);
-      tl.to("#fin", { x: -11, y: 7, duration: 0.033, ease: "none" }, 9.7);
-      tl.to("#fin", { x: 8, y: -5, duration: 0.033, ease: "none" }, 9.733);
-      tl.to("#fin", { x: -5, y: 3, duration: 0.033, ease: "none" }, 9.767);
-      tl.to("#fin", { x: 3, y: -2, duration: 0.033, ease: "none" }, 9.8);
-      tl.to("#fin", { x: 0, y: 0, duration: 0.033, ease: "none" }, 9.833);
+      tl.fromTo("#flash", { opacity: 1, scale: 0.35 }, { opacity: 0, scale: 1.6, duration: 1.0, ease: "power2.out" }, 9.666666666666666);
+      tl.set("#flash", { visibility: "hidden" }, 10.667);
       tl.fromTo("#slogan0", { y: 90 }, { y: 0, duration: 0.5, ease: "expo.out" }, 10.267);
       tl.fromTo("#slogan1", { y: 90 }, { y: 0, duration: 0.5, ease: "expo.out" }, 10.417);
       tl.fromTo("#badge0", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 10.667);

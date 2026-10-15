@@ -79,7 +79,7 @@ SLOGAN = (("Élève-toi.", 0.6), ("Ensemble.", 0.75))  # a word, the seconds aft
 SLOGAN_SIZE, SLOGAN_BASE = 64, 1078
 BADGES = (("assets/brand/badge_app_store_fr.png", "Télécharger dans l'App Store", 1.0),
           ("assets/brand/badge_google_play_fr.png", "Disponible sur Google Play", 1.1))
-SHAKE = [(14, -9), (-11, 7), (8, -5), (-5, 3), (3, -2), (0, 0)]  # the boom shakes the frame, a frame each
+FLAME_AT = (365, 205)  # the flame, in the logo animation's own pixels: the warm light of the boom starts there
 BADGE_W, BADGE_H, BADGE_GAP, BADGE_TOP = 400, 133, 26, 1142
 
 
@@ -168,7 +168,9 @@ def two_lines(first, under, k):
 def cards():
     out, light = [], "dusk"
     for i, (words, fx_in, fx_out) in enumerate(CARDS):
-        if i not in KEEP_LIGHT:
+        if fx_in == "end":  # the logo on plain white: it breaks from the sky and the dusk of the words
+            light = "white"
+        elif i not in KEEP_LIGHT:
             light = "sky" if light == "dusk" else "dusk"
         t1 = frame(CUTS[i + 1]) if i + 1 < len(CUTS) else DURATION
         out.append(dict(id=f"c{i}", i=i, t0=frame(CUTS[i]), t1=t1, words=words, fx_in=fx_in, fx_out=fx_out, light=light))
@@ -272,7 +274,8 @@ def motion(c):
 
 
 def fond(C):
-    flips = "\n".join(f'        tl.set("#dusk", {{ visibility: "{"visible" if c["light"] == "dusk" else "hidden"}" }}, {c["t0"]});' for c in C)
+    flips = "\n".join(f'        tl.set("#{layer}", {{ visibility: "{"visible" if c["light"] == layer else "hidden"}" }}, {c["t0"]});'
+                      for c in C for layer in ("dusk", "white"))
     return f"""<!doctype html>
 <html lang="fr">
   <head>
@@ -283,18 +286,20 @@ def fond(C):
       <style>
         #root {{ position: absolute; inset: 0; overflow: hidden; background: #bfe3f6; }}
         .light {{ position: absolute; left: 0; top: 0; width: {W}px; height: {H}px; }}
-        #dusk {{ visibility: hidden; }}
+        #dusk, #white {{ visibility: hidden; }}
+        #white {{ background: #ffffff; }}
       </style>
       <div id="root" data-composition-id="fond" data-width="{W}" data-height="{H}">
         <img id="sky" class="light" src="assets/sky.png" alt="" data-layout-allow-overflow />
         <img id="dusk" class="light" src="assets/dusk.png" alt="" data-layout-allow-overflow />
+        <div id="white" class="light"></div>
       </div>
       <script>
         window.__timelines = window.__timelines || {{}};
         const tl = gsap.timeline({{ paused: true }});
         // both lights drift in together, so a cut changes the light, not the place
         tl.fromTo(".light", {{ scale: 1 }}, {{ scale: 1.05, duration: {DURATION}, ease: "none" }}, 0);
-        // the sky (black words) and dusk (white words), flipped on every card
+        // the sky (black words) and dusk (white words), flipped on every card; plain white for the logo
 {flips}
         window.__timelines["fond"] = tl;
       </script>
@@ -366,25 +371,21 @@ def end_card(t0):
         {slogan}
         {badges}
       </div>"""
-    css = f"""      #fin {{ position: absolute; left: 0; top: 0; width: {W}px; height: {H}px; transform-origin: {W / 2:.0f}px {SPLASH["at"]}px; }}
-      #flash {{ position: absolute; left: {W / 2 - 600:.0f}px; top: {SPLASH["at"] - 420}px; width: 1200px; height: 840px; visibility: hidden;
-        background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95), rgba(255, 244, 222, 0.55) 45%, rgba(255, 255, 255, 0)); }}
+    fx, fy = left + FLAME_AT[0] * k, top + FLAME_AT[1] * k
+    css = f"""      #fin {{ position: absolute; left: 0; top: 0; width: {W}px; height: {H}px; }}
+      #flash {{ position: absolute; left: {fx - 520:.0f}px; top: {fy - 520:.0f}px; width: 1040px; height: 1040px; visibility: hidden;
+        background: radial-gradient(closest-side, rgba(255, 168, 60, 0.6), rgba(255, 200, 120, 0.25) 45%, rgba(255, 255, 255, 0)); }}
       #splashw {{ position: absolute; left: {left:.0f}px; top: {top:.0f}px; width: {sw * k:.0f}px; height: {sh * k:.0f}px; transform-origin: {SPLASH["cx"] * k:.0f}px {SPLASH["cy"] * k:.0f}px; }}
       #splash {{ position: absolute; left: 0; top: 0; width: {sw * k:.0f}px; height: {sh * k:.0f}px; display: block; }}
       #slogan {{ position: absolute; left: 0; top: 0; overflow: visible; }}
       #slogan text {{ font-family: "Rise Sans", sans-serif; font-weight: 700; }}
       .badge {{ position: absolute; width: {BADGE_W}px; height: {BADGE_H}px; display: block; opacity: 0; }}"""
     js = [f'tl.fromTo("#splashw", {{ scale: 0.96 }}, {{ scale: 1.03, duration: {dur}, ease: "sine.out" }}, {t0});']
-    # the boom: a burst of light behind the logo, the frame punched and shaken
+    # the boom: a warm light spreads from the flame over the white as the letters burst out
     b = BOOM_AT
     js.append(f'tl.set("#flash", {{ visibility: "visible" }}, {b});')
-    js.append(f'tl.fromTo("#flash", {{ opacity: 0.9, scale: 0.55 }}, {{ opacity: 0, scale: 1.5, duration: 0.8, ease: "power2.out" }}, {b});')
-    js.append(f'tl.set("#flash", {{ visibility: "hidden" }}, {r3(b + 0.8)});')
-    f = r3(1 / FPS)
-    js.append(f'tl.to("#fin", {{ scale: 1.07, duration: {f}, ease: "none" }}, {b});')
-    js.append(f'tl.to("#fin", {{ scale: 1, duration: 0.45, ease: "expo.out" }}, {r3(b + 1 / FPS)});')
-    for k, (x, y) in enumerate(SHAKE):
-        js.append(f'tl.to("#fin", {{ x: {x}, y: {y}, duration: {f}, ease: "none" }}, {r3(b + k / FPS)});')
+    js.append(f'tl.fromTo("#flash", {{ opacity: 1, scale: 0.35 }}, {{ opacity: 0, scale: 1.6, duration: 1.0, ease: "power2.out" }}, {b});')
+    js.append(f'tl.set("#flash", {{ visibility: "hidden" }}, {r3(b + 1.0)});')
     for j, (_, at) in enumerate(SLOGAN):
         js.append(f'tl.fromTo("#slogan{j}", {{ y: {1.4 * SLOGAN_SIZE:.0f} }}, {{ y: 0, duration: 0.5, ease: "expo.out" }}, {r3(b + at)});')
     for j, (_, _, at) in enumerate(BADGES):

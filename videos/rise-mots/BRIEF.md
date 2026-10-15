@@ -18,6 +18,9 @@ juste les mots importants. Texte de départ de l'utilisateur : « RISE le premie
 prière, quiz, verset, créé par un chrétien pour les chrétiens. » L'utilisateur a laissé le choix des mots et du rythme.
 
 ## Customizations
+- v6 : « mettre le RISE à la fin dans un fond blanc pour casser le truc, virer le truc qui vibre ». Le logo passe sur un blanc
+  pur (coupe nette depuis le gris de « pour les chrétiens. ») ; plus de tremblement ni de coup de zoom au boum : à la place,
+  une lumière chaude part de la flamme sur le blanc pendant que les lettres jaillissent.
 - v5 : « virer le R. I. S. E., laisser que le logo à la fin avec un son de transition genre un boum lourd, et splitter le
   créé par un chrétien pour avoir assez de transitions jusqu'à la fin ».
   - Plus de « r / ri. / ris / rise. » ni de mot grossi : les 23 whooshes portent le texte de l'utilisateur dans son ordre :
