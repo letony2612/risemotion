@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Rise Sans"; font-weight: 700; src: url("assets/fonts/FreeSansBold.ttf") format("truetype"); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000000; }
+      #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #000000; }
+      .shotw { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+      .shotw video { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; display: block; }
+      .cap { position: absolute; left: 0; width: 1080px; transform: translateY(-50%); text-align: center; visibility: hidden; }
+      .cap p { display: inline-block; font-family: "Rise Sans", sans-serif; font-weight: 700; font-size: 58px; line-height: 1.32;
+        letter-spacing: -0.01em; color: #121212; filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.22)); }
+      .cap span { background: #ffffff; padding: 4px 22px 6px; border-radius: 16px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+      #noir { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; background: #000000; }
+      #fin { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+      #flash { position: absolute; left: -74px; top: 198px; width: 1040px; height: 1040px; visibility: hidden;
+        background: radial-gradient(closest-side, rgba(255, 168, 60, 0.6), rgba(255, 200, 120, 0.25) 45%, rgba(255, 255, 255, 0)); }
+      #splashw { position: absolute; left: 146px; top: 550px; width: 787px; height: 410px; transform-origin: 394px 260px; }
+      #splash { position: absolute; left: 0; top: 0; width: 787px; height: 410px; display: block; }
+      #slogan { position: absolute; left: 0; top: 0; overflow: visible; }
+      #slogan text { font-family: "Rise Sans", sans-serif; font-weight: 700; }
+      .badge { position: absolute; width: 400px; height: 133px; display: block; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="main" data-start="0" data-duration="16.833333333333332" data-fps="30" data-width="1080" data-height="1920">
+      <div id="w-seul" class="shotw" style="transform-origin: 540px 960px"></div>
+      <div id="cap-seul" class="cap" style="top: 640px"><p><span>Tu cherches d&#x27;autres</span><br><span>chrétiens avec qui</span><br><span>parler de ta foi ?</span></p></div>
+      <div id="w-fil" class="shotw" style="transform-origin: 540px 900px"><video id="v-fil" class="clip" src="assets/shots/fil.mp4" muted playsinline data-start="2.9" data-duration="1.933" data-media-start="0" data-track-index="1"></video></div>
+      <div id="cap-fil" class="cap" style="top: 700px"><p><span>Sur RISE, tu partages</span><br><span>ce que tu vis</span></p></div>
+      <div id="w-amis" class="shotw" style="transform-origin: 540px 960px"></div>
+      <div id="cap-amis" class="cap" style="top: 640px"><p><span>tu rejoins des groupes</span></p></div>
+      <div id="w-groupe" class="shotw" style="transform-origin: 540px 1050px"><video id="v-groupe" class="clip" src="assets/shots/groupe.mp4" muted playsinline data-start="6.766666666666667" data-duration="2.9" data-media-start="0" data-track-index="1"></video></div>
+      <div id="cap-groupe" class="cap" style="top: 300px"><p><span>tu parles avec</span><br><span>d&#x27;autres croyants</span></p></div>
+      <div id="w-priere" class="shotw" style="transform-origin: 300px 620px"><video id="v-priere" class="clip" src="assets/shots/priere.mp4" muted playsinline data-start="9.666666666666666" data-duration="1.933" data-media-start="0" data-track-index="1"></video></div>
+      <div id="cap-priere" class="cap" style="top: 1240px"><p><span>et on prie les uns</span><br><span>pour les autres</span></p></div>
+      <div id="w-sourire" class="shotw" style="transform-origin: 540px 960px"></div>
+      <div id="cap-sourire" class="cap" style="top: 640px"><p><span>Le réseau social créé</span><br><span>par un chrétien,</span><br><span>pour les chrétiens</span></p></div>
+      <div id="noir" class="clip" data-start="13.533333333333333" data-duration="3.3" data-track-index="3"></div>
+      <div id="fin" data-layout-allow-overflow>
+        <div id="flash"></div>
+        <div id="splashw"><video id="splash" class="clip" src="assets/brand/rise_splash_dark.webm" muted playsinline data-start="13.533333333333333" data-duration="3.3" data-media-start="0.2" data-track-index="4"></video></div>
+        <svg id="slogan" width="1080" height="1920" viewBox="0 0 1080 1920"><clipPath id="slogan-clip"><rect x="0" y="961" width="1080" height="86" /></clipPath><clipPath id="stores-clip"><rect x="0" y="1071" width="1080" height="54" /></clipPath><g clip-path="url(#slogan-clip)"><g id="slogan0"><text data-layout-allow-overlap x="193.0" y="1028.0" style="font-size: 64px; fill: #ffffff">É</text><text data-layout-allow-overlap x="233.3" y="1028.0" style="font-size: 64px; fill: #ffffff">l</text><text data-layout-allow-overlap x="247.1" y="1028.0" style="font-size: 64px; fill: #ffffff">e</text><text data-layout-allow-overlap x="280.9" y="1028.0" style="font-size: 64px; fill: #ffffff">v</text><text data-layout-allow-overlap x="312.0" y="1028.0" style="font-size: 64px; fill: #ffffff">o</text><text data-layout-allow-overlap x="347.8" y="1028.0" style="font-size: 64px; fill: #ffffff">n</text><text data-layout-allow-overlap x="383.9" y="1028.0" style="font-size: 64px; fill: #ffffff">s</text><text data-layout-allow-overlap x="417.2" y="1028.0" style="font-size: 64px; fill: #ffffff">-</text><text data-layout-allow-overlap x="436.3" y="1028.0" style="font-size: 64px; fill: #ffffff">n</text><text data-layout-allow-overlap x="472.0" y="1028.0" style="font-size: 64px; fill: #ffffff">o</text><text data-layout-allow-overlap x="508.4" y="1028.0" style="font-size: 64px; fill: #ffffff">u</text><text data-layout-allow-overlap x="544.8" y="1028.0" style="font-size: 64px; fill: #ffffff">s</text></g><g id="slogan1"><text data-layout-allow-overlap x="593.6" y="1028.0" style="font-size: 64px; fill: #ff6d00">e</text><text data-layout-allow-overlap x="627.8" y="1028.0" style="font-size: 64px; fill: #ff6d00">n</text><text data-layout-allow-overlap x="663.8" y="1028.0" style="font-size: 64px; fill: #ff6d00">s</text><text data-layout-allow-overlap x="696.5" y="1028.0" style="font-size: 64px; fill: #ff6d00">e</text><text data-layout-allow-overlap x="730.6" y="1028.0" style="font-size: 64px; fill: #ff6d00">m</text><text data-layout-allow-overlap x="785.6" y="1028.0" style="font-size: 64px; fill: #ff6d00">b</text><text data-layout-allow-overlap x="822.2" y="1028.0" style="font-size: 64px; fill: #ff6d00">l</text><text data-layout-allow-overlap x="835.9" y="1028.0" style="font-size: 64px; fill: #ff6d00">e</text><text data-layout-allow-overlap x="871.0" y="1028.0" style="font-size: 64px; fill: #ff6d00">.</text></g></g><g clip-path="url(#stores-clip)"><g id="stores"><text data-layout-allow-overlap x="321.0" y="1113.0" style="font-size: 40px; fill: #b0b0b0">D</text><text data-layout-allow-overlap x="348.6" y="1113.0" style="font-size: 40px; fill: #b0b0b0">i</text><text data-layout-allow-overlap x="358.0" y="1113.0" style="font-size: 40px; fill: #b0b0b0">s</text><text data-layout-allow-overlap x="378.4" y="1113.0" style="font-size: 40px; fill: #b0b0b0">p</text><text data-layout-allow-overlap x="401.8" y="1113.0" style="font-size: 40px; fill: #b0b0b0">o</text><text data-layout-allow-overlap x="424.2" y="1113.0" style="font-size: 40px; fill: #b0b0b0">n</text><text data-layout-allow-overlap x="446.5" y="1113.0" style="font-size: 40px; fill: #b0b0b0">i</text><text data-layout-allow-overlap x="456.3" y="1113.0" style="font-size: 40px; fill: #b0b0b0">b</text><text data-layout-allow-overlap x="479.2" y="1113.0" style="font-size: 40px; fill: #b0b0b0">l</text><text data-layout-allow-overlap x="487.8" y="1113.0" style="font-size: 40px; fill: #b0b0b0">e</text><text data-layout-allow-overlap x="519.4" y="1113.0" style="font-size: 40px; fill: #b0b0b0">s</text><text data-layout-allow-overlap x="539.6" y="1113.0" style="font-size: 40px; fill: #b0b0b0">u</text><text data-layout-allow-overlap x="562.8" y="1113.0" style="font-size: 40px; fill: #b0b0b0">r</text><text data-layout-allow-overlap x="586.8" y="1113.0" style="font-size: 40px; fill: #b0b0b0">l</text><text data-layout-allow-overlap x="595.4" y="1113.0" style="font-size: 40px; fill: #b0b0b0">e</text><text data-layout-allow-overlap x="616.9" y="1113.0" style="font-size: 40px; fill: #b0b0b0">s</text><text data-layout-allow-overlap x="647.4" y="1113.0" style="font-size: 40px; fill: #b0b0b0">s</text><text data-layout-allow-overlap x="667.5" y="1113.0" style="font-size: 40px; fill: #b0b0b0">t</text><text data-layout-allow-overlap x="678.8" y="1113.0" style="font-size: 40px; fill: #b0b0b0">o</text><text data-layout-allow-overlap x="701.6" y="1113.0" style="font-size: 40px; fill: #b0b0b0">r</text><text data-layout-allow-overlap x="715.2" y="1113.0" style="font-size: 40px; fill: #b0b0b0">e</text><text data-layout-allow-overlap x="736.8" y="1113.0" style="font-size: 40px; fill: #b0b0b0">s</text></g></g></svg>
+        <img id="badge0" class="badge" src="assets/brand/badge_app_store_fr.png" alt="Télécharger dans l&#x27;App Store" style="left: 127px; top: 1145px" /><img id="badge1" class="badge" src="assets/brand/badge_google_play_fr.png" alt="Disponible sur Google Play" style="left: 553px; top: 1145px" />
+      </div>
+      <audio id="music" src="assets/music.wav" data-start="0" data-duration="16.833333333333332" data-track-index="5" data-volume="1"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#w-seul", { scale: 1 }, { scale: 1.06, duration: 2.9, ease: "none" }, 0.0);
+      tl.set("#cap-seul", { visibility: "visible" }, 0.0);
+      tl.set("#cap-seul", { visibility: "hidden" }, 2.9);
+      tl.fromTo("#cap-seul p", { scale: 0.86 }, { scale: 1, duration: 0.2, ease: "back.out(2.2)" }, 0.0);
+      tl.fromTo("#w-fil", { scale: 1 }, { scale: 1.06, duration: 1.933, ease: "none" }, 2.9);
+      tl.set("#cap-fil", { visibility: "visible" }, 2.9);
+      tl.set("#cap-fil", { visibility: "hidden" }, 4.833333333333333);
+      tl.fromTo("#cap-fil p", { scale: 0.86 }, { scale: 1, duration: 0.2, ease: "back.out(2.2)" }, 2.9);
+      tl.fromTo("#w-amis", { scale: 1 }, { scale: 1.06, duration: 1.933, ease: "none" }, 4.833333333333333);
+      tl.set("#cap-amis", { visibility: "visible" }, 4.833333333333333);
+      tl.set("#cap-amis", { visibility: "hidden" }, 6.766666666666667);
+      tl.fromTo("#cap-amis p", { scale: 0.86 }, { scale: 1, duration: 0.2, ease: "back.out(2.2)" }, 4.833333333333333);
+      tl.fromTo("#w-groupe", { scale: 1 }, { scale: 1.06, duration: 2.9, ease: "none" }, 6.766666666666667);
+      tl.set("#cap-groupe", { visibility: "visible" }, 6.766666666666667);
+      tl.set("#cap-groupe", { visibility: "hidden" }, 9.666666666666666);
+      tl.fromTo("#cap-groupe p", { scale: 0.86 }, { scale: 1, duration: 0.2, ease: "back.out(2.2)" }, 6.766666666666667);
+      tl.fromTo("#w-priere", { scale: 1 }, { scale: 1.06, duration: 1.933, ease: "none" }, 9.666666666666666);
+      tl.set("#cap-priere", { visibility: "visible" }, 9.666666666666666);
+      tl.set("#cap-priere", { visibility: "hidden" }, 11.6);
+      tl.fromTo("#cap-priere p", { scale: 0.86 }, { scale: 1, duration: 0.2, ease: "back.out(2.2)" }, 9.666666666666666);
+      tl.fromTo("#w-sourire", { scale: 1 }, { scale: 1.06, duration: 1.933, ease: "none" }, 11.6);
+      tl.set("#cap-sourire", { visibility: "visible" }, 11.6);
+      tl.set("#cap-sourire", { visibility: "hidden" }, 13.533333333333333);
+      tl.fromTo("#cap-sourire p", { scale: 0.86 }, { scale: 1, duration: 0.2, ease: "back.out(2.2)" }, 11.6);
+      tl.fromTo("#splashw", { scale: 0.96 }, { scale: 1.03, duration: 3.3, ease: "sine.out" }, 13.533333333333333);
+      tl.set("#flash", { visibility: "visible" }, 14.0);
+      tl.fromTo("#flash", { opacity: 1, scale: 0.35 }, { opacity: 0, scale: 1.6, duration: 1.0, ease: "power2.out" }, 14.0);
+      tl.set("#flash", { visibility: "hidden" }, 15.0);
+      tl.fromTo("#slogan0", { y: 90 }, { y: 0, duration: 0.5, ease: "expo.out" }, 14.6);
+      tl.fromTo("#slogan1", { y: 90 }, { y: 0, duration: 0.5, ease: "expo.out" }, 14.75);
+      tl.fromTo("#stores", { y: 56 }, { y: 0, duration: 0.5, ease: "expo.out" }, 14.95);
+      tl.fromTo("#badge0", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 15.1);
+      tl.fromTo("#badge1", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 15.2);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
