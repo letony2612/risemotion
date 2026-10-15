@@ -18,6 +18,11 @@ juste les mots importants. Texte de départ de l'utilisateur : « RISE le premie
 prière, quiz, verset, créé par un chrétien pour les chrétiens. » L'utilisateur a laissé le choix des mots et du rythme.
 
 ## Customizations
+- v9 : « t'as fait 2 fois le même mot, c'est pas bon » et « ajoute un mot à la fin en plus pour que ça rentre dans le
+  timing ». Plus de répétition : « pour les chrétiens. » reste sur un whoosh, et toute la liste avance d'un cran
+  (« partage » arrive sur le whoosh d'après). Le mot ajouté à la fin est « lumière », juste avant la bougie du logo qui
+  s'allume sur le blanc. « joie » passe avant « foi », pour que le whoosh le plus court garde le mot le plus court
+  (« foi, espérance, amour » reste dans cet ordre).
 - v8 : « dans pour les chrétiens, il y a un son sans transition ». « pour les chrétiens. » restait sur deux whooshes, et
   le deuxième passait sans rien à l'image. Sur ce whoosh, on coupe maintenant sur les mêmes mots, plus gros (×1,22, comme
   une caméra qui se rapproche) et dans l'autre lumière, puis ils partent en balayage. La phrase reste lisible 0,93 s et

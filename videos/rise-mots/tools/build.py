@@ -39,11 +39,10 @@ GAP = 14  # between a word and the one landing under it
 INK = {"sky": "#0b0b0c", "dusk": "#ffffff"}
 FLAME = "#c2410c"  # the slogan's second word: the logo's flame, deep enough to read on the sky
 EXIT_D = 0.1  # a word carried out on a whoosh leaves in the last 3 frames before the cut
-PUNCH = 1.22  # a cut in closer: how much bigger the words come back
 
-# the cards, in order: (words, how it comes in, how it leaves on the whoosh into the next cut[, how many cuts it
-# stays for]). words: a word; (word, word under it, its size against the first) for two lines; None for the end
-# card. The light flips on every card, but a word landing under another stays in its light, and the logo is on white.
+# the cards, one per cut, in order: (words, how it comes in, how it leaves on the whoosh into the next cut).
+# words: a word; (word, word under it, its size against the first) for two lines; None for the end card.
+# The light flips on every card, but a word landing under another stays in its light, and the logo is on white.
 CARDS = [
     # the statement, on the slowest cuts, each phrase built under its first words
     ("le réseau", "rise", None),  # letters rise from their baseline
@@ -52,7 +51,6 @@ CARDS = [
     (("créé par un", "chrétien", 1.0), "rise-under", None),
     ("pour les", "track", None),  # letters close up from wide tracking
     (("pour les", "chrétiens.", 1.0), "rise-under", None),
-    (("pour les", "chrétiens.", 1.0), "punch-in", "whip-left"),  # the same words, cut in closer: read for longer
     # what one does there: faster and faster
     ("partage", "whip-in-right", None),
     ("entraide", "track", None),
@@ -65,11 +63,12 @@ CARDS = [
     ("louange", "slam", None),
     ("témoignage", "track", None),
     ("communauté", "push-in", None),
-    ("foi", "slam", None),
+    ("joie", "rise", None),
+    ("foi", "slam", None),  # the shortest whoosh, the shortest word
     ("espérance", "whip-in-right", None),
     ("amour", "pop", None),
-    ("joie", "rise", None),
     ("paix", "focus", None),
+    ("lumière", "track", None),  # the last word: the light, just before the logo's flame
     (None, "end", None),  # the silence: the logo and its boom, the slogan, the stores
 ]
 # the end card: the logo animation (960x500, its logo 920 px wide at rest), the slogan, the badges.
@@ -168,18 +167,15 @@ def two_lines(first, under, k):
 
 
 def cards():
-    out, light, cut = [], "dusk", 0
-    for i, (words, fx_in, fx_out, *rest) in enumerate(CARDS):
-        span = rest[0] if rest else 1
+    assert len(CARDS) == len(CUTS), "one card per cut: every whoosh brings something new"
+    out, light = [], "dusk"
+    for i, (words, fx_in, fx_out) in enumerate(CARDS):
         if fx_in == "end":  # the logo on plain white: it breaks from the sky and the dusk of the words
             light = "white"
         elif fx_in != "rise-under":  # a word landing under another stays in its light
             light = "sky" if light == "dusk" else "dusk"
-        t1 = frame(CUTS[cut + span]) if cut + span < len(CUTS) else DURATION
-        out.append(dict(id=f"c{i}", i=i, t0=frame(CUTS[cut]), t1=t1, words=words, fx_in=fx_in, fx_out=fx_out,
-                        light=light, span=span))
-        cut += span
-    assert cut == len(CUTS), "the cards must cover every cut"
+        t1 = frame(CUTS[i + 1]) if i + 1 < len(CUTS) else DURATION
+        out.append(dict(id=f"c{i}", i=i, t0=frame(CUTS[i]), t1=t1, words=words, fx_in=fx_in, fx_out=fx_out, light=light))
     return out
 
 
@@ -243,11 +239,6 @@ def motion(c):
     elif fx == "rise-under":  # the first word stays exactly where it was
         b = L[1]
         per_glyph(b, f"{cid}-b", lambda j, cx: (0, 1.3 * b.size, 0, 1), min(0.45, dx), 0.035)
-        if c["span"] > 1:  # held over more than one whoosh: the camera moves in slowly while it is read
-            js.append(f'tl.fromTo({card}, {{ scale: 1 }}, {{ scale: 1.05, duration: {dx}, ease: "sine.inOut" }}, {t0});')
-    elif fx == "punch-in":  # the cut to a closer framing of the words already on screen, in the other light
-        js.append(f'tl.fromTo({card}, {{ scale: {PUNCH * 1.1:.3f} }}, {{ scale: {PUNCH}, duration: {min(0.4, dx)}, ease: "expo.out" }}, {t0});')
-        blur_in("10 10", 0.1, "power2.out")
     elif fx == "slam":
         js.append(f'tl.fromTo({card}, {{ scale: 1.6 }}, {{ scale: 1, duration: {min(0.36, dx)}, ease: "power4.out" }}, {t0});')
         blur_in("14 14", 0.12, "power2.out")
@@ -452,7 +443,7 @@ def shot_plan(C):
         "canvas": {"w": W, "h": H, "aspect": "9:16"},
         "style": "the reference reel's edit, cut for cut on its own sound, every word moved on the whooshes: letters rising from "
                  "their baseline, popping, dropping, closing up from wide tracking; words slamming in, whipping or pushing "
-                 "in with motion blur, pulled into focus, cut in closer; whooshes carried across cuts (zoom, whip, push); the "
+                 "in with motion blur, pulled into focus; whooshes carried across cuts (zoom, whip, push); the "
                  "light flips between the RISE sky (black words) and dusk grey-blue (white words); then, in the silence, the "
                  "app's logo animation on white with a heavy boom, the slogan and the store badges",
         "palette": ["#93cdef", "#bfe3f6", "#def1fb", "#d0d1d7", "#95a0e0", "#717480", INK["sky"], INK["dusk"], FLAME],
