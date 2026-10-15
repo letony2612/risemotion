@@ -18,6 +18,10 @@ juste les mots importants. Texte de départ de l'utilisateur : « RISE le premie
 prière, quiz, verset, créé par un chrétien pour les chrétiens. » L'utilisateur a laissé le choix des mots et du rythme.
 
 ## Customizations
+- v8 : « dans pour les chrétiens, il y a un son sans transition ». « pour les chrétiens. » restait sur deux whooshes, et
+  le deuxième passait sans rien à l'image. Sur ce whoosh, on coupe maintenant sur les mêmes mots, plus gros (×1,22, comme
+  une caméra qui se rapproche) et dans l'autre lumière, puis ils partent en balayage. La phrase reste lisible 0,93 s et
+  chaque whoosh a sa transition ; la liste suit, ses couleurs décalées d'un cran (« partage » sur le ciel).
 - v7 : « le pour les chrétiens est même pas terminé que ça fait déjà la transition ; mettre au début réseau social créé par
   un chrétien pour les chrétiens, puis le reste ». La phrase passe au début, sur les coupes les plus lentes (0 → 4 s) :
   « le réseau / social », « créé par un / chrétien », « pour les / chrétiens. » ; chaque fois les mots suivants se posent

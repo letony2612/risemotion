@@ -7,7 +7,7 @@
   "h": 1920,
   "aspect": "9:16"
  },
- "style": "the reference reel's edit, cut for cut on its own sound, every word moved on the whooshes: letters rising from their baseline, popping, dropping, closing up from wide tracking, typed; words slamming in, whipping or pushing in with motion blur, pulled into focus; whooshes carried across cuts (zoom, whip, push); rise blown up and eaten by blobs; the light flips between the RISE sky (black words) and dusk grey-blue (white words); then, in the silence, the app's logo animation, the slogan and the store badges",
+ "style": "the reference reel's edit, cut for cut on its own sound, every word moved on the whooshes: letters rising from their baseline, popping, dropping, closing up from wide tracking; words slamming in, whipping or pushing in with motion blur, pulled into focus, cut in closer; whooshes carried across cuts (zoom, whip, push); the light flips between the RISE sky (black words) and dusk grey-blue (white words); then, in the silence, the app's logo animation on white with a heavy boom, the slogan and the store badges",
  "palette": [
   "#93cdef",
   "#bfe3f6",
@@ -102,158 +102,167 @@
    {
     "id": "c5",
     "start": 3.033333333333333,
-    "end": 3.966666666666667,
+    "end": 3.5,
     "text": "pour les / chrétiens.",
     "motion": "rise-under",
-    "exit": "whip-left",
+    "exit": null,
     "light": "sky"
    },
    {
     "id": "c6",
+    "start": 3.5,
+    "end": 3.966666666666667,
+    "text": "pour les / chrétiens.",
+    "motion": "punch-in",
+    "exit": "whip-left",
+    "light": "dusk"
+   },
+   {
+    "id": "c7",
     "start": 3.966666666666667,
     "end": 4.366666666666666,
     "text": "partage",
     "motion": "whip-in-right",
     "exit": null,
-    "light": "dusk"
+    "light": "sky"
    },
    {
-    "id": "c7",
+    "id": "c8",
     "start": 4.366666666666666,
     "end": 4.7,
     "text": "entraide",
     "motion": "track",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
-    "id": "c8",
+    "id": "c9",
     "start": 4.7,
     "end": 5.166666666666667,
     "text": "prière",
     "motion": "pop",
     "exit": "push-up",
-    "light": "dusk"
+    "light": "sky"
    },
    {
-    "id": "c9",
+    "id": "c10",
     "start": 5.166666666666667,
     "end": 5.533333333333333,
     "text": "quiz",
     "motion": "push-in",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
-    "id": "c10",
+    "id": "c11",
     "start": 5.533333333333333,
     "end": 5.866666666666666,
     "text": "verset",
     "motion": "drop",
     "exit": "whip-right",
-    "light": "dusk"
+    "light": "sky"
    },
    {
-    "id": "c11",
+    "id": "c12",
     "start": 5.866666666666666,
     "end": 6.2,
     "text": "groupes",
     "motion": "whip-in-left",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
-    "id": "c12",
+    "id": "c13",
     "start": 6.2,
     "end": 6.533333333333333,
     "text": "messages",
     "motion": "focus",
     "exit": null,
-    "light": "dusk"
+    "light": "sky"
    },
    {
-    "id": "c13",
+    "id": "c14",
     "start": 6.533333333333333,
     "end": 6.866666666666666,
     "text": "sondages",
     "motion": "rise",
     "exit": "zoom",
-    "light": "sky"
+    "light": "dusk"
    },
    {
-    "id": "c14",
+    "id": "c15",
     "start": 6.866666666666666,
     "end": 7.2,
     "text": "louange",
     "motion": "slam",
     "exit": null,
-    "light": "dusk"
+    "light": "sky"
    },
    {
-    "id": "c15",
+    "id": "c16",
     "start": 7.2,
     "end": 7.5,
     "text": "témoignage",
     "motion": "track",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
-    "id": "c16",
+    "id": "c17",
     "start": 7.5,
     "end": 7.8,
     "text": "communauté",
     "motion": "push-in",
     "exit": null,
-    "light": "dusk"
+    "light": "sky"
    },
    {
-    "id": "c17",
+    "id": "c18",
     "start": 7.8,
     "end": 8.033333333333333,
     "text": "foi",
     "motion": "slam",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
-    "id": "c18",
+    "id": "c19",
     "start": 8.033333333333333,
     "end": 8.333333333333334,
     "text": "espérance",
     "motion": "whip-in-right",
     "exit": null,
-    "light": "dusk"
+    "light": "sky"
    },
    {
-    "id": "c19",
+    "id": "c20",
     "start": 8.333333333333334,
     "end": 8.6,
     "text": "amour",
     "motion": "pop",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
-    "id": "c20",
+    "id": "c21",
     "start": 8.6,
     "end": 8.866666666666667,
     "text": "joie",
     "motion": "rise",
     "exit": null,
-    "light": "dusk"
+    "light": "sky"
    },
    {
-    "id": "c21",
+    "id": "c22",
     "start": 8.866666666666667,
     "end": 9.2,
     "text": "paix",
     "motion": "focus",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
-    "id": "c22",
+    "id": "c23",
     "start": 9.2,
     "end": 12.5,
     "text": "RISE logo animation · Élève-toi. Ensemble. · store badges",

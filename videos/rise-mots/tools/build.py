@@ -39,6 +39,7 @@ GAP = 14  # between a word and the one landing under it
 INK = {"sky": "#0b0b0c", "dusk": "#ffffff"}
 FLAME = "#c2410c"  # the slogan's second word: the logo's flame, deep enough to read on the sky
 EXIT_D = 0.1  # a word carried out on a whoosh leaves in the last 3 frames before the cut
+PUNCH = 1.22  # a cut in closer: how much bigger the words come back
 
 # the cards, in order: (words, how it comes in, how it leaves on the whoosh into the next cut[, how many cuts it
 # stays for]). words: a word; (word, word under it, its size against the first) for two lines; None for the end
@@ -50,7 +51,8 @@ CARDS = [
     ("créé par un", "slam", None),  # ...and the next words slam in from close up
     (("créé par un", "chrétien", 1.0), "rise-under", None),
     ("pour les", "track", None),  # letters close up from wide tracking
-    (("pour les", "chrétiens.", 1.0), "rise-under", "whip-left", 2),  # held over two whooshes, to be read
+    (("pour les", "chrétiens.", 1.0), "rise-under", None),
+    (("pour les", "chrétiens.", 1.0), "punch-in", "whip-left"),  # the same words, cut in closer: read for longer
     # what one does there: faster and faster
     ("partage", "whip-in-right", None),
     ("entraide", "track", None),
@@ -243,6 +245,9 @@ def motion(c):
         per_glyph(b, f"{cid}-b", lambda j, cx: (0, 1.3 * b.size, 0, 1), min(0.45, dx), 0.035)
         if c["span"] > 1:  # held over more than one whoosh: the camera moves in slowly while it is read
             js.append(f'tl.fromTo({card}, {{ scale: 1 }}, {{ scale: 1.05, duration: {dx}, ease: "sine.inOut" }}, {t0});')
+    elif fx == "punch-in":  # the cut to a closer framing of the words already on screen, in the other light
+        js.append(f'tl.fromTo({card}, {{ scale: {PUNCH * 1.1:.3f} }}, {{ scale: {PUNCH}, duration: {min(0.4, dx)}, ease: "expo.out" }}, {t0});')
+        blur_in("10 10", 0.1, "power2.out")
     elif fx == "slam":
         js.append(f'tl.fromTo({card}, {{ scale: 1.6 }}, {{ scale: 1, duration: {min(0.36, dx)}, ease: "power4.out" }}, {t0});')
         blur_in("14 14", 0.12, "power2.out")
@@ -446,10 +451,10 @@ def shot_plan(C):
         "fps": FPS,
         "canvas": {"w": W, "h": H, "aspect": "9:16"},
         "style": "the reference reel's edit, cut for cut on its own sound, every word moved on the whooshes: letters rising from "
-                 "their baseline, popping, dropping, closing up from wide tracking, typed; words slamming in, whipping or pushing "
-                 "in with motion blur, pulled into focus; whooshes carried across cuts (zoom, whip, push); rise blown up and eaten "
-                 "by blobs; the light flips between the RISE sky (black words) and dusk grey-blue (white words); then, in the "
-                 "silence, the app's logo animation, the slogan and the store badges",
+                 "their baseline, popping, dropping, closing up from wide tracking; words slamming in, whipping or pushing "
+                 "in with motion blur, pulled into focus, cut in closer; whooshes carried across cuts (zoom, whip, push); the "
+                 "light flips between the RISE sky (black words) and dusk grey-blue (white words); then, in the silence, the "
+                 "app's logo animation on white with a heavy boom, the slogan and the store badges",
         "palette": ["#93cdef", "#bfe3f6", "#def1fb", "#d0d1d7", "#95a0e0", "#717480", INK["sky"], INK["dusk"], FLAME],
         "font": "FreeSans Bold (GNU FreeFont, GPL with font exception), letter-spacing -0.035em",
         "beats": [frame(t) for t in CUTS],
