@@ -5,7 +5,7 @@ storyboard: no
 message: "RISE, le réseau social chrétien : partage, entraide, prière, quiz, verset. Créé par un chrétien, pour les chrétiens."
 aspect: "9:16"
 language: fr
-length: "9,5 s (boucle)"
+length: "12,5 s"
 destination: "Reels / TikTok / Shorts"
 ---
 
@@ -18,6 +18,15 @@ juste les mots importants. Texte de départ de l'utilisateur : « RISE le premie
 prière, quiz, verset, créé par un chrétien pour les chrétiens. » L'utilisateur a laissé le choix des mots et du rythme.
 
 ## Customizations
+- v4 : « il faudrait une animation plus stylée qui fait vraiment motion designer, là c'est que des apparitions » et « à la fin
+  sans bruit, le logo RISE en motion design et disponible sur les stores ».
+  - Chaque mot bouge, calé sur les whooshes : lettres qui montent depuis leur ligne de base, qui rebondissent, qui tombent
+    en tournant, qui se resserrent depuis un interlettrage large ; mots qui arrivent de près (zoom) ou en balayage / poussée
+    avec flou de vitesse, ou par mise au point ; le whoosh traverse la coupe (le mot part comme le suivant arrive : zoom,
+    balayage, poussée) ; « r / ri. / ris / rise. » tapé (les lettres glissent, la nouvelle rebondit), puis « rise. » grossit
+    jusqu'aux bords et se fait grignoter.
+  - Fin, dans le silence après le son (9,2 → 12,5 s) : l'animation officielle du logo (RISE_presentation/5_logo_anime, version
+    claire faite pour la présentation), « Élève-toi. Ensemble. » qui monte, puis les badges App Store et Google Play.
 - v3 : l'utilisateur a envoyé le son de la référence (« ce que t'as fait c'est archeum ») : le reel reprend le montage
   de la référence coupe pour coupe, mesuré sur l'enregistrement d'écran : 24 coupes aux mêmes instants, chacune à la fin
   d'un « whoosh » du son, de plus en plus rapprochées ; boucle de 9,5 s dont la fin est silencieuse, comme la référence.
@@ -25,8 +34,8 @@ prière, quiz, verset, créé par un chrétien pour les chrétiens. » L'utilisa
     pendant que le suivant se pose dessous.
   - Puis la liste, de plus en plus vite : partage, entraide, prière, quiz, verset, groupes, louange, témoignage, foi,
     amour, joie, paix.
-  - Puis « r / ri. / ris / rise. » tapé, puis le logo RISE d'un bord à l'autre (là où la référence grossit « repeat. »),
-    grignoté par des taches sur le dernier whoosh, puis un temps vide et silencieux avant la boucle.
+  - Puis « r / ri. / ris / rise. » tapé, puis le mot grossi d'un bord à l'autre et grignoté sur le dernier whoosh (en v3 c'était
+    le logo ; il est passé à la fin en v4).
 - v2 : la grammaire de la référence. Police type Helvetica grasse (FreeSans Bold), interlettrage serré (-0,035 em), tous
   les mots à la même taille ; le fond et la couleur du texte basculent à chaque coupe ; chaque mot arrive un peu trop gros
   et se pose, certains avec une mise au point floue ou un filé horizontal sur les premières images.
@@ -36,7 +45,8 @@ prière, quiz, verset, créé par un chrétien pour les chrétiens. » L'utilisa
 - « le premier » retiré (difficile à prouver) : « le réseau social chrétien. »
 
 ## Assets
-- Logo : RISE_presentation/LOGO_3.png.
+- Logo : l'animation officielle du splash (RISE_presentation/5_logo_anime), en version claire (assets/brand/rise_splash_light.webm,
+  faite par videos/rise-presentation/tools/prepare_splash.py). Badges officiels FR App Store et Google Play (assets/brand).
 - Son : music/son_reel_reference.mp3, le son du reel de référence envoyé par l'utilisateur (9,33 s, -14,2 LUFS) ;
   tools/music.py le complète de silence jusqu'à 9,5 s. Droits : c'est le son d'un autre créateur ; pour publier, le plus
   sûr est de reprendre ce son dans l'app (« Utiliser l'audio »).

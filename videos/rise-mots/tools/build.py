@@ -1,15 +1,15 @@
-"""The reel « rise. » — RISE in a few words, one card at a time, cut on the reference reel's own sound.
+"""The reel « rise. » — RISE in a few words, cut on the reference reel's own sound, then the logo.
 
 The user sent the reference reel ("graphics / transitions / ideas / feelings / re / repe. / repea / repeat.")
-and then its audio: a run of whooshes that speed up. This reel takes the reference's edit as it is, measured
-on the screen recording frame by frame: the same 24 cuts at the same times (each at the end of a whoosh) and
-the same moves, with RISE's words in place of the reference's.
-- a Helvetica-style bold (FreeSans Bold), lowercase, tracked tight, every word the same size;
-- every cut flips the light between the RISE sky (black words) and dusk (white words);
-- a word lands a little big and settles; some come in out of focus, some with a horizontal smear;
-- the statement first, where a word stays while the next one lands under it;
-- then the list, faster and faster; then "r / ri. / ris / rise." typed; then the logo blown up to the edges
-  and eaten by blobs on the last whoosh; then an empty, silent beat, and the loop starts again.
+and its audio: a run of whooshes that speed up. The reel keeps the reference's edit (the same 24 cuts at the
+same times, each at the end of a whoosh; the light flips on every cut) and moves every word like a motion
+designer would, on the whooshes:
+- letters rising from their baseline, popping, dropping, closing up from wide tracking, being typed;
+- words slamming in from close up, whipping or pushing in with motion blur, pulled into focus;
+- a whoosh carried across a cut: the word leaves the way the next one arrives (zoom, whip, push);
+- "rise." typed, then blown up to the edges and eaten by blobs.
+In the silence after the sound, the RISE logo animation (the app's own splash, made for a light background),
+the slogan and the App Store / Google Play badges.
 Usage: python3 tools/build.py  -> index.html, compositions/fond.html, compositions/mots.html, shot-plan.json
 (then python3 tools/music.py and tools/backdrop.py only if the sound or the lights change)
 """
@@ -22,9 +22,9 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 FPS = 30
-LOOP = 9.5  # the reference loops every 9.5 s; its sound lasts 9.33 s
+DURATION = 12.5  # the sound lasts 9.33 s; the logo plays out in the silence after it
 # the reference's cuts, in seconds from its loop start, measured on the screen recording: each lands at
-# the end of one of the sound's whooshes
+# the end of one of the sound's whooshes; the last one starts the end card
 CUTS = [0.0, 0.714, 1.380, 2.000, 2.524, 3.024, 3.500, 3.952, 4.357, 4.714, 5.167, 5.524, 5.880, 6.214,
         6.547, 6.880, 7.190, 7.500, 7.785, 8.024, 8.334, 8.595, 8.880, 9.190]
 W, H = 1080, 1920
@@ -33,45 +33,51 @@ TRACK = -0.035  # letter-spacing, em
 S = 186  # every word's size
 X_HEIGHT = 0.54  # FreeSans Bold's x-height, em
 Y_C = 930  # where the middle of the x-height sits
-EDGE_W = 1030  # the logo blown up to the edges
+EDGE_W = 1030  # a word blown up to the edges
 LINE_W = 960  # the widest a line may be
 GAP = 14  # between a word and the one landing under it
 INK = {"sky": "#0b0b0c", "dusk": "#ffffff"}
-LOGO = (767, 264, 155)  # rise_logo.png: width, height, the middle of its letters
+FLAME = "#c2410c"  # the slogan's second word: the logo's flame, deep enough to read on the sky
+EXIT_D = 0.1  # a word carried out on a whoosh leaves in the last 3 frames before the cut
 
-# one card per cut, in order: (words, move). words: a word; (word, word under it, its size against the
-# first) for two lines; "logo"; None for the empty beat. The light flips on every card but the empty beat.
+# one card per cut: (words, how it comes in, how it leaves on the whoosh into the next cut). words: a word;
+# (word, word under it, its size against the first) for two lines; None for the end card.
 CARDS = [
-    ("le réseau", "focus"),  # the loop opens out of focus, like the reference's "we"
-    (("le réseau", "social", 1.8), "pair"),  # "le réseau" stays, "social" lands under it
-    ("chrétien.", "settle"),
-    (("créé par un", "chrétien", 1.0), "stack"),
-    ("pour les", "settle"),
-    (("pour les", "chrétiens.", 1.0), "pair-smear"),
-    ("partage", "settle"),  # the list: faster and faster
-    ("entraide", "settle"),
-    ("prière", "settle"),
-    ("quiz", "settle"),
-    ("verset", "settle"),
-    ("groupes", "settle"),
-    ("louange", "smear"),
-    ("témoignage", "settle"),
-    ("foi", "settle"),
-    ("amour", "smear"),
-    ("joie", "smear"),
-    ("paix", "focus"),
-    ("r", "settle"),  # typed
-    ("ri.", "type"),
-    ("ris", "type"),
-    ("rise.", "type"),
-    ("logo", "eaten"),  # blown up to the edges, eaten on the last whoosh
-    (None, "empty"),  # silent; then the loop
+    ("le réseau", "rise", None),  # letters rise from their baseline
+    (("le réseau", "social", 1.8), "rise-under", "zoom"),  # "social" rises under it; the card flies at the camera
+    ("chrétien.", "slam", "whip-left"),  # ...and the next word slams in from close up
+    (("créé par un", "chrétien", 1.0), "whip-in-right", None),
+    ("pour les", "track", None),  # letters close up from wide tracking
+    (("pour les", "chrétiens.", 1.0), "rise-under", "push-up"),
+    ("partage", "push-in", "whip-left"),  # the list: faster and faster
+    ("entraide", "whip-in-right", None),
+    ("prière", "pop", None),
+    ("quiz", "slam", "whip-right"),
+    ("verset", "whip-in-left", None),
+    ("groupes", "drop", "push-up"),
+    ("louange", "push-in", None),
+    ("témoignage", "track", None),
+    ("foi", "slam", None),
+    ("amour", "pop", None),
+    ("joie", "rise", None),
+    ("paix", "focus", None),
+    ("r", "pop", None),  # typed
+    ("ri.", "type", None),
+    ("ris", "type", None),
+    ("rise.", "type", None),
+    ("rise.", "blowup", None),  # blown up to the edges, eaten by blobs on the last whoosh
+    (None, "end", None),  # the silence: the logo, the slogan, the stores
 ]
-# the blobs that eat the logo: centre in the frame, last radius, the frame they start on after the erase starts
-BLOBS = [(560, 930, 280, 0), (420, 870, 220, 0), (740, 1000, 240, 1), (300, 990, 200, 1),
-         (880, 870, 200, 2), (180, 860, 170, 2), (400, 760, 140, 2), (990, 1010, 140, 3)]
-FEATHER = 12  # half the soft edge of a blob, px
-ERASE_AFTER = 5  # frames the logo holds before the blobs start
+BLOBS = [(600, 930, 270, 0), (470, 860, 210, 0), (760, 1000, 230, 1), (330, 990, 200, 1),
+         (880, 850, 190, 2), (200, 860, 160, 2), (300, 720, 130, 2), (965, 1010, 130, 3)]
+ERASE_AFTER = 5  # frames the blown-up word holds before the blobs start
+# the end card: the logo animation (960x500, its logo 920 px wide at rest), the slogan, the badges
+SPLASH = dict(src="assets/brand/rise_splash_light.webm", w=960, h=500, scale=0.82, cx=480, cy=317, at=860)
+SLOGAN = (("Élève-toi.", 1.15), ("Ensemble.", 1.3))  # a word, the seconds after the end card starts
+SLOGAN_SIZE, SLOGAN_BASE = 64, 1078
+BADGES = (("assets/brand/badge_app_store_fr.png", "Télécharger dans l'App Store", 1.55),
+          ("assets/brand/badge_google_play_fr.png", "Disponible sur Google Play", 1.65))
+BADGE_W, BADGE_H, BADGE_GAP, BADGE_TOP = 400, 133, 26, 1142
 
 
 def frame(t):
@@ -82,18 +88,18 @@ def font(size):
     return ImageFont.truetype(str(FONT_FILE), size)
 
 
-def pens(text, size):
+def pens(text, size, track=TRACK):
     """Each glyph's pen x from the word's start, kerned and tracked as the browser sets it."""
     f = font(size)
-    return [f.getlength(text[: i + 1]) - f.getlength(ch) + i * TRACK * size for i, ch in enumerate(text)]
+    return [f.getlength(text[: i + 1]) - f.getlength(ch) + i * track * size for i, ch in enumerate(text)]
 
 
-def width(text, size):
-    return font(size).getlength(text) + TRACK * size * (len(text) - 1)
+def width(text, size, track=TRACK):
+    return font(size).getlength(text) + track * size * (len(text) - 1)
 
 
-def fit(text, size):
-    return min(size, LINE_W / (width(text, 100) / 100))
+def fit(text, size, w=LINE_W):
+    return min(size, w / (width(text, 100) / 100))
 
 
 def ink(text, size, left):
@@ -112,102 +118,183 @@ def ink(text, size, left):
     return top, bottom
 
 
-def text_el(text, size, base, light):
-    left = (W - width(text, size)) / 2
-    return (f'<text x="{left:.1f}" y="{base:.1f}" style="font-size: {size:.1f}px; fill: {INK[light]}">'
-            f"{html.escape(text)}</text>")
+def tf(cx, cy, dx=0.0, dy=0.0, r=0.0, s=1.0):
+    """A glyph's transform: moved by (dx, dy), turned by r degrees and scaled by s about (cx, cy). The same
+    shape at rest and in motion, so GSAP interpolates it number by number."""
+    return f"translate({cx:.1f} {cy:.1f}) translate({dx:.1f} {dy:.1f}) rotate({r:.1f}) scale({s:.3f}) translate({-cx:.1f} {-cy:.1f})"
+
+
+class Line:
+    """A word set on the frame: its glyphs, where each one sits, its baseline."""
+
+    def __init__(self, text, size, base):
+        self.text, self.size, self.base = text, size, base
+        self.left = (W - width(text, size)) / 2
+        f = font(size)
+        self.glyphs = [(k, ch, self.left + x, self.left + x + f.getlength(ch) / 2)
+                       for k, (ch, x) in enumerate(zip(text, pens(text, size))) if ch != " "]
+        self.mid = base - X_HEIGHT * size / 2  # the middle of the x-height
+
+    def svg(self, gid, light, clip=False):
+        # each glyph in its own group, moved by an explicit transform about its own middle (no bbox needed)
+        g = "".join(f'<g id="{gid}{k}" data-layout-allow-overlap transform="{tf(cx, self.mid)}">'
+                    f'<text data-layout-allow-overlap x="{x:.1f}" y="{self.base:.1f}" style="font-size: {self.size:.1f}px; fill: {INK[light]}">'
+                    f"{html.escape(ch)}</text></g>" for k, ch, x, cx in self.glyphs)
+        if not clip:
+            return f'<g id="{gid}">{g}</g>'
+        # the baseline mask: letters rise from under it; room above for accents, below for descenders
+        top, bottom = self.base - 1.0 * self.size, self.base + 0.27 * self.size
+        return (f'<clipPath id="{gid}-clip"><rect x="0" y="{top:.0f}" width="{W}" height="{bottom - top:.0f}" /></clipPath>'
+                f'<g id="{gid}" clip-path="url(#{gid}-clip)">{g}</g>')
+
+
+def single(text):
+    size = fit(text, S)
+    return Line(text, size, Y_C + X_HEIGHT * size / 2)
 
 
 def two_lines(first, under, k):
     """The first word where it sits alone; the one under it as close as their letters allow."""
-    s1 = fit(first, S)
-    s2 = fit(under, s1 * k)
-    b1 = Y_C + X_HEIGHT * s1 / 2
-    _, below = ink(first, s1, (W - width(first, s1)) / 2)
+    a = single(first)
+    s2 = fit(under, a.size * k)
+    _, below = ink(first, a.size, a.left)
     above, _ = ink(under, s2, (W - width(under, s2)) / 2)
-    b2 = b1 + np.nanmax(below + above) + GAP
-    return (first, s1, b1), (under, s2, b2)
+    return a, Line(under, s2, a.base + np.nanmax(below + above) + GAP)
 
 
 def cards():
     out, light = [], "dusk"
-    for i, (words, fx) in enumerate(CARDS):
-        if fx != "empty":
+    for i, (words, fx_in, fx_out) in enumerate(CARDS):
+        if fx_in != "end":
             light = "sky" if light == "dusk" else "dusk"
-        t1 = frame(CUTS[i + 1]) if i + 1 < len(CUTS) else LOOP
-        out.append(dict(id=f"c{i}", i=i, t0=frame(CUTS[i]), t1=t1, words=words, fx=fx, light=light))
+        t1 = frame(CUTS[i + 1]) if i + 1 < len(CUTS) else DURATION
+        out.append(dict(id=f"c{i}", i=i, t0=frame(CUTS[i]), t1=t1, words=words, fx_in=fx_in, fx_out=fx_out, light=light))
     return out
 
 
-def svg(inner):
-    return f'<svg width="{W}" height="{H}" viewBox="0 0 {W} {H}">{inner}</svg>'
-
-
-def layer(lid, inner, origin):
-    return f'<div id="{lid}" class="layer" style="transform-origin: {origin[0]:.0f}px {origin[1]:.0f}px">{inner}</div>'
-
-
-def logo_box():
-    w0, h0, mid = LOGO
-    k = EDGE_W / w0
-    return (W - EDGE_W) / 2, Y_C - mid * k, EDGE_W, h0 * k
+def lines(c):
+    w = c["words"]
+    if isinstance(w, tuple):
+        return list(two_lines(*w))
+    if c["fx_in"] == "blowup":
+        size = fit(w, 10 * S, EDGE_W)
+        return [Line(w, size, Y_C + X_HEIGHT * size / 2)]
+    return [single(w)]
 
 
 def card_html(c):
-    cid, words, fx, light = c["id"], c["words"], c["fx"], c["light"]
-    if fx == "empty":
+    cid, light, fx = c["id"], c["light"], c["fx_in"]
+    if fx == "end":
         return f'<div id="{cid}" class="card"></div>'
-    if fx == "eaten":
-        left, top, w, _ = logo_box()
-        masks = ", ".join(f"radial-gradient(circle at {x - left:.0f}px {y - top:.0f}px, transparent calc(var(--b{j}) - {FEATHER}px), "
-                          f"#000 calc(var(--b{j}) + {FEATHER}px))" for j, (x, y, _, _) in enumerate(BLOBS))
-        start = "; ".join(f"--b{j}: {-2 * FEATHER}px" for j in range(len(BLOBS)))
-        img = (f'<img id="{cid}-logo" class="logo" src="assets/rise_logo.png" alt="RISE" style="left: {left:.0f}px; top: {top:.0f}px; '
-               f"width: {w:.0f}px; {start}; -webkit-mask-image: {masks}; mask-image: {masks}; -webkit-mask-repeat: no-repeat; "
-               f'mask-repeat: no-repeat; -webkit-mask-composite: source-in; mask-composite: intersect" />')
-        return f'<div id="{cid}" class="card" data-layout-allow-overflow>{layer(cid + "-a", img, (W / 2, Y_C))}</div>'
-    if isinstance(words, tuple):
-        (t1, s1, b1), (t2, s2, b2) = two_lines(*words)
-        a, b = text_el(t1, s1, b1, light), text_el(t2, s2, b2, light)
-        if fx == "stack":  # both lines are new: they land together
-            mid = (b1 - X_HEIGHT * s1 + b2) / 2
-            return f'<div id="{cid}" class="card" data-layout-allow-overflow>{layer(cid + "-a", svg(a + b), (W / 2, mid))}</div>'
-        # the first word stays where it was; the one under it settles from its top, never into the first
-        return (f'<div id="{cid}" class="card" data-layout-allow-overflow>{layer(cid + "-a", svg(a), (W / 2, Y_C))}'
-                f'{layer(cid + "-b", svg(b), (W / 2, b2 - 0.73 * s2))}</div>')
-    size = fit(words, S)
-    t = text_el(words, size, Y_C + X_HEIGHT * size / 2, light)
-    return f'<div id="{cid}" class="card" data-layout-allow-overflow>{layer(cid + "-a", svg(t), (W / 2, Y_C))}</div>'
+    L = lines(c)
+    mid = (L[0].mid + L[-1].mid) / 2
+    style = f"transform-origin: {W / 2:.0f}px {mid:.0f}px; filter: url(#{cid}-f)"
+    if fx == "blowup":  # one word, under a mask of blobs
+        a = L[0]
+        circles = "".join(f'<circle id="{cid}-blob{j}" cx="{x}" cy="{y}" r="0" fill="#000" />' for j, (x, y, _, _) in enumerate(BLOBS))
+        defs = (f'<filter id="{cid}-feather" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10" /></filter>'
+                f'<mask id="{cid}-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}">'
+                f'<rect x="0" y="0" width="{W}" height="{H}" fill="#fff" /><g filter="url(#{cid}-feather)">{circles}</g></mask>')
+        text = (f'<text class="word" mask="url(#{cid}-mask)" x="{a.left:.1f}" y="{a.base:.1f}" '
+                f'style="font-size: {a.size:.1f}px; fill: {INK[light]}">{html.escape(a.text)}</text>')
+        inner = f"<defs>{defs}</defs>{text}"
+    else:
+        clip_a = fx in ("rise",)
+        inner = L[0].svg(f"{cid}-a", light, clip_a)
+        if len(L) > 1:
+            inner += L[1].svg(f"{cid}-b", light, fx == "rise-under")
+    return (f'<div id="{cid}" class="card" style="{style}" data-layout-allow-overflow>'
+            f'<svg width="{W}" height="{H}" viewBox="0 0 {W} {H}">{inner}</svg></div>')
 
 
-def smear_layer(c):
-    return {"smear": "a", "pair-smear": "b"}.get(c["fx"])
+def r3(t):
+    return round(t, 3)
 
 
-def motion(c):
-    cid, t0, t1, fx = c["id"], c["t0"], c["t1"], c["fx"]
-    d = round(t1 - t0, 3)
-    js = [f'tl.set("#{cid}", {{ visibility: "visible" }}, {t0});', f'tl.set("#{cid}", {{ visibility: "hidden" }}, {t1});']
-    a, b = f'"#{cid}-a"', f'"#{cid}-b"'
-    smear = (f'tl.fromTo("#{cid}-smear", {{ attr: {{ stdDeviation: "18 0" }} }}, '
-             f'{{ attr: {{ stdDeviation: "0 0" }}, duration: 0.067, ease: "power1.in" }}, {t0});')
-    if fx in ("settle", "stack"):  # lands a little big and settles for as long as it stays
-        js.append(f'tl.fromTo({a}, {{ scale: 1.07 }}, {{ scale: 1, duration: {d}, ease: "power2.out" }}, {t0});')
-    elif fx == "focus":  # out of focus for three frames, then sharp, still settling
-        js.append(f'tl.fromTo({a}, {{ scale: 1.14 }}, {{ scale: 1, duration: {d}, ease: "power2.out" }}, {t0});')
-        js.append(f'tl.fromTo({a}, {{ filter: "blur(16px)" }}, {{ filter: "blur(0px)", duration: 0.1, ease: "power1.in", immediateRender: false }}, {t0});')
-    elif fx == "smear":  # a horizontal smear on its first two frames
-        js.append(f'tl.fromTo({a}, {{ scale: 1.12 }}, {{ scale: 1, duration: {d}, ease: "power3.out" }}, {t0});')
-        js.append(smear)
-    elif fx == "pair":
-        js.append(f'tl.fromTo({b}, {{ scale: 1.07 }}, {{ scale: 1, duration: {d}, ease: "power2.out" }}, {t0});')
-    elif fx == "pair-smear":
-        js.append(f'tl.fromTo({b}, {{ scale: 1.12 }}, {{ scale: 1, duration: {d}, ease: "power3.out" }}, {t0});')
-        js.append(smear)
-    elif fx == "eaten":  # held a few frames, then the blobs eat it; what is left goes with the cut
+def motion(c, prev):
+    """The card's tweens: its entrance from its cut, its exit on the whoosh into the next one."""
+    cid, t0, t1, fx, out = c["id"], c["t0"], c["t1"], c["fx_in"], c["fx_out"]
+    if fx == "end":
+        return []
+    L = lines(c)
+    d = r3(t1 - t0)
+    dx = r3(d - (EXIT_D if out else 0))  # what the entrance may take before the exit
+    card, blur = f'"#{cid}"', f'"#{cid}-blur"'
+    js = [f'tl.set({card}, {{ visibility: "visible" }}, {t0});', f'tl.set({card}, {{ visibility: "hidden" }}, {t1});']
+
+    def blur_in(sd, dur, ease="expo.out"):
+        js.append(f'tl.fromTo({blur}, {{ attr: {{ stdDeviation: "{sd}" }} }}, {{ attr: {{ stdDeviation: "0 0" }}, duration: {dur}, ease: "{ease}" }}, {t0});')
+
+    def settle(s0, ease="power2.out"):
+        js.append(f'tl.fromTo({card}, {{ scale: {s0} }}, {{ scale: 1, duration: {dx}, ease: "{ease}" }}, {t0});')
+
+    def glyph(gid, line, k, cx, start, dur, ease, at):
+        """One glyph from a start (dx, dy, r, s) to rest."""
+        js.append(f'tl.fromTo("#{gid}{k}", {{ attr: {{ transform: "{tf(cx, line.mid, *start)}" }} }}, '
+                  f'{{ attr: {{ transform: "{tf(cx, line.mid)}" }}, duration: {dur}, ease: "{ease}" }}, {r3(at)});')
+
+    def per_glyph(line, gid, start, dur, stagger, ease="expo.out"):
+        n = len(line.glyphs)
+        st = min(stagger, 0.12 / max(1, n - 1))
+        for j, (k, _, x, cx) in enumerate(line.glyphs):
+            glyph(gid, line, k, cx, start(j, cx), dur, ease, t0 + j * st)
+
+    a = L[0]
+    if fx == "rise":
+        per_glyph(a, f"{cid}-a", lambda j, cx: (0, 1.3 * a.size, 0, 1), min(0.45, d), 0.03)
+        settle(1.03)
+    elif fx == "rise-under":  # the first word stays exactly where it was
+        b = L[1]
+        per_glyph(b, f"{cid}-b", lambda j, cx: (0, 1.3 * b.size, 0, 1), min(0.45, dx), 0.035)
+    elif fx == "slam":
+        js.append(f'tl.fromTo({card}, {{ scale: 1.6 }}, {{ scale: 1, duration: {min(0.36, dx)}, ease: "power4.out" }}, {t0});')
+        blur_in("14 14", 0.12, "power2.out")
+    elif fx in ("whip-in-right", "whip-in-left"):
+        sign = 1 if fx == "whip-in-right" else -1
+        js.append(f'tl.fromTo({card}, {{ x: {sign * 620} }}, {{ x: 0, duration: {min(0.32, dx)}, ease: "expo.out" }}, {t0});')
+        blur_in("46 0", 0.16)
+        if len(L) > 1:  # the second line trails a little: parallax
+            js.append(f'tl.fromTo("#{cid}-b", {{ x: {sign * 160} }}, {{ x: 0, duration: {min(0.38, dx)}, ease: "expo.out" }}, {t0});')
+    elif fx == "push-in":
+        js.append(f'tl.fromTo({card}, {{ y: 560 }}, {{ y: 0, duration: {min(0.32, dx)}, ease: "expo.out" }}, {t0});')
+        blur_in("0 40", 0.16)
+    elif fx == "pop":
+        per_glyph(a, f"{cid}-a", lambda j, cx: (0, 0, 0, 0), min(0.34, d), 0.03, "back.out(1.6)")
+        settle(1.03)
+    elif fx == "drop":
+        per_glyph(a, f"{cid}-a", lambda j, cx: (0, -1.15 * a.size, 12 if j % 2 else -12, 1), min(0.36, dx), 0.028, "power4.out")
+    elif fx == "track":  # every letter starts as far again from the middle, and closes up
+        xc = W / 2
+        js.append(f'tl.fromTo({card}, {{ scale: 1.08 }}, {{ scale: 1, duration: {dx}, ease: "expo.out" }}, {t0});')
+        for k, _, x, cx in a.glyphs:
+            glyph(f"{cid}-a", a, k, cx, (0.9 * (cx - xc), 0, 0, 1), min(0.45, dx), "expo.out", t0)
+        blur_in("12 0", 0.22)
+    elif fx == "focus":
+        js.append(f'tl.fromTo({card}, {{ scale: 1.16 }}, {{ scale: 1, duration: {dx}, ease: "power2.out" }}, {t0});')
+        blur_in("18 18", 0.12, "power1.in")
+    elif fx == "type":  # letters already typed slide to their new place; the new ones pop in
+        p = single(prev["words"])
+        old = {k: x for k, ch, x, _ in p.glyphs}
+        new = [g for g in a.glyphs if not (g[0] in old and p.text[g[0]] == g[1])]
+        for k, ch, x, cx in a.glyphs:
+            if k in old and p.text[k] == ch:
+                glyph(f"{cid}-a", a, k, cx, (old[k] - x, 0, 0, 1), min(0.2, d), "expo.out", t0)
+        for j, (k, ch, x, cx) in enumerate(new):
+            glyph(f"{cid}-a", a, k, cx, (0, 0, 0, 0), min(0.24, d), "back.out(2)", t0 + 0.03 * j)
+    elif fx == "blowup":  # the typed word blown up to the edges, then eaten by blobs
+        p = single(prev["words"])
+        js.append(f'tl.fromTo({card}, {{ scale: {p.size / a.size:.3f} }}, {{ scale: 1, duration: 0.14, ease: "expo.out" }}, {t0});')
+        blur_in("8 8", 0.1)
         e0 = t0 + ERASE_AFTER / FPS
         for j, (_, _, r, f0) in enumerate(BLOBS):
-            js.append(f'tl.to("#{cid}-logo", {{ "--b{j}": "{r}px", duration: 0.1, ease: "power1.out" }}, {round(e0 + f0 / FPS, 3)});')
+            js.append(f'tl.fromTo("#{cid}-blob{j}", {{ attr: {{ r: 0 }} }}, {{ attr: {{ r: {r} }}, duration: 0.1, ease: "power1.out" }}, {r3(e0 + f0 / FPS)});')
+
+    if out:  # carried out on the whoosh, the way the next word comes in
+        x0 = r3(t1 - EXIT_D)
+        move, sd = {"zoom": ("scale: 2.4", "16 16"), "whip-left": ("x: -620", "46 0"), "whip-right": ("x: 620", "46 0"),
+                    "push-up": ("y: -560", "0 40")}[out]
+        js.append(f'tl.to({card}, {{ {move}, duration: {EXIT_D}, ease: "power2.in" }}, {x0});')
+        js.append(f'tl.to({blur}, {{ attr: {{ stdDeviation: "{sd}" }}, duration: {EXIT_D}, ease: "power2.in" }}, {x0});')
     return ["        " + s for s in js]
 
 
@@ -233,7 +320,7 @@ def fond(C):
         window.__timelines = window.__timelines || {{}};
         const tl = gsap.timeline({{ paused: true }});
         // both lights drift in together, so a cut changes the light, not the place
-        tl.fromTo(".light", {{ scale: 1 }}, {{ scale: 1.04, duration: {LOOP}, ease: "none" }}, 0);
+        tl.fromTo(".light", {{ scale: 1 }}, {{ scale: 1.05, duration: {DURATION}, ease: "none" }}, 0);
         // the sky (black words) and dusk (white words), flipped on every card
 {flips}
         window.__timelines["fond"] = tl;
@@ -245,12 +332,10 @@ def fond(C):
 
 
 def mots(C):
-    smeared = [(c, smear_layer(c)) for c in C if smear_layer(c)]
-    filters = "".join(f'<filter id="{c["id"]}-smear-f" x="-30%" y="-10%" width="160%" height="120%">'
-                      f'<feGaussianBlur id="{c["id"]}-smear" stdDeviation="0 0" /></filter>' for c, _ in smeared)
-    rules = "\n".join(f'        #{c["id"]}-{l} {{ filter: url(#{c["id"]}-smear-f); }}' for c, l in smeared)
+    filters = "".join(f'<filter id="{c["id"]}-f" x="-15%" y="-8%" width="130%" height="116%">'
+                      f'<feGaussianBlur id="{c["id"]}-blur" stdDeviation="0 0" /></filter>' for c in C if c["fx_in"] != "end")
     cards_html = "\n        ".join(card_html(c) for c in C)
-    script = "\n".join(s for c in C for s in motion(c))
+    script = "\n".join(s for i, c in enumerate(C) for s in motion(c, C[i - 1] if i else None))
     return f"""<!doctype html>
 <html lang="fr">
   <head>
@@ -262,11 +347,9 @@ def mots(C):
         @font-face {{ font-family: "Rise Sans"; font-weight: 700; src: url("assets/fonts/FreeSansBold.ttf") format("truetype"); }}
         #root {{ position: absolute; inset: 0; }}
         .card {{ position: absolute; left: 0; top: 0; width: {W}px; height: {H}px; visibility: hidden; }}
-        .layer {{ position: absolute; left: 0; top: 0; width: {W}px; height: {H}px; }}
-        .layer svg {{ position: absolute; left: 0; top: 0; overflow: visible; }}
-        text {{ font-family: "Rise Sans", sans-serif; font-weight: 700; letter-spacing: {TRACK}em; }}
-        .logo {{ position: absolute; height: auto; }}
-{rules}
+        .card svg {{ position: absolute; left: 0; top: 0; overflow: visible; }}
+        text {{ font-family: "Rise Sans", sans-serif; font-weight: 700; }}
+        text.word {{ letter-spacing: {TRACK}em; }}
       </style>
       <div id="root" data-composition-id="mots" data-width="{W}" data-height="{H}">
         <svg width="0" height="0" style="position: absolute">{filters}</svg>
@@ -284,7 +367,47 @@ def mots(C):
 """
 
 
-def root():
+def end_card(t0):
+    """The logo animation, the slogan under it, the two store badges; returns its HTML, CSS and tweens."""
+    sw, sh, k = SPLASH["w"], SPLASH["h"], SPLASH["scale"]
+    left, top = W / 2 - SPLASH["cx"] * k, SPLASH["at"] - SPLASH["cy"] * k
+    dur = r3(DURATION - t0)
+    line = Line(" ".join(t for t, _ in SLOGAN), SLOGAN_SIZE, SLOGAN_BASE)
+    words, start = [], 0
+    for j, (word, _) in enumerate(SLOGAN):  # each word of the slogan rises from its own baseline mask
+        glyphs = [g for g in line.glyphs if start <= g[0] < start + len(word)]
+        start += len(word) + 1
+        fill = FLAME if j else INK["sky"]
+        words.append("".join(f'<text data-layout-allow-overlap x="{x:.1f}" y="{line.base:.1f}" style="font-size: {SLOGAN_SIZE}px; fill: {fill}">{html.escape(ch)}</text>'
+                             for _, ch, x, _ in glyphs))
+    top_m, bot_m = line.base - 1.05 * SLOGAN_SIZE, line.base + 0.3 * SLOGAN_SIZE
+    slogan = (f'<svg id="slogan" width="{W}" height="{H}" viewBox="0 0 {W} {H}"><clipPath id="slogan-clip">'
+              f'<rect x="0" y="{top_m:.0f}" width="{W}" height="{bot_m - top_m:.0f}" /></clipPath><g clip-path="url(#slogan-clip)">'
+              + "".join(f'<g id="slogan{j}">{w}</g>' for j, w in enumerate(words)) + "</g></svg>")
+    bx = (W - 2 * BADGE_W - BADGE_GAP) / 2
+    badges = "".join(f'<img id="badge{j}" class="badge" src="{src}" alt="{html.escape(alt)}" '
+                     f'style="left: {bx + j * (BADGE_W + BADGE_GAP):.0f}px; top: {BADGE_TOP}px" />' for j, (src, alt, _) in enumerate(BADGES))
+    body = f"""      <div id="fin" data-layout-allow-overflow>
+        <div id="splashw"><video id="splash" class="clip" src="{SPLASH["src"]}" muted playsinline data-start="{t0}" data-duration="{dur}" data-track-index="5"></video></div>
+        {slogan}
+        {badges}
+      </div>"""
+    css = f"""      #fin {{ position: absolute; left: 0; top: 0; width: {W}px; height: {H}px; }}
+      #splashw {{ position: absolute; left: {left:.0f}px; top: {top:.0f}px; width: {sw * k:.0f}px; height: {sh * k:.0f}px; transform-origin: {SPLASH["cx"] * k:.0f}px {SPLASH["cy"] * k:.0f}px; }}
+      #splash {{ position: absolute; left: 0; top: 0; width: {sw * k:.0f}px; height: {sh * k:.0f}px; display: block; }}
+      #slogan {{ position: absolute; left: 0; top: 0; overflow: visible; }}
+      #slogan text {{ font-family: "Rise Sans", sans-serif; font-weight: 700; }}
+      .badge {{ position: absolute; width: {BADGE_W}px; height: {BADGE_H}px; display: block; opacity: 0; }}"""
+    js = [f'tl.fromTo("#splashw", {{ scale: 0.96 }}, {{ scale: 1.03, duration: {dur}, ease: "sine.out" }}, {t0});']
+    for j, (_, at) in enumerate(SLOGAN):
+        js.append(f'tl.fromTo("#slogan{j}", {{ y: {1.4 * SLOGAN_SIZE:.0f} }}, {{ y: 0, duration: 0.5, ease: "expo.out" }}, {r3(t0 + at)});')
+    for j, (_, _, at) in enumerate(BADGES):
+        js.append(f'tl.fromTo("#badge{j}", {{ y: 60, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }}, {r3(t0 + at)});')
+    return body, css, "\n".join("      " + s for s in js)
+
+
+def root(C):
+    body, css, js = end_card(C[-1]["t0"])
     return f"""<!doctype html>
 <html lang="fr">
   <head>
@@ -292,22 +415,26 @@ def root():
     <meta name="viewport" content="width={W}, height={H}" />
     <script src="assets/gsap.min.js"></script>
     <style>
+      @font-face {{ font-family: "Rise Sans"; font-weight: 700; src: url("assets/fonts/FreeSansBold.ttf") format("truetype"); }}
       * {{ margin: 0; padding: 0; box-sizing: border-box; }}
       html, body {{ width: {W}px; height: {H}px; overflow: hidden; background: #bfe3f6; }}
       #stage {{ position: relative; width: {W}px; height: {H}px; overflow: hidden; }}
+{css}
     </style>
   </head>
   <body>
-    <div id="stage" data-composition-id="main" data-start="0" data-duration="{LOOP}" data-fps="{FPS}" data-width="{W}" data-height="{H}">
-      <div id="fond" class="clip" data-composition-id="fond" data-composition-src="compositions/fond.html" data-start="0" data-duration="{LOOP}"
+    <div id="stage" data-composition-id="main" data-start="0" data-duration="{DURATION}" data-fps="{FPS}" data-width="{W}" data-height="{H}">
+      <div id="fond" class="clip" data-composition-id="fond" data-composition-src="compositions/fond.html" data-start="0" data-duration="{DURATION}"
         data-track-index="1" data-track-kind="graphics" data-width="{W}" data-height="{H}"></div>
-      <div id="mots" class="clip" data-composition-id="mots" data-composition-src="compositions/mots.html" data-start="0" data-duration="{LOOP}"
+      <div id="mots" class="clip" data-composition-id="mots" data-composition-src="compositions/mots.html" data-start="0" data-duration="{DURATION}"
         data-track-index="2" data-track-kind="graphics" data-width="{W}" data-height="{H}"></div>
-      <audio id="music" src="assets/music.wav" data-start="0" data-duration="{LOOP}" data-track-index="3" data-volume="1"></audio>
+{body}
+      <audio id="music" src="assets/music.wav" data-start="0" data-duration="{DURATION}" data-track-index="3" data-volume="1"></audio>
     </div>
     <script>
       window.__timelines = window.__timelines || {{}};
       const tl = gsap.timeline({{ paused: true }});
+{js}
       window.__timelines["main"] = tl;
       tl.seek(0);
     </script>
@@ -319,26 +446,26 @@ def root():
 def shot_plan(C):
     def text(c):
         w = c["words"]
-        return " / ".join(w[:2]) if isinstance(w, tuple) else ("RISE (logo)" if w == "logo" else (w or ""))
+        return " / ".join(w[:2]) if isinstance(w, tuple) else (w or "RISE logo animation · Élève-toi. Ensemble. · store badges")
     return {
         "category": "kinetic-type",
-        "duration_s": LOOP,
+        "duration_s": DURATION,
         "fps": FPS,
         "canvas": {"w": W, "h": H, "aspect": "9:16"},
-        "style": "the reference reel's edit, cut for cut on its own sound: one lowercase word at a time in a Helvetica-style bold "
-                 "tracked tight, all the same size; every cut flips the light between the RISE sky (black words) and dusk "
-                 "grey-blue (white words); words land a little big and settle, some out of focus or smeared; the statement with "
-                 "a word landing under the one that stays; the list faster and faster; rise typed; the logo blown up and eaten "
-                 "by blobs; an empty silent beat; loop",
-        "palette": ["#93cdef", "#bfe3f6", "#def1fb", "#d0d1d7", "#95a0e0", "#717480", INK["sky"], INK["dusk"]],
+        "style": "the reference reel's edit, cut for cut on its own sound, every word moved on the whooshes: letters rising from "
+                 "their baseline, popping, dropping, closing up from wide tracking, typed; words slamming in, whipping or pushing "
+                 "in with motion blur, pulled into focus; whooshes carried across cuts (zoom, whip, push); rise blown up and eaten "
+                 "by blobs; the light flips between the RISE sky (black words) and dusk grey-blue (white words); then, in the "
+                 "silence, the app's logo animation, the slogan and the store badges",
+        "palette": ["#93cdef", "#bfe3f6", "#def1fb", "#d0d1d7", "#95a0e0", "#717480", INK["sky"], INK["dusk"], FLAME],
         "font": "FreeSans Bold (GNU FreeFont, GPL with font exception), letter-spacing -0.035em",
         "beats": [frame(t) for t in CUTS],
         "export": "mp4",
         "asset_needs": [],
         "block": "caption-kinetic-slam",
         "customize": {"note": "its one-word-per-beat structure, rebuilt by tools/build.py on the reference's own cut times"},
-        "content": {"scenes": [{"id": c["id"], "start": c["t0"], "end": c["t1"], "text": text(c), "motion": c["fx"],
-                                "light": c["light"]} for c in C]},
+        "content": {"scenes": [{"id": c["id"], "start": c["t0"], "end": c["t1"], "text": text(c), "motion": c["fx_in"],
+                                "exit": c["fx_out"], "light": c["light"]} for c in C]},
     }
 
 
@@ -348,11 +475,11 @@ def main():
     (ROOT / "compositions").mkdir(exist_ok=True)
     (ROOT / "compositions" / "fond.html").write_text(fond(C))
     (ROOT / "compositions" / "mots.html").write_text(mots(C))
-    (ROOT / "index.html").write_text(root())
+    (ROOT / "index.html").write_text(root(C))
     (ROOT / "shot-plan.json").write_text(json.dumps(shot_plan(C), ensure_ascii=False, indent=1) + "\n")
     for c in C:
-        print(f"{c['t0']:6.3f}-{c['t1']:6.3f}  {c['light']:4s}  {c['fx']:10s} {c['words']}")
-    print(f"{LOOP}s")
+        print(f"{c['t0']:6.3f}-{c['t1']:6.3f}  {c['light']:4s}  {c['fx_in']:13s} {str(c['fx_out'] or ''):10s} {c['words']}")
+    print(f"{DURATION}s")
 
 
 if __name__ == "__main__":

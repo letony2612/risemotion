@@ -1,13 +1,13 @@
 {
  "category": "kinetic-type",
- "duration_s": 9.5,
+ "duration_s": 12.5,
  "fps": 30,
  "canvas": {
   "w": 1080,
   "h": 1920,
   "aspect": "9:16"
  },
- "style": "the reference reel's edit, cut for cut on its own sound: one lowercase word at a time in a Helvetica-style bold tracked tight, all the same size; every cut flips the light between the RISE sky (black words) and dusk grey-blue (white words); words land a little big and settle, some out of focus or smeared; the statement with a word landing under the one that stays; the list faster and faster; rise typed; the logo blown up and eaten by blobs; an empty silent beat; loop",
+ "style": "the reference reel's edit, cut for cut on its own sound, every word moved on the whooshes: letters rising from their baseline, popping, dropping, closing up from wide tracking, typed; words slamming in, whipping or pushing in with motion blur, pulled into focus; whooshes carried across cuts (zoom, whip, push); rise blown up and eaten by blobs; the light flips between the RISE sky (black words) and dusk grey-blue (white words); then, in the silence, the app's logo animation, the slogan and the store badges",
  "palette": [
   "#93cdef",
   "#bfe3f6",
@@ -16,7 +16,8 @@
   "#95a0e0",
   "#717480",
   "#0b0b0c",
-  "#ffffff"
+  "#ffffff",
+  "#c2410c"
  ],
  "font": "FreeSans Bold (GNU FreeFont, GPL with font exception), letter-spacing -0.035em",
  "beats": [
@@ -58,7 +59,8 @@
     "start": 0.0,
     "end": 0.7,
     "text": "le réseau",
-    "motion": "focus",
+    "motion": "rise",
+    "exit": null,
     "light": "sky"
    },
    {
@@ -66,7 +68,8 @@
     "start": 0.7,
     "end": 1.3666666666666667,
     "text": "le réseau / social",
-    "motion": "pair",
+    "motion": "rise-under",
+    "exit": "zoom",
     "light": "dusk"
    },
    {
@@ -74,7 +77,8 @@
     "start": 1.3666666666666667,
     "end": 2.0,
     "text": "chrétien.",
-    "motion": "settle",
+    "motion": "slam",
+    "exit": "whip-left",
     "light": "sky"
    },
    {
@@ -82,7 +86,8 @@
     "start": 2.0,
     "end": 2.533333333333333,
     "text": "créé par un / chrétien",
-    "motion": "stack",
+    "motion": "whip-in-right",
+    "exit": null,
     "light": "dusk"
    },
    {
@@ -90,7 +95,8 @@
     "start": 2.533333333333333,
     "end": 3.033333333333333,
     "text": "pour les",
-    "motion": "settle",
+    "motion": "track",
+    "exit": null,
     "light": "sky"
    },
    {
@@ -98,7 +104,8 @@
     "start": 3.033333333333333,
     "end": 3.5,
     "text": "pour les / chrétiens.",
-    "motion": "pair-smear",
+    "motion": "rise-under",
+    "exit": "push-up",
     "light": "dusk"
    },
    {
@@ -106,7 +113,8 @@
     "start": 3.5,
     "end": 3.966666666666667,
     "text": "partage",
-    "motion": "settle",
+    "motion": "push-in",
+    "exit": "whip-left",
     "light": "sky"
    },
    {
@@ -114,7 +122,8 @@
     "start": 3.966666666666667,
     "end": 4.366666666666666,
     "text": "entraide",
-    "motion": "settle",
+    "motion": "whip-in-right",
+    "exit": null,
     "light": "dusk"
    },
    {
@@ -122,7 +131,8 @@
     "start": 4.366666666666666,
     "end": 4.7,
     "text": "prière",
-    "motion": "settle",
+    "motion": "pop",
+    "exit": null,
     "light": "sky"
    },
    {
@@ -130,7 +140,8 @@
     "start": 4.7,
     "end": 5.166666666666667,
     "text": "quiz",
-    "motion": "settle",
+    "motion": "slam",
+    "exit": "whip-right",
     "light": "dusk"
    },
    {
@@ -138,7 +149,8 @@
     "start": 5.166666666666667,
     "end": 5.533333333333333,
     "text": "verset",
-    "motion": "settle",
+    "motion": "whip-in-left",
+    "exit": null,
     "light": "sky"
    },
    {
@@ -146,7 +158,8 @@
     "start": 5.533333333333333,
     "end": 5.866666666666666,
     "text": "groupes",
-    "motion": "settle",
+    "motion": "drop",
+    "exit": "push-up",
     "light": "dusk"
    },
    {
@@ -154,7 +167,8 @@
     "start": 5.866666666666666,
     "end": 6.2,
     "text": "louange",
-    "motion": "smear",
+    "motion": "push-in",
+    "exit": null,
     "light": "sky"
    },
    {
@@ -162,7 +176,8 @@
     "start": 6.2,
     "end": 6.533333333333333,
     "text": "témoignage",
-    "motion": "settle",
+    "motion": "track",
+    "exit": null,
     "light": "dusk"
    },
    {
@@ -170,7 +185,8 @@
     "start": 6.533333333333333,
     "end": 6.866666666666666,
     "text": "foi",
-    "motion": "settle",
+    "motion": "slam",
+    "exit": null,
     "light": "sky"
    },
    {
@@ -178,7 +194,8 @@
     "start": 6.866666666666666,
     "end": 7.2,
     "text": "amour",
-    "motion": "smear",
+    "motion": "pop",
+    "exit": null,
     "light": "dusk"
    },
    {
@@ -186,7 +203,8 @@
     "start": 7.2,
     "end": 7.5,
     "text": "joie",
-    "motion": "smear",
+    "motion": "rise",
+    "exit": null,
     "light": "sky"
    },
    {
@@ -195,6 +213,7 @@
     "end": 7.8,
     "text": "paix",
     "motion": "focus",
+    "exit": null,
     "light": "dusk"
    },
    {
@@ -202,7 +221,8 @@
     "start": 7.8,
     "end": 8.033333333333333,
     "text": "r",
-    "motion": "settle",
+    "motion": "pop",
+    "exit": null,
     "light": "sky"
    },
    {
@@ -211,6 +231,7 @@
     "end": 8.333333333333334,
     "text": "ri.",
     "motion": "type",
+    "exit": null,
     "light": "dusk"
    },
    {
@@ -219,6 +240,7 @@
     "end": 8.6,
     "text": "ris",
     "motion": "type",
+    "exit": null,
     "light": "sky"
    },
    {
@@ -227,22 +249,25 @@
     "end": 8.866666666666667,
     "text": "rise.",
     "motion": "type",
+    "exit": null,
     "light": "dusk"
    },
    {
     "id": "c22",
     "start": 8.866666666666667,
     "end": 9.2,
-    "text": "RISE (logo)",
-    "motion": "eaten",
+    "text": "rise.",
+    "motion": "blowup",
+    "exit": null,
     "light": "sky"
    },
    {
     "id": "c23",
     "start": 9.2,
-    "end": 9.5,
-    "text": "",
-    "motion": "empty",
+    "end": 12.5,
+    "text": "RISE logo animation · Élève-toi. Ensemble. · store badges",
+    "motion": "end",
+    "exit": null,
     "light": "sky"
    }
   ]

@@ -18,7 +18,7 @@
         window.__timelines = window.__timelines || {};
         const tl = gsap.timeline({ paused: true });
         // both lights drift in together, so a cut changes the light, not the place
-        tl.fromTo(".light", { scale: 1 }, { scale: 1.04, duration: 9.5, ease: "none" }, 0);
+        tl.fromTo(".light", { scale: 1 }, { scale: 1.05, duration: 12.5, ease: "none" }, 0);
         // the sky (black words) and dusk (white words), flipped on every card
         tl.set("#dusk", { visibility: "hidden" }, 0.0);
         tl.set("#dusk", { visibility: "visible" }, 0.7);
