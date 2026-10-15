@@ -9,7 +9,9 @@
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 1080px; height: 1920px; overflow: hidden; background: #bfe3f6; }
       #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
-      #fin { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+      #fin { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 540px 860px; }
+      #flash { position: absolute; left: -60px; top: 440px; width: 1200px; height: 840px; visibility: hidden;
+        background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95), rgba(255, 244, 222, 0.55) 45%, rgba(255, 255, 255, 0)); }
       #splashw { position: absolute; left: 146px; top: 600px; width: 787px; height: 410px; transform-origin: 394px 260px; }
       #splash { position: absolute; left: 0; top: 0; width: 787px; height: 410px; display: block; }
       #slogan { position: absolute; left: 0; top: 0; overflow: visible; }
@@ -24,7 +26,8 @@
       <div id="mots" class="clip" data-composition-id="mots" data-composition-src="compositions/mots.html" data-start="0" data-duration="12.5"
         data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920"></div>
       <div id="fin" data-layout-allow-overflow>
-        <div id="splashw"><video id="splash" class="clip" src="assets/brand/rise_splash_light.webm" muted playsinline data-start="9.2" data-duration="3.3" data-track-index="5"></video></div>
+        <div id="flash"></div>
+        <div id="splashw"><video id="splash" class="clip" src="assets/brand/rise_splash_light.webm" muted playsinline data-start="9.2" data-duration="3.3" data-media-start="0.2" data-track-index="5"></video></div>
         <svg id="slogan" width="1080" height="1920" viewBox="0 0 1080 1920"><clipPath id="slogan-clip"><rect x="0" y="1011" width="1080" height="86" /></clipPath><g clip-path="url(#slogan-clip)"><g id="slogan0"><text data-layout-allow-overlap x="255.3" y="1078.0" style="font-size: 64px; fill: #0b0b0c">É</text><text data-layout-allow-overlap x="295.6" y="1078.0" style="font-size: 64px; fill: #0b0b0c">l</text><text data-layout-allow-overlap x="309.4" y="1078.0" style="font-size: 64px; fill: #0b0b0c">è</text><text data-layout-allow-overlap x="343.2" y="1078.0" style="font-size: 64px; fill: #0b0b0c">v</text><text data-layout-allow-overlap x="374.4" y="1078.0" style="font-size: 64px; fill: #0b0b0c">e</text><text data-layout-allow-overlap x="409.4" y="1078.0" style="font-size: 64px; fill: #0b0b0c">-</text><text data-layout-allow-overlap x="428.5" y="1078.0" style="font-size: 64px; fill: #0b0b0c">t</text><text data-layout-allow-overlap x="446.6" y="1078.0" style="font-size: 64px; fill: #0b0b0c">o</text><text data-layout-allow-overlap x="482.7" y="1078.0" style="font-size: 64px; fill: #0b0b0c">i</text><text data-layout-allow-overlap x="498.4" y="1078.0" style="font-size: 64px; fill: #0b0b0c">.</text></g><g id="slogan1"><text data-layout-allow-overlap x="527.7" y="1078.0" style="font-size: 64px; fill: #c2410c">E</text><text data-layout-allow-overlap x="565.5" y="1078.0" style="font-size: 64px; fill: #c2410c">n</text><text data-layout-allow-overlap x="601.5" y="1078.0" style="font-size: 64px; fill: #c2410c">s</text><text data-layout-allow-overlap x="634.2" y="1078.0" style="font-size: 64px; fill: #c2410c">e</text><text data-layout-allow-overlap x="668.3" y="1078.0" style="font-size: 64px; fill: #c2410c">m</text><text data-layout-allow-overlap x="723.3" y="1078.0" style="font-size: 64px; fill: #c2410c">b</text><text data-layout-allow-overlap x="759.9" y="1078.0" style="font-size: 64px; fill: #c2410c">l</text><text data-layout-allow-overlap x="773.6" y="1078.0" style="font-size: 64px; fill: #c2410c">e</text><text data-layout-allow-overlap x="808.7" y="1078.0" style="font-size: 64px; fill: #c2410c">.</text></g></g></svg>
         <img id="badge0" class="badge" src="assets/brand/badge_app_store_fr.png" alt="Télécharger dans l&#x27;App Store" style="left: 127px; top: 1142px" /><img id="badge1" class="badge" src="assets/brand/badge_google_play_fr.png" alt="Disponible sur Google Play" style="left: 553px; top: 1142px" />
       </div>
@@ -34,10 +37,21 @@
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
       tl.fromTo("#splashw", { scale: 0.96 }, { scale: 1.03, duration: 3.3, ease: "sine.out" }, 9.2);
-      tl.fromTo("#slogan0", { y: 90 }, { y: 0, duration: 0.5, ease: "expo.out" }, 10.35);
-      tl.fromTo("#slogan1", { y: 90 }, { y: 0, duration: 0.5, ease: "expo.out" }, 10.5);
-      tl.fromTo("#badge0", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 10.75);
-      tl.fromTo("#badge1", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 10.85);
+      tl.set("#flash", { visibility: "visible" }, 9.666666666666666);
+      tl.fromTo("#flash", { opacity: 0.9, scale: 0.55 }, { opacity: 0, scale: 1.5, duration: 0.8, ease: "power2.out" }, 9.666666666666666);
+      tl.set("#flash", { visibility: "hidden" }, 10.467);
+      tl.to("#fin", { scale: 1.07, duration: 0.033, ease: "none" }, 9.666666666666666);
+      tl.to("#fin", { scale: 1, duration: 0.45, ease: "expo.out" }, 9.7);
+      tl.to("#fin", { x: 14, y: -9, duration: 0.033, ease: "none" }, 9.667);
+      tl.to("#fin", { x: -11, y: 7, duration: 0.033, ease: "none" }, 9.7);
+      tl.to("#fin", { x: 8, y: -5, duration: 0.033, ease: "none" }, 9.733);
+      tl.to("#fin", { x: -5, y: 3, duration: 0.033, ease: "none" }, 9.767);
+      tl.to("#fin", { x: 3, y: -2, duration: 0.033, ease: "none" }, 9.8);
+      tl.to("#fin", { x: 0, y: 0, duration: 0.033, ease: "none" }, 9.833);
+      tl.fromTo("#slogan0", { y: 90 }, { y: 0, duration: 0.5, ease: "expo.out" }, 10.267);
+      tl.fromTo("#slogan1", { y: 90 }, { y: 0, duration: 0.5, ease: "expo.out" }, 10.417);
+      tl.fromTo("#badge0", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 10.667);
+      tl.fromTo("#badge1", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 10.767);
       window.__timelines["main"] = tl;
       tl.seek(0);
     </script>

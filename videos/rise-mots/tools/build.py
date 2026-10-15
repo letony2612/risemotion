@@ -4,14 +4,15 @@ The user sent the reference reel ("graphics / transitions / ideas / feelings / r
 and its audio: a run of whooshes that speed up. The reel keeps the reference's edit (the same 24 cuts at the
 same times, each at the end of a whoosh; the light flips on every cut) and moves every word like a motion
 designer would, on the whooshes:
-- letters rising from their baseline, popping, dropping, closing up from wide tracking, being typed;
+- letters rising from their baseline, popping, dropping, closing up from wide tracking;
 - words slamming in from close up, whipping or pushing in with motion blur, pulled into focus;
-- a whoosh carried across a cut: the word leaves the way the next one arrives (zoom, whip, push);
-- "rise." typed, then blown up to the edges and eaten by blobs.
-In the silence after the sound, the RISE logo animation (the app's own splash, made for a light background),
-the slogan and the App Store / Google Play badges.
+- a whoosh carried across a cut: the word leaves the way the next one arrives (zoom, whip, push).
+The words follow the user's text: le réseau social chrétien, what one does there (faster and faster),
+créé par un chrétien, pour les chrétiens. Then, in the silence after the sound, the RISE logo animation (the
+app's own splash, made for a light background) with a heavy boom when its letters burst out, the slogan and
+the App Store / Google Play badges.
 Usage: python3 tools/build.py  -> index.html, compositions/fond.html, compositions/mots.html, shot-plan.json
-(then python3 tools/music.py and tools/backdrop.py only if the sound or the lights change)
+(then python3 tools/boom.py, tools/music.py and tools/backdrop.py only if the sounds or the lights change)
 """
 import html
 import json
@@ -33,7 +34,6 @@ TRACK = -0.035  # letter-spacing, em
 S = 186  # every word's size
 X_HEIGHT = 0.54  # FreeSans Bold's x-height, em
 Y_C = 930  # where the middle of the x-height sits
-EDGE_W = 1030  # a word blown up to the edges
 LINE_W = 960  # the widest a line may be
 GAP = 14  # between a word and the one landing under it
 INK = {"sky": "#0b0b0c", "dusk": "#ffffff"}
@@ -41,42 +41,45 @@ FLAME = "#c2410c"  # the slogan's second word: the logo's flame, deep enough to 
 EXIT_D = 0.1  # a word carried out on a whoosh leaves in the last 3 frames before the cut
 
 # one card per cut: (words, how it comes in, how it leaves on the whoosh into the next cut). words: a word;
-# (word, word under it, its size against the first) for two lines; None for the end card.
+# (word, word under it, its size against the first) for two lines; None for the end card. The light flips on
+# every card but these, where a word stays and the next lands under it in the same light:
+KEEP_LIGHT = {1}
 CARDS = [
     ("le réseau", "rise", None),  # letters rise from their baseline
     (("le réseau", "social", 1.8), "rise-under", "zoom"),  # "social" rises under it; the card flies at the camera
     ("chrétien.", "slam", "whip-left"),  # ...and the next word slams in from close up
-    (("créé par un", "chrétien", 1.0), "whip-in-right", None),
-    ("pour les", "track", None),  # letters close up from wide tracking
-    (("pour les", "chrétiens.", 1.0), "rise-under", "push-up"),
-    ("partage", "push-in", "whip-left"),  # the list: faster and faster
-    ("entraide", "whip-in-right", None),
-    ("prière", "pop", None),
-    ("quiz", "slam", "whip-right"),
-    ("verset", "whip-in-left", None),
-    ("groupes", "drop", "push-up"),
-    ("louange", "push-in", None),
-    ("témoignage", "track", None),
-    ("foi", "slam", None),
-    ("amour", "pop", None),
-    ("joie", "rise", None),
+    ("partage", "whip-in-right", None),  # what one does there: faster and faster
+    ("entraide", "track", None),  # letters close up from wide tracking
+    ("prière", "pop", "push-up"),
+    ("quiz", "push-in", None),
+    ("verset", "drop", "whip-right"),
+    ("groupes", "whip-in-left", None),
+    ("messages", "focus", None),
+    ("louange", "rise", "zoom"),
+    ("témoignage", "slam", None),
+    ("communauté", "track", "push-up"),
+    ("foi", "push-in", None),
+    ("espérance", "pop", None),
+    ("amour", "slam", "whip-left"),
+    ("joie", "whip-in-right", None),
     ("paix", "focus", None),
-    ("r", "pop", None),  # typed
-    ("ri.", "type", None),
-    ("ris", "type", None),
-    ("rise.", "type", None),
-    ("rise.", "blowup", None),  # blown up to the edges, eaten by blobs on the last whoosh
-    (None, "end", None),  # the silence: the logo, the slogan, the stores
+    ("créé", "slam", None),  # who made it, for whom: the fastest cuts
+    ("par un", "whip-in-right", None),
+    ("chrétien", "rise", None),
+    ("pour les", "pop", None),
+    (("pour les", "chrétiens.", 1.0), "rise-under", None),
+    (None, "end", None),  # the silence: the logo and its boom, the slogan, the stores
 ]
-BLOBS = [(600, 930, 270, 0), (470, 860, 210, 0), (760, 1000, 230, 1), (330, 990, 200, 1),
-         (880, 850, 190, 2), (200, 860, 160, 2), (300, 720, 130, 2), (965, 1010, 130, 3)]
-ERASE_AFTER = 5  # frames the blown-up word holds before the blobs start
-# the end card: the logo animation (960x500, its logo 920 px wide at rest), the slogan, the badges
+# the end card: the logo animation (960x500, its logo 920 px wide at rest), the slogan, the badges.
+# The animation starts 0.2 s in (its candle already up); its letters burst out 0.667 s in: the boom lands there.
 SPLASH = dict(src="assets/brand/rise_splash_light.webm", w=960, h=500, scale=0.82, cx=480, cy=317, at=860)
-SLOGAN = (("Élève-toi.", 1.15), ("Ensemble.", 1.3))  # a word, the seconds after the end card starts
+SPLASH_FROM, BURST = 0.2, 0.667
+BOOM_AT = round((round(CUTS[-1] * FPS) / FPS + BURST - SPLASH_FROM) * FPS) / FPS  # tools/music.py mixes the boom here
+SLOGAN = (("Élève-toi.", 0.6), ("Ensemble.", 0.75))  # a word, the seconds after the boom
 SLOGAN_SIZE, SLOGAN_BASE = 64, 1078
-BADGES = (("assets/brand/badge_app_store_fr.png", "Télécharger dans l'App Store", 1.55),
-          ("assets/brand/badge_google_play_fr.png", "Disponible sur Google Play", 1.65))
+BADGES = (("assets/brand/badge_app_store_fr.png", "Télécharger dans l'App Store", 1.0),
+          ("assets/brand/badge_google_play_fr.png", "Disponible sur Google Play", 1.1))
+SHAKE = [(14, -9), (-11, 7), (8, -5), (-5, 3), (3, -2), (0, 0)]  # the boom shakes the frame, a frame each
 BADGE_W, BADGE_H, BADGE_GAP, BADGE_TOP = 400, 133, 26, 1142
 
 
@@ -165,7 +168,7 @@ def two_lines(first, under, k):
 def cards():
     out, light = [], "dusk"
     for i, (words, fx_in, fx_out) in enumerate(CARDS):
-        if fx_in != "end":
+        if i not in KEEP_LIGHT:
             light = "sky" if light == "dusk" else "dusk"
         t1 = frame(CUTS[i + 1]) if i + 1 < len(CUTS) else DURATION
         out.append(dict(id=f"c{i}", i=i, t0=frame(CUTS[i]), t1=t1, words=words, fx_in=fx_in, fx_out=fx_out, light=light))
@@ -176,9 +179,6 @@ def lines(c):
     w = c["words"]
     if isinstance(w, tuple):
         return list(two_lines(*w))
-    if c["fx_in"] == "blowup":
-        size = fit(w, 10 * S, EDGE_W)
-        return [Line(w, size, Y_C + X_HEIGHT * size / 2)]
     return [single(w)]
 
 
@@ -189,20 +189,9 @@ def card_html(c):
     L = lines(c)
     mid = (L[0].mid + L[-1].mid) / 2
     style = f"transform-origin: {W / 2:.0f}px {mid:.0f}px; filter: url(#{cid}-f)"
-    if fx == "blowup":  # one word, under a mask of blobs
-        a = L[0]
-        circles = "".join(f'<circle id="{cid}-blob{j}" cx="{x}" cy="{y}" r="0" fill="#000" />' for j, (x, y, _, _) in enumerate(BLOBS))
-        defs = (f'<filter id="{cid}-feather" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10" /></filter>'
-                f'<mask id="{cid}-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}">'
-                f'<rect x="0" y="0" width="{W}" height="{H}" fill="#fff" /><g filter="url(#{cid}-feather)">{circles}</g></mask>')
-        text = (f'<text class="word" mask="url(#{cid}-mask)" x="{a.left:.1f}" y="{a.base:.1f}" '
-                f'style="font-size: {a.size:.1f}px; fill: {INK[light]}">{html.escape(a.text)}</text>')
-        inner = f"<defs>{defs}</defs>{text}"
-    else:
-        clip_a = fx in ("rise",)
-        inner = L[0].svg(f"{cid}-a", light, clip_a)
-        if len(L) > 1:
-            inner += L[1].svg(f"{cid}-b", light, fx == "rise-under")
+    inner = L[0].svg(f"{cid}-a", light, fx == "rise")
+    if len(L) > 1:
+        inner += L[1].svg(f"{cid}-b", light, fx == "rise-under")
     return (f'<div id="{cid}" class="card" style="{style}" data-layout-allow-overflow>'
             f'<svg width="{W}" height="{H}" viewBox="0 0 {W} {H}">{inner}</svg></div>')
 
@@ -211,7 +200,7 @@ def r3(t):
     return round(t, 3)
 
 
-def motion(c, prev):
+def motion(c):
     """The card's tweens: its entrance from its cut, its exit on the whoosh into the next one."""
     cid, t0, t1, fx, out = c["id"], c["t0"], c["t1"], c["fx_in"], c["fx_out"]
     if fx == "end":
@@ -225,8 +214,8 @@ def motion(c, prev):
     def blur_in(sd, dur, ease="expo.out"):
         js.append(f'tl.fromTo({blur}, {{ attr: {{ stdDeviation: "{sd}" }} }}, {{ attr: {{ stdDeviation: "0 0" }}, duration: {dur}, ease: "{ease}" }}, {t0});')
 
-    def settle(s0, ease="power2.out"):
-        js.append(f'tl.fromTo({card}, {{ scale: {s0} }}, {{ scale: 1, duration: {dx}, ease: "{ease}" }}, {t0});')
+    def settle(s0, ease="power2.out"):  # ends a frame before any exit takes the scale over
+        js.append(f'tl.fromTo({card}, {{ scale: {s0} }}, {{ scale: 1, duration: {r3(dx - (1 / FPS if out else 0))}, ease: "{ease}" }}, {t0});')
 
     def glyph(gid, line, k, cx, start, dur, ease, at):
         """One glyph from a start (dx, dy, r, s) to rest."""
@@ -272,22 +261,6 @@ def motion(c, prev):
     elif fx == "focus":
         js.append(f'tl.fromTo({card}, {{ scale: 1.16 }}, {{ scale: 1, duration: {dx}, ease: "power2.out" }}, {t0});')
         blur_in("18 18", 0.12, "power1.in")
-    elif fx == "type":  # letters already typed slide to their new place; the new ones pop in
-        p = single(prev["words"])
-        old = {k: x for k, ch, x, _ in p.glyphs}
-        new = [g for g in a.glyphs if not (g[0] in old and p.text[g[0]] == g[1])]
-        for k, ch, x, cx in a.glyphs:
-            if k in old and p.text[k] == ch:
-                glyph(f"{cid}-a", a, k, cx, (old[k] - x, 0, 0, 1), min(0.2, d), "expo.out", t0)
-        for j, (k, ch, x, cx) in enumerate(new):
-            glyph(f"{cid}-a", a, k, cx, (0, 0, 0, 0), min(0.24, d), "back.out(2)", t0 + 0.03 * j)
-    elif fx == "blowup":  # the typed word blown up to the edges, then eaten by blobs
-        p = single(prev["words"])
-        js.append(f'tl.fromTo({card}, {{ scale: {p.size / a.size:.3f} }}, {{ scale: 1, duration: 0.14, ease: "expo.out" }}, {t0});')
-        blur_in("8 8", 0.1)
-        e0 = t0 + ERASE_AFTER / FPS
-        for j, (_, _, r, f0) in enumerate(BLOBS):
-            js.append(f'tl.fromTo("#{cid}-blob{j}", {{ attr: {{ r: 0 }} }}, {{ attr: {{ r: {r} }}, duration: 0.1, ease: "power1.out" }}, {r3(e0 + f0 / FPS)});')
 
     if out:  # carried out on the whoosh, the way the next word comes in
         x0 = r3(t1 - EXIT_D)
@@ -335,7 +308,7 @@ def mots(C):
     filters = "".join(f'<filter id="{c["id"]}-f" x="-15%" y="-8%" width="130%" height="116%">'
                       f'<feGaussianBlur id="{c["id"]}-blur" stdDeviation="0 0" /></filter>' for c in C if c["fx_in"] != "end")
     cards_html = "\n        ".join(card_html(c) for c in C)
-    script = "\n".join(s for i, c in enumerate(C) for s in motion(c, C[i - 1] if i else None))
+    script = "\n".join(s for c in C for s in motion(c))
     return f"""<!doctype html>
 <html lang="fr">
   <head>
@@ -368,7 +341,7 @@ def mots(C):
 
 
 def end_card(t0):
-    """The logo animation, the slogan under it, the two store badges; returns its HTML, CSS and tweens."""
+    """The logo animation and its boom, the slogan under it, the two store badges: HTML, CSS and tweens."""
     sw, sh, k = SPLASH["w"], SPLASH["h"], SPLASH["scale"]
     left, top = W / 2 - SPLASH["cx"] * k, SPLASH["at"] - SPLASH["cy"] * k
     dur = r3(DURATION - t0)
@@ -388,21 +361,34 @@ def end_card(t0):
     badges = "".join(f'<img id="badge{j}" class="badge" src="{src}" alt="{html.escape(alt)}" '
                      f'style="left: {bx + j * (BADGE_W + BADGE_GAP):.0f}px; top: {BADGE_TOP}px" />' for j, (src, alt, _) in enumerate(BADGES))
     body = f"""      <div id="fin" data-layout-allow-overflow>
-        <div id="splashw"><video id="splash" class="clip" src="{SPLASH["src"]}" muted playsinline data-start="{t0}" data-duration="{dur}" data-track-index="5"></video></div>
+        <div id="flash"></div>
+        <div id="splashw"><video id="splash" class="clip" src="{SPLASH["src"]}" muted playsinline data-start="{t0}" data-duration="{dur}" data-media-start="{SPLASH_FROM}" data-track-index="5"></video></div>
         {slogan}
         {badges}
       </div>"""
-    css = f"""      #fin {{ position: absolute; left: 0; top: 0; width: {W}px; height: {H}px; }}
+    css = f"""      #fin {{ position: absolute; left: 0; top: 0; width: {W}px; height: {H}px; transform-origin: {W / 2:.0f}px {SPLASH["at"]}px; }}
+      #flash {{ position: absolute; left: {W / 2 - 600:.0f}px; top: {SPLASH["at"] - 420}px; width: 1200px; height: 840px; visibility: hidden;
+        background: radial-gradient(closest-side, rgba(255, 255, 255, 0.95), rgba(255, 244, 222, 0.55) 45%, rgba(255, 255, 255, 0)); }}
       #splashw {{ position: absolute; left: {left:.0f}px; top: {top:.0f}px; width: {sw * k:.0f}px; height: {sh * k:.0f}px; transform-origin: {SPLASH["cx"] * k:.0f}px {SPLASH["cy"] * k:.0f}px; }}
       #splash {{ position: absolute; left: 0; top: 0; width: {sw * k:.0f}px; height: {sh * k:.0f}px; display: block; }}
       #slogan {{ position: absolute; left: 0; top: 0; overflow: visible; }}
       #slogan text {{ font-family: "Rise Sans", sans-serif; font-weight: 700; }}
       .badge {{ position: absolute; width: {BADGE_W}px; height: {BADGE_H}px; display: block; opacity: 0; }}"""
     js = [f'tl.fromTo("#splashw", {{ scale: 0.96 }}, {{ scale: 1.03, duration: {dur}, ease: "sine.out" }}, {t0});']
+    # the boom: a burst of light behind the logo, the frame punched and shaken
+    b = BOOM_AT
+    js.append(f'tl.set("#flash", {{ visibility: "visible" }}, {b});')
+    js.append(f'tl.fromTo("#flash", {{ opacity: 0.9, scale: 0.55 }}, {{ opacity: 0, scale: 1.5, duration: 0.8, ease: "power2.out" }}, {b});')
+    js.append(f'tl.set("#flash", {{ visibility: "hidden" }}, {r3(b + 0.8)});')
+    f = r3(1 / FPS)
+    js.append(f'tl.to("#fin", {{ scale: 1.07, duration: {f}, ease: "none" }}, {b});')
+    js.append(f'tl.to("#fin", {{ scale: 1, duration: 0.45, ease: "expo.out" }}, {r3(b + 1 / FPS)});')
+    for k, (x, y) in enumerate(SHAKE):
+        js.append(f'tl.to("#fin", {{ x: {x}, y: {y}, duration: {f}, ease: "none" }}, {r3(b + k / FPS)});')
     for j, (_, at) in enumerate(SLOGAN):
-        js.append(f'tl.fromTo("#slogan{j}", {{ y: {1.4 * SLOGAN_SIZE:.0f} }}, {{ y: 0, duration: 0.5, ease: "expo.out" }}, {r3(t0 + at)});')
+        js.append(f'tl.fromTo("#slogan{j}", {{ y: {1.4 * SLOGAN_SIZE:.0f} }}, {{ y: 0, duration: 0.5, ease: "expo.out" }}, {r3(b + at)});')
     for j, (_, _, at) in enumerate(BADGES):
-        js.append(f'tl.fromTo("#badge{j}", {{ y: 60, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }}, {r3(t0 + at)});')
+        js.append(f'tl.fromTo("#badge{j}", {{ y: 60, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }}, {r3(b + at)});')
     return body, css, "\n".join("      " + s for s in js)
 
 

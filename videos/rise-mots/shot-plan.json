@@ -70,7 +70,7 @@
     "text": "le réseau / social",
     "motion": "rise-under",
     "exit": "zoom",
-    "light": "dusk"
+    "light": "sky"
    },
    {
     "id": "c2",
@@ -79,133 +79,133 @@
     "text": "chrétien.",
     "motion": "slam",
     "exit": "whip-left",
-    "light": "sky"
+    "light": "dusk"
    },
    {
     "id": "c3",
     "start": 2.0,
     "end": 2.533333333333333,
-    "text": "créé par un / chrétien",
+    "text": "partage",
     "motion": "whip-in-right",
     "exit": null,
-    "light": "dusk"
+    "light": "sky"
    },
    {
     "id": "c4",
     "start": 2.533333333333333,
     "end": 3.033333333333333,
-    "text": "pour les",
+    "text": "entraide",
     "motion": "track",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
     "id": "c5",
     "start": 3.033333333333333,
     "end": 3.5,
-    "text": "pour les / chrétiens.",
-    "motion": "rise-under",
+    "text": "prière",
+    "motion": "pop",
     "exit": "push-up",
-    "light": "dusk"
+    "light": "sky"
    },
    {
     "id": "c6",
     "start": 3.5,
     "end": 3.966666666666667,
-    "text": "partage",
+    "text": "quiz",
     "motion": "push-in",
-    "exit": "whip-left",
-    "light": "sky"
+    "exit": null,
+    "light": "dusk"
    },
    {
     "id": "c7",
     "start": 3.966666666666667,
     "end": 4.366666666666666,
-    "text": "entraide",
-    "motion": "whip-in-right",
-    "exit": null,
-    "light": "dusk"
+    "text": "verset",
+    "motion": "drop",
+    "exit": "whip-right",
+    "light": "sky"
    },
    {
     "id": "c8",
     "start": 4.366666666666666,
     "end": 4.7,
-    "text": "prière",
-    "motion": "pop",
+    "text": "groupes",
+    "motion": "whip-in-left",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
     "id": "c9",
     "start": 4.7,
     "end": 5.166666666666667,
-    "text": "quiz",
-    "motion": "slam",
-    "exit": "whip-right",
-    "light": "dusk"
+    "text": "messages",
+    "motion": "focus",
+    "exit": null,
+    "light": "sky"
    },
    {
     "id": "c10",
     "start": 5.166666666666667,
     "end": 5.533333333333333,
-    "text": "verset",
-    "motion": "whip-in-left",
-    "exit": null,
-    "light": "sky"
+    "text": "louange",
+    "motion": "rise",
+    "exit": "zoom",
+    "light": "dusk"
    },
    {
     "id": "c11",
     "start": 5.533333333333333,
     "end": 5.866666666666666,
-    "text": "groupes",
-    "motion": "drop",
-    "exit": "push-up",
-    "light": "dusk"
+    "text": "témoignage",
+    "motion": "slam",
+    "exit": null,
+    "light": "sky"
    },
    {
     "id": "c12",
     "start": 5.866666666666666,
     "end": 6.2,
-    "text": "louange",
-    "motion": "push-in",
-    "exit": null,
-    "light": "sky"
+    "text": "communauté",
+    "motion": "track",
+    "exit": "push-up",
+    "light": "dusk"
    },
    {
     "id": "c13",
     "start": 6.2,
     "end": 6.533333333333333,
-    "text": "témoignage",
-    "motion": "track",
+    "text": "foi",
+    "motion": "push-in",
     "exit": null,
-    "light": "dusk"
+    "light": "sky"
    },
    {
     "id": "c14",
     "start": 6.533333333333333,
     "end": 6.866666666666666,
-    "text": "foi",
-    "motion": "slam",
+    "text": "espérance",
+    "motion": "pop",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
     "id": "c15",
     "start": 6.866666666666666,
     "end": 7.2,
     "text": "amour",
-    "motion": "pop",
-    "exit": null,
-    "light": "dusk"
+    "motion": "slam",
+    "exit": "whip-left",
+    "light": "sky"
    },
    {
     "id": "c16",
     "start": 7.2,
     "end": 7.5,
     "text": "joie",
-    "motion": "rise",
+    "motion": "whip-in-right",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
     "id": "c17",
@@ -214,52 +214,52 @@
     "text": "paix",
     "motion": "focus",
     "exit": null,
-    "light": "dusk"
+    "light": "sky"
    },
    {
     "id": "c18",
     "start": 7.8,
     "end": 8.033333333333333,
-    "text": "r",
-    "motion": "pop",
+    "text": "créé",
+    "motion": "slam",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
     "id": "c19",
     "start": 8.033333333333333,
     "end": 8.333333333333334,
-    "text": "ri.",
-    "motion": "type",
+    "text": "par un",
+    "motion": "whip-in-right",
     "exit": null,
-    "light": "dusk"
+    "light": "sky"
    },
    {
     "id": "c20",
     "start": 8.333333333333334,
     "end": 8.6,
-    "text": "ris",
-    "motion": "type",
+    "text": "chrétien",
+    "motion": "rise",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
     "id": "c21",
     "start": 8.6,
     "end": 8.866666666666667,
-    "text": "rise.",
-    "motion": "type",
+    "text": "pour les",
+    "motion": "pop",
     "exit": null,
-    "light": "dusk"
+    "light": "sky"
    },
    {
     "id": "c22",
     "start": 8.866666666666667,
     "end": 9.2,
-    "text": "rise.",
-    "motion": "blowup",
+    "text": "pour les / chrétiens.",
+    "motion": "rise-under",
     "exit": null,
-    "light": "sky"
+    "light": "dusk"
    },
    {
     "id": "c23",

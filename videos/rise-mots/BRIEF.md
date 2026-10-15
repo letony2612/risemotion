@@ -18,6 +18,14 @@ juste les mots importants. Texte de départ de l'utilisateur : « RISE le premie
 prière, quiz, verset, créé par un chrétien pour les chrétiens. » L'utilisateur a laissé le choix des mots et du rythme.
 
 ## Customizations
+- v5 : « virer le R. I. S. E., laisser que le logo à la fin avec un son de transition genre un boum lourd, et splitter le
+  créé par un chrétien pour avoir assez de transitions jusqu'à la fin ».
+  - Plus de « r / ri. / ris / rise. » ni de mot grossi : les 23 whooshes portent le texte de l'utilisateur dans son ordre :
+    « le réseau / social / chrétien. », puis 15 mots de plus en plus vite (partage, entraide, prière, quiz, verset, groupes,
+    messages, louange, témoignage, communauté, foi, espérance, amour, joie, paix), puis « créé / par un / chrétien /
+    pour les / chrétiens. » sur les coupes les plus rapides.
+  - Fin : dans le silence, la bougie du logo (l'animation démarre à 0,2 s), la flamme s'allume, et un boum lourd quand les
+    lettres jaillissent (9,67 s), avec un éclat de lumière, l'image qui frappe et tremble ; puis le slogan et les badges.
 - v4 : « il faudrait une animation plus stylée qui fait vraiment motion designer, là c'est que des apparitions » et « à la fin
   sans bruit, le logo RISE en motion design et disponible sur les stores ».
   - Chaque mot bouge, calé sur les whooshes : lettres qui montent depuis leur ligne de base, qui rebondissent, qui tombent
@@ -48,7 +56,7 @@ prière, quiz, verset, créé par un chrétien pour les chrétiens. » L'utilisa
 - Logo : l'animation officielle du splash (RISE_presentation/5_logo_anime), en version claire (assets/brand/rise_splash_light.webm,
   faite par videos/rise-presentation/tools/prepare_splash.py). Badges officiels FR App Store et Google Play (assets/brand).
 - Son : music/son_reel_reference.mp3, le son du reel de référence envoyé par l'utilisateur (9,33 s, -14,2 LUFS) ;
-  tools/music.py le complète de silence jusqu'à 9,5 s. Droits : c'est le son d'un autre créateur ; pour publier, le plus
+  tools/music.py le complète de silence jusqu'à 12,5 s et y place le boum (music/boom.wav, synthétisé par tools/boom.py). Droits : c'est le son d'un autre créateur ; pour publier, le plus
   sûr est de reprendre ce son dans l'app (« Utiliser l'audio »).
 - Police : FreeSans Bold (GNU FreeFont, GPL avec exception pour les polices).
 
