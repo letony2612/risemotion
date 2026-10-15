@@ -18,6 +18,12 @@ juste les mots importants. Texte de départ de l'utilisateur : « RISE le premie
 prière, quiz, verset, créé par un chrétien pour les chrétiens. » L'utilisateur a laissé le choix des mots et du rythme.
 
 ## Customizations
+- v10 : « c'est plutôt élevons-nous ensemble pour le dernier écran, et ajoute disponible sur les stores ; en vrai je pense
+  que c'est mieux de mettre un fond noir ». Le dernier écran passe sur un noir pur, celui du splash de l'app. L'animation
+  officielle du logo y retrouve ses couleurs d'origine (lettres blanches, flamme orange), et la lumière chaude du boum part
+  de la flamme dans le noir. Dessous : « Élevons-nous » en blanc et « ensemble. » de la couleur de la flamme, puis
+  « Disponible sur les stores » en gris au-dessus des badges. Le bloc remonte un peu, pour rester au-dessus de la légende
+  de l'app.
 - v9 : « t'as fait 2 fois le même mot, c'est pas bon » et « ajoute un mot à la fin en plus pour que ça rentre dans le
   timing ». Plus de répétition : « pour les chrétiens. » reste sur un whoosh, et toute la liste avance d'un cran
   (« partage » arrive sur le whoosh d'après). Le mot ajouté à la fin est « lumière », juste avant la bougie du logo qui
@@ -70,8 +76,9 @@ prière, quiz, verset, créé par un chrétien pour les chrétiens. » L'utilisa
 - « le premier » retiré (difficile à prouver) : « le réseau social chrétien. »
 
 ## Assets
-- Logo : l'animation officielle du splash (RISE_presentation/5_logo_anime), en version claire (assets/brand/rise_splash_light.webm,
-  faite par videos/rise-presentation/tools/prepare_splash.py). Badges officiels FR App Store et Google Play (assets/brand).
+- Logo : l'animation officielle du splash (RISE_presentation/5_logo_anime) dans ses couleurs d'origine, pour le fond noir
+  (assets/brand/rise_splash_dark.webm, faite par tools/splash.py). Badges officiels FR App Store et Google Play
+  (assets/brand), avec le contour gris prévu pour les fonds sombres.
 - Son : music/son_reel_reference.mp3, le son du reel de référence envoyé par l'utilisateur (9,33 s, -14,2 LUFS) ;
   tools/music.py le complète de silence jusqu'à 12,5 s et y place le boum (music/boom.wav, synthétisé par tools/boom.py). Droits : c'est le son d'un autre créateur ; pour publier, le plus
   sûr est de reprendre ce son dans l'app (« Utiliser l'audio »).

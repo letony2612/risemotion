@@ -7,12 +7,13 @@ designer would, on the whooshes:
 - letters rising from their baseline, popping, dropping, closing up from wide tracking;
 - words slamming in from close up, whipping or pushing in with motion blur, pulled into focus;
 - a whoosh carried across a cut: the word leaves the way the next one arrives (zoom, whip, push).
-The words follow the user's text: le réseau social chrétien, what one does there (faster and faster),
-créé par un chrétien, pour les chrétiens. Then, in the silence after the sound, the RISE logo animation (the
-app's own splash, made for a light background) with a heavy boom when its letters burst out, the slogan and
-the App Store / Google Play badges.
+The words follow the user's text: le réseau social créé par un chrétien pour les chrétiens, then what one does
+and finds there, faster and faster. Then, in the silence after the sound, on black as in the app, the RISE logo
+animation (the app's own splash) with a heavy boom when its letters burst out, the slogan, « Disponible sur les
+stores » and the App Store / Google Play badges.
 Usage: python3 tools/build.py  -> index.html, compositions/fond.html, compositions/mots.html, shot-plan.json
-(then python3 tools/boom.py, tools/music.py and tools/backdrop.py only if the sounds or the lights change)
+(then python3 tools/boom.py, tools/music.py, tools/backdrop.py and tools/splash.py only if the sounds, the
+lights or the logo animation change)
 """
 import html
 import json
@@ -37,12 +38,13 @@ Y_C = 930  # where the middle of the x-height sits
 LINE_W = 960  # the widest a line may be
 GAP = 14  # between a word and the one landing under it
 INK = {"sky": "#0b0b0c", "dusk": "#ffffff"}
-FLAME = "#c2410c"  # the slogan's second word: the logo's flame, deep enough to read on the sky
+FLAME = "#ff6d00"  # the slogan's second word: the colour of the logo's flame
+END_BG, END_INK, STORES_INK = "#000000", "#ffffff", "#b0b0b0"  # the end card is black, like the app's own splash
 EXIT_D = 0.1  # a word carried out on a whoosh leaves in the last 3 frames before the cut
 
 # the cards, one per cut, in order: (words, how it comes in, how it leaves on the whoosh into the next cut).
 # words: a word; (word, word under it, its size against the first) for two lines; None for the end card.
-# The light flips on every card, but a word landing under another stays in its light, and the logo is on white.
+# The light flips on every card, but a word landing under another stays in its light, and the logo is on black.
 CARDS = [
     # the statement, on the slowest cuts, each phrase built under its first words
     ("le réseau", "rise", None),  # letters rise from their baseline
@@ -71,17 +73,20 @@ CARDS = [
     ("lumière", "track", None),  # the last word: the light, just before the logo's flame
     (None, "end", None),  # the silence: the logo and its boom, the slogan, the stores
 ]
-# the end card: the logo animation (960x500, its logo 920 px wide at rest), the slogan, the badges.
+# the end card, on black: the logo animation (960x500, its logo 920 px wide at rest), the slogan, « Disponible sur
+# les stores » and the badges, the whole block a little above the middle (the app's caption covers the bottom).
 # The animation starts 0.2 s in (its candle already up); its letters burst out 0.667 s in: the boom lands there.
-SPLASH = dict(src="assets/brand/rise_splash_light.webm", w=960, h=500, scale=0.82, cx=480, cy=317, at=860)
+SPLASH = dict(src="assets/brand/rise_splash_dark.webm", w=960, h=500, scale=0.82, cx=480, cy=317, at=810)
 SPLASH_FROM, BURST = 0.2, 0.667
 BOOM_AT = round((round(CUTS[-1] * FPS) / FPS + BURST - SPLASH_FROM) * FPS) / FPS  # tools/music.py mixes the boom here
-SLOGAN = (("Élève-toi.", 0.6), ("Ensemble.", 0.75))  # a word, the seconds after the boom
-SLOGAN_SIZE, SLOGAN_BASE = 64, 1078
-BADGES = (("assets/brand/badge_app_store_fr.png", "Télécharger dans l'App Store", 1.0),
-          ("assets/brand/badge_google_play_fr.png", "Disponible sur Google Play", 1.1))
+SLOGAN = (("Élevons-nous", 0.6), ("ensemble.", 0.75))  # a word, the seconds after the boom
+SLOGAN_SIZE, SLOGAN_BASE = 64, 1028
+STORES = ("Disponible sur les stores", 0.95)  # the line over the badges, the seconds after the boom
+STORES_SIZE, STORES_BASE = 40, 1113
+BADGES = (("assets/brand/badge_app_store_fr.png", "Télécharger dans l'App Store", 1.1),
+          ("assets/brand/badge_google_play_fr.png", "Disponible sur Google Play", 1.2))
 FLAME_AT = (365, 205)  # the flame, in the logo animation's own pixels: the warm light of the boom starts there
-BADGE_W, BADGE_H, BADGE_GAP, BADGE_TOP = 400, 133, 26, 1142
+BADGE_W, BADGE_H, BADGE_GAP, BADGE_TOP = 400, 133, 26, 1145
 
 
 def frame(t):
@@ -170,8 +175,8 @@ def cards():
     assert len(CARDS) == len(CUTS), "one card per cut: every whoosh brings something new"
     out, light = [], "dusk"
     for i, (words, fx_in, fx_out) in enumerate(CARDS):
-        if fx_in == "end":  # the logo on plain white: it breaks from the sky and the dusk of the words
-            light = "white"
+        if fx_in == "end":  # the logo on black, as in the app: it breaks from the sky and the dusk of the words
+            light = "black"
         elif fx_in != "rise-under":  # a word landing under another stays in its light
             light = "sky" if light == "dusk" else "dusk"
         t1 = frame(CUTS[i + 1]) if i + 1 < len(CUTS) else DURATION
@@ -277,7 +282,7 @@ def motion(c):
 
 def fond(C):
     flips = "\n".join(f'        tl.set("#{layer}", {{ visibility: "{"visible" if c["light"] == layer else "hidden"}" }}, {c["t0"]});'
-                      for c in C for layer in ("dusk", "white"))
+                      for c in C for layer in ("dusk", "black"))
     return f"""<!doctype html>
 <html lang="fr">
   <head>
@@ -288,20 +293,20 @@ def fond(C):
       <style>
         #root {{ position: absolute; inset: 0; overflow: hidden; background: #bfe3f6; }}
         .light {{ position: absolute; left: 0; top: 0; width: {W}px; height: {H}px; }}
-        #dusk, #white {{ visibility: hidden; }}
-        #white {{ background: #ffffff; }}
+        #dusk, #black {{ visibility: hidden; }}
+        #black {{ background: {END_BG}; }}
       </style>
       <div id="root" data-composition-id="fond" data-width="{W}" data-height="{H}">
         <img id="sky" class="light" src="assets/sky.png" alt="" data-layout-allow-overflow />
         <img id="dusk" class="light" src="assets/dusk.png" alt="" data-layout-allow-overflow />
-        <div id="white" class="light"></div>
+        <div id="black" class="light" data-layout-allow-overflow></div>
       </div>
       <script>
         window.__timelines = window.__timelines || {{}};
         const tl = gsap.timeline({{ paused: true }});
         // both lights drift in together, so a cut changes the light, not the place
         tl.fromTo(".light", {{ scale: 1 }}, {{ scale: 1.05, duration: {DURATION}, ease: "none" }}, 0);
-        // the sky (black words) and dusk (white words), flipped on every card; plain white for the logo
+        // the sky (black words) and dusk (white words), flipped on every card; black for the logo
 {flips}
         window.__timelines["fond"] = tl;
       </script>
@@ -348,22 +353,30 @@ def mots(C):
 
 
 def end_card(t0):
-    """The logo animation and its boom, the slogan under it, the two store badges: HTML, CSS and tweens."""
+    """The logo animation and its boom, the slogan under it, « Disponible sur les stores » and the two store
+    badges: HTML, CSS and tweens."""
     sw, sh, k = SPLASH["w"], SPLASH["h"], SPLASH["scale"]
     left, top = W / 2 - SPLASH["cx"] * k, SPLASH["at"] - SPLASH["cy"] * k
     dur = r3(DURATION - t0)
+
+    def text(line, glyphs, fill):
+        return "".join(f'<text data-layout-allow-overlap x="{x:.1f}" y="{line.base:.1f}" style="font-size: {line.size}px; fill: {fill}">{html.escape(ch)}</text>'
+                       for _, ch, x, _ in glyphs)
+
+    def mask(mid, line):  # a baseline mask: the line's words rise from under it
+        top_m, bot_m = line.base - 1.05 * line.size, line.base + 0.3 * line.size
+        return f'<clipPath id="{mid}"><rect x="0" y="{top_m:.0f}" width="{W}" height="{bot_m - top_m:.0f}" /></clipPath>'
+
     line = Line(" ".join(t for t, _ in SLOGAN), SLOGAN_SIZE, SLOGAN_BASE)
     words, start = [], 0
-    for j, (word, _) in enumerate(SLOGAN):  # each word of the slogan rises from its own baseline mask
+    for j, (word, _) in enumerate(SLOGAN):  # each word of the slogan rises on its own
         glyphs = [g for g in line.glyphs if start <= g[0] < start + len(word)]
         start += len(word) + 1
-        fill = FLAME if j else INK["sky"]
-        words.append("".join(f'<text data-layout-allow-overlap x="{x:.1f}" y="{line.base:.1f}" style="font-size: {SLOGAN_SIZE}px; fill: {fill}">{html.escape(ch)}</text>'
-                             for _, ch, x, _ in glyphs))
-    top_m, bot_m = line.base - 1.05 * SLOGAN_SIZE, line.base + 0.3 * SLOGAN_SIZE
-    slogan = (f'<svg id="slogan" width="{W}" height="{H}" viewBox="0 0 {W} {H}"><clipPath id="slogan-clip">'
-              f'<rect x="0" y="{top_m:.0f}" width="{W}" height="{bot_m - top_m:.0f}" /></clipPath><g clip-path="url(#slogan-clip)">'
-              + "".join(f'<g id="slogan{j}">{w}</g>' for j, w in enumerate(words)) + "</g></svg>")
+        words.append(f'<g id="slogan{j}">{text(line, glyphs, FLAME if j else END_INK)}</g>')
+    stores = Line(STORES[0], STORES_SIZE, STORES_BASE)
+    slogan = (f'<svg id="slogan" width="{W}" height="{H}" viewBox="0 0 {W} {H}">{mask("slogan-clip", line)}{mask("stores-clip", stores)}'
+              f'<g clip-path="url(#slogan-clip)">{"".join(words)}</g>'
+              f'<g clip-path="url(#stores-clip)"><g id="stores">{text(stores, stores.glyphs, STORES_INK)}</g></g></svg>')
     bx = (W - 2 * BADGE_W - BADGE_GAP) / 2
     badges = "".join(f'<img id="badge{j}" class="badge" src="{src}" alt="{html.escape(alt)}" '
                      f'style="left: {bx + j * (BADGE_W + BADGE_GAP):.0f}px; top: {BADGE_TOP}px" />' for j, (src, alt, _) in enumerate(BADGES))
@@ -383,13 +396,14 @@ def end_card(t0):
       #slogan text {{ font-family: "Rise Sans", sans-serif; font-weight: 700; }}
       .badge {{ position: absolute; width: {BADGE_W}px; height: {BADGE_H}px; display: block; opacity: 0; }}"""
     js = [f'tl.fromTo("#splashw", {{ scale: 0.96 }}, {{ scale: 1.03, duration: {dur}, ease: "sine.out" }}, {t0});']
-    # the boom: a warm light spreads from the flame over the white as the letters burst out
+    # the boom: a warm light spreads from the flame over the black as the letters burst out
     b = BOOM_AT
     js.append(f'tl.set("#flash", {{ visibility: "visible" }}, {b});')
     js.append(f'tl.fromTo("#flash", {{ opacity: 1, scale: 0.35 }}, {{ opacity: 0, scale: 1.6, duration: 1.0, ease: "power2.out" }}, {b});')
     js.append(f'tl.set("#flash", {{ visibility: "hidden" }}, {r3(b + 1.0)});')
     for j, (_, at) in enumerate(SLOGAN):
         js.append(f'tl.fromTo("#slogan{j}", {{ y: {1.4 * SLOGAN_SIZE:.0f} }}, {{ y: 0, duration: 0.5, ease: "expo.out" }}, {r3(b + at)});')
+    js.append(f'tl.fromTo("#stores", {{ y: {1.4 * STORES_SIZE:.0f} }}, {{ y: 0, duration: 0.5, ease: "expo.out" }}, {r3(b + STORES[1])});')
     for j, (_, _, at) in enumerate(BADGES):
         js.append(f'tl.fromTo("#badge{j}", {{ y: 60, opacity: 0 }}, {{ y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }}, {r3(b + at)});')
     return body, css, "\n".join("      " + s for s in js)
@@ -435,7 +449,7 @@ def root(C):
 def shot_plan(C):
     def text(c):
         w = c["words"]
-        return " / ".join(w[:2]) if isinstance(w, tuple) else (w or "RISE logo animation · Élève-toi. Ensemble. · store badges")
+        return " / ".join(w[:2]) if isinstance(w, tuple) else (w or "RISE logo animation on black · Élevons-nous ensemble. · Disponible sur les stores · store badges")
     return {
         "category": "kinetic-type",
         "duration_s": DURATION,
@@ -445,7 +459,7 @@ def shot_plan(C):
                  "their baseline, popping, dropping, closing up from wide tracking; words slamming in, whipping or pushing "
                  "in with motion blur, pulled into focus; whooshes carried across cuts (zoom, whip, push); the "
                  "light flips between the RISE sky (black words) and dusk grey-blue (white words); then, in the silence, the "
-                 "app's logo animation on white with a heavy boom, the slogan and the store badges",
+                 "app's logo animation on black with a heavy boom, the slogan, « Disponible sur les stores » and the badges",
         "palette": ["#93cdef", "#bfe3f6", "#def1fb", "#d0d1d7", "#95a0e0", "#717480", INK["sky"], INK["dusk"], FLAME],
         "font": "FreeSans Bold (GNU FreeFont, GPL with font exception), letter-spacing -0.035em",
         "beats": [frame(t) for t in CUTS],

@@ -8,68 +8,68 @@
       <style>
         #root { position: absolute; inset: 0; overflow: hidden; background: #bfe3f6; }
         .light { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
-        #dusk, #white { visibility: hidden; }
-        #white { background: #ffffff; }
+        #dusk, #black { visibility: hidden; }
+        #black { background: #000000; }
       </style>
       <div id="root" data-composition-id="fond" data-width="1080" data-height="1920">
         <img id="sky" class="light" src="assets/sky.png" alt="" data-layout-allow-overflow />
         <img id="dusk" class="light" src="assets/dusk.png" alt="" data-layout-allow-overflow />
-        <div id="white" class="light"></div>
+        <div id="black" class="light" data-layout-allow-overflow></div>
       </div>
       <script>
         window.__timelines = window.__timelines || {};
         const tl = gsap.timeline({ paused: true });
         // both lights drift in together, so a cut changes the light, not the place
         tl.fromTo(".light", { scale: 1 }, { scale: 1.05, duration: 12.5, ease: "none" }, 0);
-        // the sky (black words) and dusk (white words), flipped on every card; plain white for the logo
+        // the sky (black words) and dusk (white words), flipped on every card; black for the logo
         tl.set("#dusk", { visibility: "hidden" }, 0.0);
-        tl.set("#white", { visibility: "hidden" }, 0.0);
+        tl.set("#black", { visibility: "hidden" }, 0.0);
         tl.set("#dusk", { visibility: "hidden" }, 0.7);
-        tl.set("#white", { visibility: "hidden" }, 0.7);
+        tl.set("#black", { visibility: "hidden" }, 0.7);
         tl.set("#dusk", { visibility: "visible" }, 1.3666666666666667);
-        tl.set("#white", { visibility: "hidden" }, 1.3666666666666667);
+        tl.set("#black", { visibility: "hidden" }, 1.3666666666666667);
         tl.set("#dusk", { visibility: "visible" }, 2.0);
-        tl.set("#white", { visibility: "hidden" }, 2.0);
+        tl.set("#black", { visibility: "hidden" }, 2.0);
         tl.set("#dusk", { visibility: "hidden" }, 2.533333333333333);
-        tl.set("#white", { visibility: "hidden" }, 2.533333333333333);
+        tl.set("#black", { visibility: "hidden" }, 2.533333333333333);
         tl.set("#dusk", { visibility: "hidden" }, 3.033333333333333);
-        tl.set("#white", { visibility: "hidden" }, 3.033333333333333);
+        tl.set("#black", { visibility: "hidden" }, 3.033333333333333);
         tl.set("#dusk", { visibility: "visible" }, 3.5);
-        tl.set("#white", { visibility: "hidden" }, 3.5);
+        tl.set("#black", { visibility: "hidden" }, 3.5);
         tl.set("#dusk", { visibility: "hidden" }, 3.966666666666667);
-        tl.set("#white", { visibility: "hidden" }, 3.966666666666667);
+        tl.set("#black", { visibility: "hidden" }, 3.966666666666667);
         tl.set("#dusk", { visibility: "visible" }, 4.366666666666666);
-        tl.set("#white", { visibility: "hidden" }, 4.366666666666666);
+        tl.set("#black", { visibility: "hidden" }, 4.366666666666666);
         tl.set("#dusk", { visibility: "hidden" }, 4.7);
-        tl.set("#white", { visibility: "hidden" }, 4.7);
+        tl.set("#black", { visibility: "hidden" }, 4.7);
         tl.set("#dusk", { visibility: "visible" }, 5.166666666666667);
-        tl.set("#white", { visibility: "hidden" }, 5.166666666666667);
+        tl.set("#black", { visibility: "hidden" }, 5.166666666666667);
         tl.set("#dusk", { visibility: "hidden" }, 5.533333333333333);
-        tl.set("#white", { visibility: "hidden" }, 5.533333333333333);
+        tl.set("#black", { visibility: "hidden" }, 5.533333333333333);
         tl.set("#dusk", { visibility: "visible" }, 5.866666666666666);
-        tl.set("#white", { visibility: "hidden" }, 5.866666666666666);
+        tl.set("#black", { visibility: "hidden" }, 5.866666666666666);
         tl.set("#dusk", { visibility: "hidden" }, 6.2);
-        tl.set("#white", { visibility: "hidden" }, 6.2);
+        tl.set("#black", { visibility: "hidden" }, 6.2);
         tl.set("#dusk", { visibility: "visible" }, 6.533333333333333);
-        tl.set("#white", { visibility: "hidden" }, 6.533333333333333);
+        tl.set("#black", { visibility: "hidden" }, 6.533333333333333);
         tl.set("#dusk", { visibility: "hidden" }, 6.866666666666666);
-        tl.set("#white", { visibility: "hidden" }, 6.866666666666666);
+        tl.set("#black", { visibility: "hidden" }, 6.866666666666666);
         tl.set("#dusk", { visibility: "visible" }, 7.2);
-        tl.set("#white", { visibility: "hidden" }, 7.2);
+        tl.set("#black", { visibility: "hidden" }, 7.2);
         tl.set("#dusk", { visibility: "hidden" }, 7.5);
-        tl.set("#white", { visibility: "hidden" }, 7.5);
+        tl.set("#black", { visibility: "hidden" }, 7.5);
         tl.set("#dusk", { visibility: "visible" }, 7.8);
-        tl.set("#white", { visibility: "hidden" }, 7.8);
+        tl.set("#black", { visibility: "hidden" }, 7.8);
         tl.set("#dusk", { visibility: "hidden" }, 8.033333333333333);
-        tl.set("#white", { visibility: "hidden" }, 8.033333333333333);
+        tl.set("#black", { visibility: "hidden" }, 8.033333333333333);
         tl.set("#dusk", { visibility: "visible" }, 8.333333333333334);
-        tl.set("#white", { visibility: "hidden" }, 8.333333333333334);
+        tl.set("#black", { visibility: "hidden" }, 8.333333333333334);
         tl.set("#dusk", { visibility: "hidden" }, 8.6);
-        tl.set("#white", { visibility: "hidden" }, 8.6);
+        tl.set("#black", { visibility: "hidden" }, 8.6);
         tl.set("#dusk", { visibility: "visible" }, 8.866666666666667);
-        tl.set("#white", { visibility: "hidden" }, 8.866666666666667);
+        tl.set("#black", { visibility: "hidden" }, 8.866666666666667);
         tl.set("#dusk", { visibility: "hidden" }, 9.2);
-        tl.set("#white", { visibility: "visible" }, 9.2);
+        tl.set("#black", { visibility: "visible" }, 9.2);
         window.__timelines["fond"] = tl;
       </script>
     </template>

@@ -7,7 +7,7 @@
   "h": 1920,
   "aspect": "9:16"
  },
- "style": "the reference reel's edit, cut for cut on its own sound, every word moved on the whooshes: letters rising from their baseline, popping, dropping, closing up from wide tracking; words slamming in, whipping or pushing in with motion blur, pulled into focus; whooshes carried across cuts (zoom, whip, push); the light flips between the RISE sky (black words) and dusk grey-blue (white words); then, in the silence, the app's logo animation on white with a heavy boom, the slogan and the store badges",
+ "style": "the reference reel's edit, cut for cut on its own sound, every word moved on the whooshes: letters rising from their baseline, popping, dropping, closing up from wide tracking; words slamming in, whipping or pushing in with motion blur, pulled into focus; whooshes carried across cuts (zoom, whip, push); the light flips between the RISE sky (black words) and dusk grey-blue (white words); then, in the silence, the app's logo animation on black with a heavy boom, the slogan, « Disponible sur les stores » and the badges",
  "palette": [
   "#93cdef",
   "#bfe3f6",
@@ -17,7 +17,7 @@
   "#717480",
   "#0b0b0c",
   "#ffffff",
-  "#c2410c"
+  "#ff6d00"
  ],
  "font": "FreeSans Bold (GNU FreeFont, GPL with font exception), letter-spacing -0.035em",
  "beats": [
@@ -265,10 +265,10 @@
     "id": "c23",
     "start": 9.2,
     "end": 12.5,
-    "text": "RISE logo animation · Élève-toi. Ensemble. · store badges",
+    "text": "RISE logo animation on black · Élevons-nous ensemble. · Disponible sur les stores · store badges",
     "motion": "end",
     "exit": null,
-    "light": "white"
+    "light": "black"
    }
   ]
  }
