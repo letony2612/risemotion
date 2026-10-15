@@ -40,34 +40,34 @@ INK = {"sky": "#0b0b0c", "dusk": "#ffffff"}
 FLAME = "#c2410c"  # the slogan's second word: the logo's flame, deep enough to read on the sky
 EXIT_D = 0.1  # a word carried out on a whoosh leaves in the last 3 frames before the cut
 
-# one card per cut: (words, how it comes in, how it leaves on the whoosh into the next cut). words: a word;
-# (word, word under it, its size against the first) for two lines; None for the end card. The light flips on
-# every card but these, where a word stays and the next lands under it in the same light:
-KEEP_LIGHT = {1}
+# the cards, in order: (words, how it comes in, how it leaves on the whoosh into the next cut[, how many cuts it
+# stays for]). words: a word; (word, word under it, its size against the first) for two lines; None for the end
+# card. The light flips on every card, but a word landing under another stays in its light, and the logo is on white.
 CARDS = [
+    # the statement, on the slowest cuts, each phrase built under its first words
     ("le réseau", "rise", None),  # letters rise from their baseline
     (("le réseau", "social", 1.8), "rise-under", "zoom"),  # "social" rises under it; the card flies at the camera
-    ("chrétien.", "slam", "whip-left"),  # ...and the next word slams in from close up
-    ("partage", "whip-in-right", None),  # what one does there: faster and faster
-    ("entraide", "track", None),  # letters close up from wide tracking
+    ("créé par un", "slam", None),  # ...and the next words slam in from close up
+    (("créé par un", "chrétien", 1.0), "rise-under", None),
+    ("pour les", "track", None),  # letters close up from wide tracking
+    (("pour les", "chrétiens.", 1.0), "rise-under", "whip-left", 2),  # held over two whooshes, to be read
+    # what one does there: faster and faster
+    ("partage", "whip-in-right", None),
+    ("entraide", "track", None),
     ("prière", "pop", "push-up"),
     ("quiz", "push-in", None),
     ("verset", "drop", "whip-right"),
     ("groupes", "whip-in-left", None),
     ("messages", "focus", None),
-    ("louange", "rise", "zoom"),
-    ("témoignage", "slam", None),
-    ("communauté", "track", "push-up"),
-    ("foi", "push-in", None),
-    ("espérance", "pop", None),
-    ("amour", "slam", "whip-left"),
-    ("joie", "whip-in-right", None),
+    ("sondages", "rise", "zoom"),
+    ("louange", "slam", None),
+    ("témoignage", "track", None),
+    ("communauté", "push-in", None),
+    ("foi", "slam", None),
+    ("espérance", "whip-in-right", None),
+    ("amour", "pop", None),
+    ("joie", "rise", None),
     ("paix", "focus", None),
-    ("créé", "slam", None),  # who made it, for whom: the fastest cuts
-    ("par un", "whip-in-right", None),
-    ("chrétien", "rise", None),
-    ("pour les", "pop", None),
-    (("pour les", "chrétiens.", 1.0), "rise-under", None),
     (None, "end", None),  # the silence: the logo and its boom, the slogan, the stores
 ]
 # the end card: the logo animation (960x500, its logo 920 px wide at rest), the slogan, the badges.
@@ -166,14 +166,18 @@ def two_lines(first, under, k):
 
 
 def cards():
-    out, light = [], "dusk"
-    for i, (words, fx_in, fx_out) in enumerate(CARDS):
+    out, light, cut = [], "dusk", 0
+    for i, (words, fx_in, fx_out, *rest) in enumerate(CARDS):
+        span = rest[0] if rest else 1
         if fx_in == "end":  # the logo on plain white: it breaks from the sky and the dusk of the words
             light = "white"
-        elif i not in KEEP_LIGHT:
+        elif fx_in != "rise-under":  # a word landing under another stays in its light
             light = "sky" if light == "dusk" else "dusk"
-        t1 = frame(CUTS[i + 1]) if i + 1 < len(CUTS) else DURATION
-        out.append(dict(id=f"c{i}", i=i, t0=frame(CUTS[i]), t1=t1, words=words, fx_in=fx_in, fx_out=fx_out, light=light))
+        t1 = frame(CUTS[cut + span]) if cut + span < len(CUTS) else DURATION
+        out.append(dict(id=f"c{i}", i=i, t0=frame(CUTS[cut]), t1=t1, words=words, fx_in=fx_in, fx_out=fx_out,
+                        light=light, span=span))
+        cut += span
+    assert cut == len(CUTS), "the cards must cover every cut"
     return out
 
 
@@ -237,6 +241,8 @@ def motion(c):
     elif fx == "rise-under":  # the first word stays exactly where it was
         b = L[1]
         per_glyph(b, f"{cid}-b", lambda j, cx: (0, 1.3 * b.size, 0, 1), min(0.45, dx), 0.035)
+        if c["span"] > 1:  # held over more than one whoosh: the camera moves in slowly while it is read
+            js.append(f'tl.fromTo({card}, {{ scale: 1 }}, {{ scale: 1.05, duration: {dx}, ease: "sine.inOut" }}, {t0});')
     elif fx == "slam":
         js.append(f'tl.fromTo({card}, {{ scale: 1.6 }}, {{ scale: 1, duration: {min(0.36, dx)}, ease: "power4.out" }}, {t0});')
         blur_in("14 14", 0.12, "power2.out")
@@ -457,7 +463,6 @@ def shot_plan(C):
 
 
 def main():
-    assert len(CARDS) == len(CUTS)
     C = cards()
     (ROOT / "compositions").mkdir(exist_ok=True)
     (ROOT / "compositions" / "fond.html").write_text(fond(C))

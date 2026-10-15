@@ -18,6 +18,11 @@ juste les mots importants. Texte de départ de l'utilisateur : « RISE le premie
 prière, quiz, verset, créé par un chrétien pour les chrétiens. » L'utilisateur a laissé le choix des mots et du rythme.
 
 ## Customizations
+- v7 : « le pour les chrétiens est même pas terminé que ça fait déjà la transition ; mettre au début réseau social créé par
+  un chrétien pour les chrétiens, puis le reste ». La phrase passe au début, sur les coupes les plus lentes (0 → 4 s) :
+  « le réseau / social », « créé par un / chrétien », « pour les / chrétiens. » ; chaque fois les mots suivants se posent
+  sous les premiers, dans la même lumière ; « pour les chrétiens. » reste sur deux whooshes (0,93 s) avec un lent zoom.
+  Puis 16 mots de plus en plus vite (« sondages » ajouté), puis le logo sur blanc.
 - v6 : « mettre le RISE à la fin dans un fond blanc pour casser le truc, virer le truc qui vibre ». Le logo passe sur un blanc
   pur (coupe nette depuis le gris de « pour les chrétiens. ») ; plus de tremblement ni de coup de zoom au boum : à la place,
   une lumière chaude part de la flamme sur le blanc pendant que les lettres jaillissent.

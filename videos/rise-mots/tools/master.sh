@@ -1,7 +1,7 @@
 #!/bin/sh
 # The renderer mixes the music about 2.7 dB under the file. This puts assets/music.wav back on the rendered
 # picture at its own level (as loud as the file itself), the picture copied as is.
-# Usage: sh tools/master.sh renders/RISE_mots_v6.mp4
+# Usage: sh tools/master.sh renders/RISE_mots_v7.mp4
 set -e
 in="$1"
 tmp="${in%.mp4}.master.mp4"
