@@ -48,7 +48,11 @@ cette référence.
 Le texte du film est dans `SCRIPT.md` (version de Tony ; « Depuis tout jeune » retiré à sa demande). Il remplace les
 listes `SCRIPT` des anciens `tools/episode1_v*.py`.
 
-## Animation (à venir)
+## Animation
 
-Images tenues et mouvement limité, comme le reel qu'il a envoyé (voir `tools/episode1_v8.py`) : quelques dessins par
-seconde, transitions en défilement. On reprend la technique, jamais les motifs propres à cet artiste.
+`tools/film.py` → `renders/film_v1.mp4` : les dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze
+dessins par seconde, chacun tenu deux images, l'encre qui « vibre » un peu (la main repasse les traits ; ce qui est
+aléatoire — les poils, les rayons, le gribouillis — reste en place d'un dessin à l'autre) ; peu de choses bougent à
+la fois ; les scènes s'enchaînent par des mouvements de caméra, pas par des coupes. Tant que sa voix n'est pas
+enregistrée, la phrase s'écrit en haut mot à mot (petites capitales, coupée à ses pauses) ; tout se recale ensuite
+sur sa voix. On reprend la technique du reel, jamais les motifs propres à cet artiste.

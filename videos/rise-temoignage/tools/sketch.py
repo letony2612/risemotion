@@ -131,7 +131,7 @@ class Hand(Pen):
             out += n[None, :] * (bow * np.sin(np.pi * s / L))[:, None]
         return out
 
-    def stroke(self, p, w, fill):
+    def stroke(self, p, w, fill, taper=1.0):
         """Inks a stroke: its width breathes along it, swells as the pen lands, thins out as it lifts."""
         p = resample(p, 3.0)
         if len(p) < 2:
@@ -139,7 +139,8 @@ class Hand(Pen):
         s = arclen(p)
         L = s[-1]
         r = w * S * ink() / 2 * (0.8 + 0.4 * gaussian_filter1d(self.rng.random(len(p)), 4))
-        r = r * (0.5 + 0.5 * smoothstep(s / (12 * S))) * (0.22 + 0.78 * smoothstep((L - s) / (24 * S)))
+        if taper:  # (how far the swelling and the thinning reach: less for lettering, whose strokes are short)
+            r = r * (0.5 + 0.5 * smoothstep(s / (12 * S * taper))) * (0.22 + 0.78 * smoothstep((L - s) / (24 * S * taper)))
         m = 60 * S
         inside = (p[:, 0] > -m) & (p[:, 0] < W * S + m) & (p[:, 1] > -m) & (p[:, 1] < H * S + m)
         t = np.diff(p, axis=0)
@@ -155,13 +156,13 @@ class Hand(Pen):
         for x0, y0, x1, y1 in np.stack([p[j, 0] - r[j], p[j, 1] - r[j], p[j, 0] + r[j], p[j, 1] + r[j]], 1).tolist():
             self.d.ellipse([x0, y0, x1, y1], fill=fill)
 
-    def line(self, pts, w=4, amp=1.6, fill=255, again=0.25, over=6.0, drift=1.0, corners=False, breaks=True):
+    def line(self, pts, w=4, amp=1.6, fill=255, again=0.25, over=6.0, drift=1.0, corners=False, breaks=True, taper=1.0):
         pts = [(float(x), float(y)) for x, y in pts]
         if len(pts) < 2:
             return
         if corners:
             for piece in _corners(pts):
-                self.line(piece, w, amp, fill, again, over, drift, False, breaks)
+                self.line(piece, w, amp, fill, again, over, drift, False, breaks, taper)
             return
         if over:
             pts = _overshoot(pts, self.rng.uniform(0, over), self.rng.uniform(0, over))
@@ -171,13 +172,13 @@ class Hand(Pen):
             i = int(len(p) * self.rng.uniform(0.35, 0.65))
             parts = [p[:i + 1], p[max(0, i - int(self.rng.integers(0, 3))):] + self.rng.normal(0, 1.4, 2) * S]
         for q in parts:
-            self.stroke(wobble(self.wander(q, 2.6 * drift), self.rng, amp), w, fill)
+            self.stroke(wobble(self.wander(q, 2.6 * drift), self.rng, amp), w, fill, taper)
         if again and len(p) > 3 and self.rng.random() < again:  # gone over again, in part, a little beside
             n = len(p)
             i0 = int(self.rng.integers(0, max(1, n // 3)))
             i1 = int(self.rng.integers(max(i0 + 2, 2 * n // 3), n + 1))
             q = p[i0:i1] + self.rng.normal(0, 2.0, 2) * S
-            self.stroke(wobble(self.wander(q, 2.6 * drift), self.rng, amp * 1.3), w * 0.55, fill)
+            self.stroke(wobble(self.wander(q, 2.6 * drift), self.rng, amp * 1.3), w * 0.55, fill, taper)
 
     def hatch(self, mask_pts, angle, gap, w=2.2, jitter=0.35, length=None, amp=0.7):
         """Hatching put down quickly: strokes not quite parallel nor evenly spaced, each stopping near the shape's
@@ -261,13 +262,13 @@ def body(pen):
     pen.hatch([(560, 1150), (690, 1150), (686, 1200), (564, 1200)], 70, 14, w=1.4)
 
 
-def head(pen, rng, hx=620.0, hy=960.0, tilt=9.0, hair="wavy", beard=True, look=(0.0, 1.0), lids=12.0, smile=0.0, worry=0.0):
+def head(pen, rng, hx=620.0, hy=960.0, tilt=9.0, hair="wavy", beard=True, look=(0.0, 1.0), lids=12.0, smile=0.0, worry=0.0, blink=False):
     """His head as the first drawing has it: round jaw and cheeks, the beard (or none), the flat mouth, the nose,
     tired eyes looking down at his phone under heavy brows, both ears, his hair (wavy, Korean style, or slicked back
     as in that drawing), his round glasses over it. The first drawing placed his features for its 9-degree tilt:
     they turn with any other. look: where his eyes go (-1..1 across, down; the first drawing's is down at his
     phone), lids: how far his upper lids come down (12 heavy, 14 open), smile: the corners of his mouth up (> 0) or
-    down (< 0), worry: the inner ends of his brows up."""
+    down (< 0), worry: the inner ends of his brows up, blink: his eyes shut."""
     def R(pts):
         return rot(pts, hx, hy, tilt - 9.0)
 
@@ -298,10 +299,13 @@ def head(pen, rng, hx=620.0, hy=960.0, tilt=9.0, hair="wavy", beard=True, look=(
     pen.line(R(bez((hx + 2, hy - 20), (hx - 6, hy + 10), (hx - 22, hy + 30), (hx - 8, hy + 40))), w=3)  # the nose
     pen.line(R(bez((hx - 8, hy + 40), (hx + 8, hy + 46), (hx + 26, hy + 40), (hx + 30, hy + 30))), w=3)
     for inner, (ex, ey) in ((1, (hx - 72, hy - 30)), (-1, (hx + 60, hy - 22))):  # the eyes: tired, half shut
-        pen.line(R(bez((ex - 30, ey), (ex - 12, ey - lids), (ex + 14, ey - lids), (ex + 32, ey + 2))), w=4.5, again=0.25)  # heavy lid
-        pen.line(R(bez((ex - 26, ey + 6), (ex - 8, ey + 14), (ex + 12, ey + 14), (ex + 28, ey + 6))), w=2)
-        (px, py), = R([(ex + 9 * look[0], ey + 5 * look[1])])
-        pen.poly(arc(px, py, 9, 7.5, 0, 360, 14))  # where he looks
+        if blink:  # shut: the lid down on the lower one
+            pen.line(R(bez((ex - 30, ey + 3), (ex - 12, ey + 10), (ex + 14, ey + 10), (ex + 32, ey + 5))), w=4.5, again=0.25)
+        else:
+            pen.line(R(bez((ex - 30, ey), (ex - 12, ey - lids), (ex + 14, ey - lids), (ex + 32, ey + 2))), w=4.5, again=0.25)  # heavy lid
+            pen.line(R(bez((ex - 26, ey + 6), (ex - 8, ey + 14), (ex + 12, ey + 14), (ex + 28, ey + 6))), w=2)
+            (px, py), = R([(ex + 9 * look[0], ey + 5 * look[1])])
+            pen.poly(arc(px, py, 9, 7.5, 0, 360, 14))  # where he looks
         pen.line(R(bez((ex - 22, ey + 26), (ex - 6, ey + 33), (ex + 10, ey + 33), (ex + 24, ey + 26))), w=1.6)  # the bags
         wl, wr = (0.0, worry) if inner > 0 else (worry, 0.0)  # worried: the brow's inner end goes up
         pen.line(R(bez((ex - 34, ey - 34 - 9 * wl), (ex - 12, ey - 44 - 4 * wl), (ex + 12, ey - 44 - 4 * wr), (ex + 36, ey - 36 - 9 * wr))), w=6,
@@ -382,9 +386,10 @@ def wavy_hair(pen, rng, Hd):
                  breaks=False)
 
 
-def phone_on_table(pen, orange):
-    """His phone on the table, lit: RISE's flame on it, coloured in orange; its light, scratched out round it."""
-    rng = pen.rng
+def phone_on_table(pen, orange, glow=0.9, rng=None):
+    """His phone on the table, lit: RISE's flame on it, coloured in orange; its light, scratched out round it (glow:
+    how far it reaches). rng: what is random in it, to keep it put from one drawing to the next."""
+    rng = rng or pen.rng
     ph = rounded([(170, 1530), (390, 1500), (420, 1610), (195, 1645)], 16)
     pen.poly(ph, fill=0)
     pen.line(ph + ph[:4], w=4, over=0.0, breaks=False, again=0.3)
@@ -404,15 +409,15 @@ def phone_on_table(pen, orange):
     pen.line(pts + pts[:2], w=2.0, amp=0.5, over=0.0, breaks=False, again=0.0, drift=0.3)
     for a in np.linspace(-170, 10, 46):  # the light, scratched out round it
         ra = math.radians(a + rng.uniform(-2, 2))
-        r0, r1 = 140, 140 + 230 * 0.9 * rng.uniform(0.5, 1.0)
+        r0, r1 = 140, 140 + 230 * glow * rng.uniform(0.5, 1.0)
         pen.line([(295 + r0 * math.cos(ra), 1575 + r0 * 0.55 * math.sin(ra)), (295 + r1 * math.cos(ra), 1575 + r1 * 0.55 * math.sin(ra))], w=1.4, amp=0.5,
                  again=0.0, over=0.0, drift=0.3, breaks=False)
 
 
-def bubble(pen, cx, cy, r, symbol, squash=1.0):
+def bubble(pen, cx, cy, r, symbol, squash=1.0, rng=None):
     """A thought bubble: a ring that does not quite close, short strokes all round its inside, a sign in it
     (squash < 1: pressed flat)."""
-    rng = pen.rng
+    rng = rng or pen.rng
     pen.line(loop_pts(rng, cx, cy, r, r * 0.97 * squash), w=3.5, over=0.0, breaks=False, drift=0.6, again=0.3)
     for a in np.linspace(0, 360, int(r * 0.75), endpoint=False):
         ra = math.radians(a + rng.uniform(-2, 2))
@@ -431,10 +436,10 @@ def bubble(pen, cx, cy, r, symbol, squash=1.0):
         pen.line([(cx - s * 0.65, cy - s * 0.4), (cx + s * 0.65, cy - s * 0.4)], w=5)
 
 
-def speech(pen, cx, cy, rx, ry, tip, content="talk"):
+def speech(pen, cx, cy, rx, ry, tip, content="talk", p=1.0, rng=None):
     """A speech bubble drawn freehand, its tail pointing to who speaks; in it, 'talk' (a few lines of talk), 'dots'
-    (…) or 'scribble' (a tangle: what he is afraid to say). It hides what is behind it."""
-    rng = pen.rng
+    (…) or 'scribble' (a tangle: what he is afraid to say), as far as p of it. It hides what is behind it."""
+    rng = rng or pen.rng
     pen.poly(arc(cx, cy, rx, ry, 0, 360, 48), fill=0)
     pen.line(loop_pts(rng, cx, cy, rx, ry), w=3.2, over=0.0, breaks=False, drift=0.6, again=0.3)
     th = math.atan2((tip[1] - cy) / ry, (tip[0] - cx) / rx)
@@ -452,21 +457,23 @@ def speech(pen, cx, cy, rx, ry, tip, content="talk"):
             y = cy + (k - 1) * ry * 0.34
             pen.line([(cx - rx * 0.5 * f, y), (cx + rx * 0.5 * f, y + rng.uniform(-2, 2))], w=2.4, again=0.0, drift=0.5)
     elif content == "dots":
-        for k in (-1, 0, 1):
+        for k in (-1, 0, 1)[:int(round(3 * p))]:
             pen.poly(arc(cx + k * rx * 0.36, cy + 2, 6.5, 6.0, 0, 360, 10))
     elif content == "scribble":
         ph = rng.uniform(0, 2 * math.pi, 6)
         u = np.linspace(0, 1, 1100)
         xs = cx + rx * 0.62 * (0.45 * np.sin(2 * np.pi * 4.1 * u + ph[0]) + 0.33 * np.sin(2 * np.pi * 9.3 * u + ph[1]) + 0.22 * np.sin(2 * np.pi * 15.7 * u + ph[2]))
         ys = cy + ry * 0.58 * (0.45 * np.cos(2 * np.pi * 3.3 * u + ph[3]) + 0.33 * np.sin(2 * np.pi * 7.9 * u + ph[4]) + 0.22 * np.cos(2 * np.pi * 13.1 * u + ph[5]))
-        pen.line(list(zip(xs, ys)), w=2.2, amp=1.0, again=0.0, over=0.0, drift=0.4, breaks=False)
+        n = int(len(u) * p)
+        if n > 1:
+            pen.line(list(zip(xs[:n], ys[:n])), w=2.2, amp=1.0, again=0.0, over=0.0, drift=0.4, breaks=False)
 
 
-def person(pen, x, y, s, hair="short", look=(0.0, 0.0), mouth="smile", beard=False, tilt=0.0):
+def person(pen, x, y, s, hair="short", look=(0.0, 0.0), mouth="smile", beard=False, tilt=0.0, rng=None):
     """Someone else, from the chest up, drawn the way Tony is (a round face, plain features), with their own hair;
     never their hands: they sit behind a table that hides the rest. (x, y): the middle of their face; s: their size
     against Tony's; look: where their eyes go; mouth: 'talk', 'smile' or 'flat'. They hide what is behind them."""
-    rng = pen.rng
+    rng = rng or pen.rng
 
     def L(pts):  # their own coordinates, Tony's head's size, to the page
         return rot([(x + px * s, y + py * s) for px, py in pts], x, y, tilt)
