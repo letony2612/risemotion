@@ -1,12 +1,13 @@
 """Tony's very first drawing (draw_test.py), the one he wants, redrawn in black on white paper and kept as it
 was: at his table, his phone lit in front of him, the thought bubbles over him, his hair slicked back, his round
 glasses, tired eyes looking down, his beard; the same table, the same folds, the same hatching. Only his hand is
-gone (no hands in this film), so his head no longer rests on it.
+gone (no hands in this film), so his head no longer rests on it; his hair can be wavy, Korean style, and his beard
+can go.
 Drawn the way that drawing was, freehand, never gone back over to clean it: a felt pen and no ruler, no compass;
 each stroke wanders a little on its way, swells where the pen lands and thins where it lifts, runs past its ends;
 a long one is sometimes done in two goes; a circle never quite closes; hatching stops near the edge, not on it;
 here and there a line was drawn twice, a little beside itself.
-Usage: python3 tools/sketch.py  -> renders/tony_sketch.png
+Usage: python3 tools/sketch.py  -> renders/tony_sketch_wavy.png, renders/tony_sketch_wavy_shaved.png
 """
 import json
 import math
@@ -217,6 +218,19 @@ class Hand(Pen):
             k += gap * self.rng.uniform(0.75, 1.25)
 
 
+def spline(pts, n=8):
+    """A smooth curve through the points (Catmull-Rom)."""
+    p = np.asarray(pts, float)
+    p = np.vstack([2 * p[0] - p[1], p, 2 * p[-1] - p[-2]])
+    out = []
+    for i in range(1, len(p) - 2):
+        p0, p1, p2, p3 = p[i - 1], p[i], p[i + 1], p[i + 2]
+        for t in np.linspace(0, 1, n, endpoint=False):
+            out.append(0.5 * (2 * p1 + (p2 - p0) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t ** 2 + (3 * p1 - p0 - 3 * p2 + p3) * t ** 3))
+    out.append(p[-2])
+    return [tuple(q) for q in out]
+
+
 # --- the first drawing's pieces, where it put them
 def table(pen):
     """The table: its edge, the boards running towards us, the grain of the wood."""
@@ -242,27 +256,35 @@ def body(pen):
     pen.hatch([(560, 1150), (690, 1150), (686, 1200), (564, 1200)], 70, 14, w=1.4)
 
 
-def head(pen, rng, hx=620.0, hy=960.0, tilt=9.0):
-    """His head as the first drawing has it: round jaw and cheeks, the beard, the flat mouth, the nose, tired eyes
-    looking down at his phone under heavy brows, his round glasses, both ears, his hair slicked back. The first
-    drawing placed his features for its 9-degree tilt: they turn with any other."""
+def head(pen, rng, hx=620.0, hy=960.0, tilt=9.0, hair="wavy", beard=True):
+    """His head as the first drawing has it: round jaw and cheeks, the beard (or none), the flat mouth, the nose,
+    tired eyes looking down at his phone under heavy brows, both ears, his hair (wavy, Korean style, or slicked back
+    as in that drawing), his round glasses over it. The first drawing placed his features for its 9-degree tilt:
+    they turn with any other."""
     def R(pts):
         return rot(pts, hx, hy, tilt - 9.0)
+
+    def Hd(pts):  # given from the middle of his head, turned with it
+        return rot([(hx + x, hy + y) for x, y in pts], hx, hy, tilt)
     pen.line(arc(hx, hy, 165, 190, 15, 175, 70, tilt), w=5, again=0.35)  # round jaw, cheeks
     pen.line(arc(hx, hy, 165, 190, 175, 205, 12, tilt), w=4)  # his temples
     pen.line(arc(hx, hy, 165, 190, -25, 15, 12, tilt), w=4)
-    for k in range(170):  # the beard: short strokes over the chin and the jaw
-        a = math.radians(rng.uniform(25, 155) + tilt)
-        rr = rng.uniform(0.78, 0.99)
-        x, y = hx + 160 * rr * math.cos(a), hy + 186 * rr * math.sin(a)
-        if y < hy + 95:
-            continue
-        pen.line([(x, y), (x + rng.uniform(-4, 4), y + rng.uniform(10, 20))], w=1.7, amp=0.3, again=0.0, over=0.0, drift=0.0, breaks=False)
-    mo = R(bez((hx - 70, hy + 70), (hx - 30, hy + 52), (hx + 30, hy + 55), (hx + 72, hy + 78), 101))
-    for t in rng.uniform(0, 1, 70):  # the moustache: the same strokes, packed where the first drawing had its line
-        x, y = mo[int(t * 100)]
-        x, y = x + rng.uniform(-3, 3), y + rng.uniform(-6, 4)
-        pen.line([(x, y), (x + rng.uniform(-2, 2) + (x - hx) * 0.05, y + rng.uniform(8, 13))], w=1.7, amp=0.3, again=0.0, over=0.0, drift=0.0, breaks=False)
+    if beard:
+        for k in range(170):  # the beard: short strokes over the chin and the jaw
+            a = math.radians(rng.uniform(25, 155) + tilt)
+            rr = rng.uniform(0.78, 0.99)
+            x, y = hx + 160 * rr * math.cos(a), hy + 186 * rr * math.sin(a)
+            if y < hy + 95:
+                continue
+            pen.line([(x, y), (x + rng.uniform(-4, 4), y + rng.uniform(10, 20))], w=1.7, amp=0.3, again=0.0, over=0.0, drift=0.0, breaks=False)
+        mo = R(bez((hx - 70, hy + 70), (hx - 30, hy + 52), (hx + 30, hy + 55), (hx + 72, hy + 78), 101))
+        for t in rng.uniform(0, 1, 70):  # the moustache: the same strokes, packed where the first drawing had its line
+            x, y = mo[int(t * 100)]
+            x, y = x + rng.uniform(-3, 3), y + rng.uniform(-6, 4)
+            pen.line([(x, y), (x + rng.uniform(-2, 2) + (x - hx) * 0.05, y + rng.uniform(8, 13))], w=1.7, amp=0.3, again=0.0, over=0.0, drift=0.0,
+                     breaks=False)
+    else:  # shaved: only the hollow under his lip
+        pen.line(R(bez((hx - 12, hy + 156), (hx - 4, hy + 161), (hx + 8, hy + 161), (hx + 16, hy + 155))), w=1.8, over=1.0, again=0.0)
     pen.line(R(bez((hx - 40, hy + 108), (hx - 10, hy + 100), (hx + 20, hy + 102), (hx + 48, hy + 112))), w=3.5)  # mouth, flat
     pen.line(R(bez((hx - 30, hy + 125), (hx, hy + 132), (hx + 25, hy + 130), (hx + 40, hy + 124))), w=2.2)  # lower lip
     pen.line(R(bez((hx + 2, hy - 20), (hx - 6, hy + 10), (hx - 22, hy + 30), (hx - 8, hy + 40))), w=3)  # the nose
@@ -274,26 +296,80 @@ def head(pen, rng, hx=620.0, hy=960.0, tilt=9.0):
         pen.poly(arc(px, py, 9, 7.5, 0, 360, 14))  # the look, down
         pen.line(R(bez((ex - 22, ey + 26), (ex - 6, ey + 33), (ex + 10, ey + 33), (ex + 24, ey + 26))), w=1.6)  # the bags
         pen.line(R(bez((ex - 34, ey - 34), (ex - 12, ey - 44), (ex + 12, ey - 44), (ex + 36, ey - 36))), w=6, again=0.3)  # brow
-    for gx, gy in ((hx - 70, hy - 24), (hx + 62, hy - 16)):  # the glasses: thin round wire frames, his own
-        pen.line(R(loop_pts(rng, gx, gy, 58, 52)), w=2.6, amp=0.8, again=0.35, over=0.0, drift=0.6, breaks=False)
-    pen.line(R(bez((hx - 14, hy - 34), (hx - 6, hy - 44), (hx + 2, hy - 44), (hx + 6, hy - 30))), w=2.4)  # the bridge
-    pen.line(R([(hx - 128, hy - 30), (hx - 162, hy - 40)]), w=2.4)  # the temple arms
+    pen.line(R([(hx - 128, hy - 30), (hx - 162, hy - 40)]), w=2.4)  # the glasses' arms, going under his hair
     pen.line(R([(hx + 124, hy - 16), (hx + 158, hy - 22)]), w=2.4)
     pen.line(R(arc(hx - 168, hy - 2, 16, 34, 100, 280, 20)), w=3.5)  # his ears
     pen.line(R(arc(hx + 168, hy + 4, 16, 34, -80, 100, 20)), w=3.5)
-    # the hair: slicked back, strand by strand, a few strands falling on his left temple
-    hairline = arc(hx, hy - 30, 158, 100, 192, 338, 40, tilt)
-    top = arc(hx + 6, hy - 40, 176, 215, 188, 342, 40, tilt)
-    pen.poly(hairline + top[::-1], fill=0)
-    pen.line(top, w=4.5, again=0.3)
-    for k in range(95):
-        i = int(rng.uniform(0.02, 0.98) * (len(hairline) - 1))
-        x0, y0 = hairline[i]
-        x1, y1 = top[min(len(top) - 1, i + rng.integers(3, 9))]
-        mx, my = (x0 + x1) / 2 + rng.uniform(-10, 10), (y0 + y1) / 2 - rng.uniform(10, 30)
-        pen.line(bez((x0, y0 - 2), (x0 + 4, y0 - 30), (mx, my), (x1, y1 + 4)), w=rng.uniform(1.2, 2.8), amp=0.8, again=0.0, over=3.0)
-    for sx, sy in ((hx - 150, hy - 70), (hx - 138, hy - 76), (hx - 122, hy - 84)):
-        pen.line(R(bez((sx, sy), (sx - 14, sy + 30), (sx - 16, sy + 60), (sx - 4, sy + 92))), w=1.6)
+    if hair == "wavy":
+        wavy_hair(pen, rng, Hd)
+    else:  # slicked back, strand by strand, a few strands falling on his left temple
+        hairline = arc(hx, hy - 30, 158, 100, 192, 338, 40, tilt)
+        top = arc(hx + 6, hy - 40, 176, 215, 188, 342, 40, tilt)
+        pen.poly(hairline + top[::-1], fill=0)
+        pen.line(top, w=4.5, again=0.3)
+        for k in range(95):
+            i = int(rng.uniform(0.02, 0.98) * (len(hairline) - 1))
+            x0, y0 = hairline[i]
+            x1, y1 = top[min(len(top) - 1, i + rng.integers(3, 9))]
+            mx, my = (x0 + x1) / 2 + rng.uniform(-10, 10), (y0 + y1) / 2 - rng.uniform(10, 30)
+            pen.line(bez((x0, y0 - 2), (x0 + 4, y0 - 30), (mx, my), (x1, y1 + 4)), w=rng.uniform(1.2, 2.8), amp=0.8, again=0.0, over=3.0)
+        for sx, sy in ((hx - 150, hy - 70), (hx - 138, hy - 76), (hx - 122, hy - 84)):
+            pen.line(R(bez((sx, sy), (sx - 14, sy + 30), (sx - 16, sy + 60), (sx - 4, sy + 92))), w=1.6)
+    for gx, gy in ((hx - 70, hy - 24), (hx + 62, hy - 16)):  # the glasses: thin round wire frames, his own
+        pen.line(R(loop_pts(rng, gx, gy, 58, 52)), w=2.6, amp=0.8, again=0.35, over=0.0, drift=0.6, breaks=False)
+    pen.line(R(bez((hx - 14, hy - 34), (hx - 6, hy - 44), (hx + 2, hy - 44), (hx + 6, hy - 30))), w=2.4)  # the bridge
+
+# his hair, Korean style, wavy and swept back: where it starts on his forehead and temples (left to right), and its
+# outline, from the left of his face over the top to the right
+HAIRLINE = [(-156, -40), (-152, -84), (-136, -118), (-104, -138), (-62, -146), (-20, -150), (22, -150), (64, -146), (104, -136), (136, -116),
+            (152, -82), (158, -40)]
+HAIR_SIL = [(-162, -44), (-172, -86), (-182, -132), (-184, -178), (-170, -222), (-140, -258), (-96, -288), (-44, -308), (10, -314), (64, -304),
+            (112, -280), (148, -246), (172, -204), (182, -158), (178, -110), (168, -72), (160, -42)]
+
+
+def wave_line(p0, p1, amp, n=40, phase=0.0):
+    """From p0 to p1 in one S: out to one side, back across to the other."""
+    p0, p1 = np.asarray(p0, float), np.asarray(p1, float)
+    d = p1 - p0
+    nrm = np.array([-d[1], d[0]]) / (np.hypot(*d) or 1.0)
+    t = np.linspace(0, 1, n)[:, None]
+    return p0 + t * d + nrm * (amp * np.sin(2 * np.pi * t + phase) * (1 - np.abs(2 * t - 1) ** 3))
+
+
+def wavy_hair(pen, rng, Hd):
+    """His hair, Korean style: thick and wavy, swept back. From where it starts on his forehead it rises and goes
+    back over his head in waves, lock by lock, every lock swinging the same way so the waves run across his head; a
+    little height at the front; two loose strands fall back over his forehead; a few astray on top."""
+    line = resample(np.array(spline(HAIRLINE, 10)), 4.0)
+    sil = np.array(spline(HAIR_SIL, 10))
+    tg = np.gradient(sil, axis=0)
+    tg /= np.hypot(tg[:, 0], tg[:, 1])[:, None]
+    sil = resample(sil + np.stack([tg[:, 1], -tg[:, 0]], 1) * (5 * (np.abs(np.sin(np.pi * arclen(sil) / 60)) ** 0.7 - 0.45))[:, None], 4.0)
+    pen.poly(Hd([tuple(q) for q in sil] + [tuple(q) for q in line[::-1]]), fill=0)
+
+    def at(curve, u):  # the point a fraction u of the way along a curve
+        s = arclen(curve)
+        return np.array([np.interp(u * s[-1], s, curve[:, 0]), np.interp(u * s[-1], s, curve[:, 1])])
+    us = np.linspace(0.03, 0.97, 12)
+    bounds = []
+    for k, u in enumerate(us):  # the lines between the locks: up from his forehead, back over the top, in nearly the same S
+        h, s = at(line, u), at(sil, 0.5 + (u - 0.5) * 0.92)
+        bounds.append(wave_line(h, s, min(9.0, 0.07 * float(np.hypot(*(s - h)))), phase=0.12 * k + rng.uniform(-0.1, 0.1)))
+    for a, b in zip(bounds[:-1], bounds[1:]):  # each lock's strands, swinging with it
+        for f in rng.uniform(0.0, 1.0, 5):
+            st = (1 - f) * a + f * b
+            st = st[int(len(st) * rng.uniform(0.0, 0.12)):len(st) - int(len(st) * rng.uniform(0.0, 0.1))]
+            pen.line(Hd([tuple(q) for q in st]), w=rng.uniform(1.0, 2.4), amp=0.6, again=0.0, over=1.5, drift=0.3, breaks=False)
+    for b in bounds:
+        pen.line(Hd([tuple(q) for q in b]), w=2.6, amp=0.7, again=0.15, over=2.0, drift=0.3, breaks=False)
+    pen.line(Hd([tuple(q) for q in sil]), w=4.4, again=0.3)
+    for pts, w in ((((-34, -148), (-54, -134), (-68, -112), (-60, -94)), 2.2), (((-22, -150), (-36, -138), (-46, -124), (-42, -110)), 1.5)):
+        st = bez(*pts, 16)  # two strands come loose and fall back over his forehead, their ends curling round
+        xb, yb = st[-1]
+        pen.line(Hd(st + [(xb + 2, yb + 5), (xb + 8, yb + 6), (xb + 11, yb + 1)]), w=w, again=0.0, over=0.0, drift=0.2, breaks=False)
+    for x0, y0, x1, y1 in ((-104, -284, -118, -304), (14, -312, 32, -330), (150, -240, 170, -252)):  # astray
+        pen.line(Hd(bez((x0, y0), (x0 + (x1 - x0) * 0.3, y0 - 10), (x1 - 6, y1 + 4), (x1, y1), 10)), w=1.2, again=0.0, over=1.0, drift=0.0,
+                 breaks=False)
 
 
 def phone_on_table(pen, orange):
@@ -357,7 +433,7 @@ def finish(img, orange, variant):
     return Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8))
 
 
-def drawing(variant=0):
+def drawing(variant=0, hair="wavy", beard=True):
     """The first drawing, on white: at his table at night, his head a little on one side, looking down at his
     phone; what he does not dare (questions, talking to people) and his faith, in the bubbles over him."""
     img = Image.new("L", (W * S, H * S), 0)
@@ -365,19 +441,20 @@ def drawing(variant=0):
     pen = Hand(img, np.random.default_rng(100 + variant))
     table(pen)
     body(pen)
-    head(pen, pen.rng, hx=620.0, hy=962.0, tilt=6.0)
+    head(pen, pen.rng, hx=620.0, hy=962.0, tilt=6.0, hair=hair, beard=beard)
     phone_on_table(pen, orange)
-    for bx, by, r, sym in ((250, 470, 120, "?"), (420, 330, 95, "chat"), (165, 720, 82, "cross"), (360, 640, 52, None), (450, 790, 26, None),
-                           (500, 850, 15, None)):
+    trail = ((345, 625, 50), (414, 692, 22), (456, 724, 12)) if hair == "wavy" else ((360, 640, 52), (450, 790, 26), (500, 850, 15))
+    for bx, by, r, sym in ((250, 470, 120, "?"), (420, 330, 95, "chat"), (165, 720, 82, "cross")) + tuple((x, y, r, None) for x, y, r in trail):
         bubble(pen, bx, by, r, sym)
     return finish(img, orange, variant)
 
 
 def main():
-    out = ROOT / "renders" / "tony_sketch.png"
-    out.parent.mkdir(exist_ok=True)
-    drawing(0).save(out)
-    print(out)
+    out = ROOT / "renders"
+    out.mkdir(exist_ok=True)
+    for name, beard in (("tony_sketch_wavy", True), ("tony_sketch_wavy_shaved", False)):
+        drawing(0, "wavy", beard).save(out / f"{name}.png")
+        print(out / f"{name}.png")
 
 
 if __name__ == "__main__":
