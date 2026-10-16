@@ -38,6 +38,11 @@ cette référence.
 - Pas de gros trait entre le nez et la bouche (« bizarre ») : la moustache est faite de petits traits.
 - Pas de décor chargé (fenêtre, étagère, plante, tasse : « ça fait trop »).
 
+## Le texte
+
+Le texte du film est dans `SCRIPT.md` (version de Tony ; « Depuis tout jeune » retiré à sa demande). Il remplace les
+listes `SCRIPT` des anciens `tools/episode1_v*.py`.
+
 ## Animation (à venir)
 
 Images tenues et mouvement limité, comme le reel qu'il a envoyé (voir `tools/episode1_v8.py`) : quelques dessins par
