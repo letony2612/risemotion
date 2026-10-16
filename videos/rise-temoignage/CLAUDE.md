@@ -27,6 +27,11 @@ cette référence.
 - **Barbe** : courte, en petits traits, la moustache aussi en petits traits — **choisie par Tony** (la version rasée
   existe encore : `drawing(beard=False)`).
 
+- **Les autres personnes** : dessinées comme Tony (visage rond, traits simples, même plume), chacune avec ses
+  cheveux à elle ; toujours vues du buste, derrière une table qui cache le reste (jamais de mains).
+- **Les images du film** : une par phrase de `SCRIPT.md`, dans `SCENES` de `tools/sketch.py` (rendus
+  `renders/scene_01.png`…). La 1 est le dessin validé, inchangé.
+
 ## À ne pas faire (ses retours)
 
 - **Pas de mains**, nulle part dans le film (« ça fait peur ») : les bras descendent sous la table.
