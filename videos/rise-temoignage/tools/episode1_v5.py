@@ -240,11 +240,84 @@ def under(bg, lines, Q):
     return ImageChops.lighter(bg, lines)
 
 
-def colour(base_l, red=None):
+def colour(base_l, red=None, orange=None):
     rgb = base_l.convert("RGB")
     if red is not None:
         rgb.paste((226, 40, 40), (0, 0), red)
+    if orange is not None:
+        rgb.paste((255, 109, 0), (0, 0), orange)
     return rgb
+
+
+# --- RISE, drawn by hand: the outlines of the real logo's letters (tools/logo_outline.py), hatched inside,
+# and the flame on its I in orange ink
+import json  # noqa: E402
+
+OUTLINE = json.loads((ROOT / "assets/rise_logo_outline.json").read_text())
+
+
+def rise_drawn(c, key, v, p, cx, cy, width):
+    """RISE at (cx, cy), `width` wide, drawn to progress p: (white ink, orange ink) layers."""
+    if p <= 0:
+        return None, None
+    ck = (key, v, p >= 1, tuple(round(x, 3) for x in dt.CAM))
+    if p >= 1 and ck in c:
+        return c[ck]
+    x0, y0 = cx - width / 2, cy - OUTLINE["aspect"] * width / 2
+
+    def at(q):
+        return (x0 + q[0] * width, y0 + q[1] * width)
+    rng = np.random.default_rng(seed(key) * 10 + v)
+    white = Image.new("L", (W * S, H * S), 0)
+    pen = Pen(white, rng)
+    v4.PROG[0] = min(1.0, p)
+    for ctr in OUTLINE["letters"]:
+        pen.line([at(q) for q in ctr] + [at(ctr[0])], w=3.0, amp=0.9)
+    # hatching inside the letters (even-odd, so the R keeps its hole), scratched in after the outlines
+    hp = clip01((p - 0.45) / 0.55)
+    if hp > 0:
+        mask = Image.new("L", (W * S, H * S), 0)
+        for ctr in OUTLINE["letters"]:
+            m = Image.new("L", (W * S, H * S), 0)
+            ImageDraw.Draw(m).polygon([(dt.T(*at(q))[0] * S, dt.T(*at(q))[1] * S) for q in ctr], fill=255)
+            mask = ImageChops.logical_xor(mask.convert("1"), m.convert("1")).convert("L")
+        hatch = Image.new("L", (W * S, H * S), 0)
+        hpen = Pen(hatch, rng)
+        h = OUTLINE["aspect"] * width
+        v4.PROG[0] = hp
+        for k in np.arange(-h, width, 7.5):
+            hpen.line([(x0 + k, y0 + h + 4), (x0 + k + h + 8, y0 - 4)], w=1.6, amp=0.5)
+        white = ImageChops.lighter(white, ImageChops.multiply(hatch, mask))
+    orange = Image.new("L", (W * S, H * S), 0)
+    fp = clip01((p - 0.6) / 0.4)
+    if fp > 0:
+        opn = Pen(orange, rng)
+        v4.PROG[0] = fp
+        for ctr in OUTLINE["flame"]:
+            pts = [at(q) for q in ctr]
+            opn.line(pts + pts[:1], w=3.2, amp=0.8)
+            mxc = sum(q[0] for q in pts) / len(pts)
+            myc = sum(q[1] for q in pts) / len(pts)
+            inner = [(mxc + (x - mxc) * 0.5, myc + 0.12 * width * 0.1 + (y - myc) * 0.5) for x, y in pts]
+            opn.line(inner + inner[:1], w=2.4, amp=0.6)
+    v4.PROG[0] = 1.0
+    out = (white.resize((W, H), Image.LANCZOS), orange.resize((W, H), Image.LANCZOS))
+    if p >= 1:
+        c[ck] = out
+    return out
+
+
+def phone_round(pen, x, y, w, h, r=64, lw=5):
+    """A phone with rounded corners, its earpiece and its home bar."""
+    def corner(cx, cy, a0):
+        return arc(cx, cy, r, r, a0, a0 + 90, 10)
+    pts = ([(x - w / 2 + r, y - h / 2), (x + w / 2 - r, y - h / 2)] + corner(x + w / 2 - r, y - h / 2 + r, 270)
+           + [(x + w / 2, y + h / 2 - r)] + corner(x + w / 2 - r, y + h / 2 - r, 0)
+           + [(x - w / 2 + r, y + h / 2)] + corner(x - w / 2 + r, y + h / 2 - r, 90)
+           + [(x - w / 2, y - h / 2 + r)] + corner(x - w / 2 + r, y - h / 2 + r, 180))
+    pen.line(pts + pts[:1], w=lw)
+    pen.line([(x - 36, y - h / 2 + 28), (x + 36, y - h / 2 + 28)], w=lw - 1)
+    pen.line([(x - 60, y + h / 2 - 22), (x + 60, y + h / 2 - 22)], w=lw - 2)
 
 
 # --- small drawings that go through the camera
@@ -284,9 +357,9 @@ def close(p):
 # --- the shots: each gives the picture (RGB) at drawing time t, variant v
 def shot_hook(t, v, c, te):
     off = clip01((te - t) / OFF)
-    els = [drawn(c, "phone", v, min(on(t, L[0], 0.8), off), lambda p: v4.phone_body(p, 540, 1180, 380, 720))]
-    if t > L[0] + 0.9:
-        els.append(drawn(c, "glow", v, min(on(t, L[0] + 0.9, 0.4), off), lambda p: v4.glow(p, 540, 1180, 400, 470, 80, 1.8)))
+    els = [drawn(c, "phone", v, min(on(t, L[0], 0.8), off), lambda p: phone_round(p, 540, 1180, 440, 840))]
+    if t > L[0] + 1.3:
+        els.append(drawn(c, "glow", v, min(on(t, L[0] + 1.3, 0.4), off), lambda p: v4.glow(p, 540, 1180, 450, 520, 80, 1.75)))
     for k, (x, y, w, h, side) in enumerate([(200, 560, 300, 130, -1), (860, 520, 290, 120, 1), (180, 860, 280, 115, -1),
                                             (880, 820, 270, 125, 1), (200, 1500, 270, 110, -1), (880, 1480, 280, 115, 1)]):
         els.append(drawn(c, f"chat{k}", v, min(on(t, L[1] + 0.15 * k, 0.3), off), lambda p, x=x, y=y, w=w, h=h, side=side: v4.chat(p, x, y, w, h, side)))
@@ -298,7 +371,8 @@ def shot_hook(t, v, c, te):
             for i in range(n):
                 p.disc(754 + 36 * i - 10, 1720, 754 + 36 * i + 10, 1740)
         els.append(drawn(c, f"mine{n}", v, min(on(t, L[1] + 1.1, 0.3), off), mine))
-    return logo_pop(stack(*els), t, L[0] + 0.6, 540, 1170, 300, off)
+    white, orange = rise_drawn(c, "rise1", v, min(on(t, L[0] + 0.45, 1.0), off), 540, 1150, 340)
+    return colour(stack(*els, white), orange=orange)
 
 
 def shot_tony(t, v, c, te):
@@ -472,7 +546,7 @@ def shot_shell(t, v, c, te):
 
 def shot_rise(t, v, c, te):
     off = clip01((te - t) / OFF)
-    els = [drawn(c, "rphone", v, min(on(t, L[20], 0.7), off), lambda p: v4.phone_body(p, 540, 1080, 400, 760)),
+    els = [drawn(c, "rphone", v, min(on(t, L[20], 0.7), off), lambda p: phone_round(p, 540, 1080, 440, 800)),
            drawn(c, "rglow", v, min(on(t, L[20] + 0.9, 0.4), off), lambda p: v4.glow(p, 540, 1080, 430, 500, 90, 1.8))]
 
     def feed(p):
@@ -496,7 +570,8 @@ def shot_rise(t, v, c, te):
             if u > 0:
                 v4.chat(p, 540, 1640 - 170 * u, 120, 56, 1, 1, 2.4)
         els.append(drawn(c, f"sent{round(u, 2)}", v, min(on(t, L[25], 0.5), off), sent))
-    return logo_pop(stack(*els), t, L[20] + 0.5, 540, 860, 320, off)
+    white, orange = rise_drawn(c, "rise2", v, min(on(t, L[20] + 0.45, 1.0), off), 540, 860, 330)
+    return colour(stack(*els, white), orange=orange)
 
 
 def shot_gather(t, v, c, te):
@@ -505,7 +580,10 @@ def shot_gather(t, v, c, te):
     v4.PROG[0] = min(on(t, a, 0.6), off)
     img = v3.crowd(v, t, (t - a) / (te - a - 0.8)).resize((W, H), Image.LANCZOS) if v4.PROG[0] > 0 else Image.new("L", (W, H), 0)
     v4.PROG[0] = 1.0
-    return logo_pop(img, t, a + 2.0, 540, 760, 380, off)
+    white, orange = rise_drawn(c, "rise3", v, min(on(t, a + 2.0, 1.0), off), 540, 760, 380)
+    if white is not None:  # over the flame the shells' light was drawn around
+        img = Image.composite(Image.new("L", (W, H), 0), img, paper_mask([(330, 670), (750, 670), (750, 850), (330, 850)]))
+    return colour(stack(img, white), orange=orange)
 
 
 def shot_logo(t, v, c, te):
