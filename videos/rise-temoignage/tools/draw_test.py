@@ -18,8 +18,24 @@ W, H = 1080, 1920
 FPS, SECONDS = 24, 5
 
 
+# the camera: every point goes through it, so a camera move redraws the scene (lines keep their ink)
+CAM = [1.0, 540.0, 960.0, 540.0, 960.0]  # zoom, the drawing's point at the middle of the move, where it lands on screen
+
+
+def T(x, y):
+    z, px, py, qx, qy = CAM
+    return qx + (x - px) * z, qy + (y - py) * z
+
+
 def P(pts):
-    return np.array(pts, float) * S
+    a = np.array(pts, float).reshape(-1, 2)
+    z, px, py, qx, qy = CAM
+    return np.stack([qx + (a[:, 0] - px) * z, qy + (a[:, 1] - py) * z], 1) * S
+
+
+def ink():
+    """Lines get a little heavier when the camera is close."""
+    return CAM[0] ** 0.35
 
 
 def dense(pts, step=5):
@@ -62,10 +78,15 @@ class Pen:
         # the ink thins and thickens along the stroke
         ws = w * (0.75 + 0.5 * gaussian_filter1d(self.rng.random(len(p)), 3))
         for i in range(len(p) - 1):
-            self.d.line([tuple(p[i]), tuple(p[i + 1])], fill=fill, width=max(1, int(ws[i] * S)))
+            self.d.line([tuple(p[i]), tuple(p[i + 1])], fill=fill, width=max(1, int(ws[i] * S * ink())))
         for q, wi in zip(p[::3], ws[::3]):  # round joints
-            r = wi * S / 2
+            r = wi * S * ink() / 2
             self.d.ellipse([q[0] - r, q[1] - r, q[0] + r, q[1] + r], fill=fill)
+
+    def disc(self, x0, y0, x1, y1, fill=255):
+        """An ellipse in the drawing's coordinates, through the camera."""
+        a, b = T(x0, y0), T(x1, y1)
+        self.d.ellipse([a[0] * S, a[1] * S, b[0] * S, b[1] * S], fill=fill)
 
     def poly(self, pts, fill=255):  # fill=0 hides what is behind
         self.d.polygon([tuple(q) for q in wobble(dense(pts + pts[:1]), self.rng, 1.0)], fill=fill)
@@ -102,7 +123,7 @@ def bubble(pen, cx, cy, r, symbol):
     s = r * 0.32
     if symbol == "?":
         pen.line(arc(cx, cy - s * 0.6, s * 0.7, s * 0.7, 200, 400, 30) + [(cx, cy + s * 0.5)], w=5)
-        pen.d.ellipse([(cx - 5) * S, (cy + s * 0.95 - 5) * S, (cx + 5) * S, (cy + s * 0.95 + 5) * S], fill=255)
+        pen.disc(cx - 5, cy + s * 0.95 - 5, cx + 5, cy + s * 0.95 + 5)
     elif symbol == "chat":
         pen.line([(cx - s, cy - s * 0.7), (cx + s, cy - s * 0.7), (cx + s, cy + s * 0.4), (cx - s * 0.2, cy + s * 0.4),
                   (cx - s * 0.7, cy + s), (cx - s * 0.5, cy + s * 0.4), (cx - s, cy + s * 0.4), (cx - s, cy - s * 0.7)], w=4)
@@ -162,7 +183,7 @@ def draw(variant, t):
     for ex, ey in ((hx - 72, hy - 30), (hx + 60, hy - 22)):
         pen.line(bez((ex - 30, ey), (ex - 12, ey - 12), (ex + 14, ey - 12), (ex + 32, ey + 2)), w=4.5)  # heavy lid
         pen.line(bez((ex - 26, ey + 6), (ex - 8, ey + 14), (ex + 12, ey + 14), (ex + 28, ey + 6)), w=2)
-        pen.d.ellipse([(ex - 9) * S, (ey - 2) * S, (ex + 9) * S, (ey + 12) * S], fill=255)  # the look, down
+        pen.disc(ex - 9, ey - 2, ex + 9, ey + 12)  # the look, down
         pen.line(bez((ex - 22, ey + 26), (ex - 6, ey + 33), (ex + 10, ey + 33), (ex + 24, ey + 26)), w=1.6)  # the bags
         pen.line(bez((ex - 34, ey - 34), (ex - 12, ey - 44), (ex + 12, ey - 44), (ex + 36, ey - 36)), w=6)  # brow
     # the glasses: thin round wire frames, his own
@@ -209,7 +230,7 @@ def draw(variant, t):
     scr = [(188, 1538), (380, 1512), (405, 1600), (210, 1630)]
     pen.poly(scr)
     fx, fy = 296, 1572  # the flame of RISE, black on the light
-    pen.d.polygon([(q[0] * S, q[1] * S) for q in bez((fx, fy - 26), (fx + 22, fy - 4), (fx + 16, fy + 18), (fx, fy + 18), 20)
+    pen.d.polygon([(T(*q)[0] * S, T(*q)[1] * S) for q in bez((fx, fy - 26), (fx + 22, fy - 4), (fx + 16, fy + 18), (fx, fy + 18), 20)
                    + bez((fx, fy + 18), (fx - 16, fy + 18), (fx - 20, fy - 2), (fx, fy - 26), 20)], fill=0)
     for a in np.linspace(-170, 10, 46):  # the light, scratched out around it
         ra = math.radians(a + rng.uniform(-2, 2))
