@@ -1,11 +1,14 @@
-"""Tony drawn the way his very first drawing was (draw_test.py), the style he wants, but in black on white paper:
+"""Tony drawn the way his very first drawing was (draw_test.py), the style he wants, in black on white paper:
 lines put down once, freehand, never gone back over to clean them. A felt pen and no ruler, no compass: each
 stroke wanders a little on its way, swells where the pen lands and thins where it lifts, runs past its ends; a
 long one is sometimes done in two goes; a circle never quite closes; hatching stops near the edge, not on it;
-here and there a line was drawn twice, a little beside itself. The same hand-placed drawing as draw_test.py,
-made posable (his head, his eyes, his mouth, his hand), so the other pictures of the film can be drawn the same way.
+here and there a line was drawn twice, a little beside itself.
+Drawn as a grown man, not the way a child draws: his head turned a little and built in depth, so that all of it
+turns together (a man's long face and jaw, a real nose, eyes under their lids, low straight brows, a short
+beard), a broad neck and shoulders, the light from our left giving the side away from it its hatching; a plain
+table, his phone lying on it. No hands: his arms go down behind the table.
 Usage: python3 tools/sketch.py  -> renders/tony_sketch_hello.png (« Moi c'est Tony. »)
-                                   renders/tony_sketch_phone.png (the first drawing, redrawn on white)
+                                   renders/tony_sketch_phone.png (bowed over his phone)
 """
 import json
 import math
@@ -16,7 +19,6 @@ from PIL import Image, ImageDraw, ImageFilter
 from scipy.ndimage import gaussian_filter1d
 
 import draw_test as dt
-import letters
 from draw_test import P, Pen, arc, bez, dense, ink, wobble
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,21 +44,6 @@ def resample(p, step):
         return p
     t = np.linspace(0, s[-1], int(s[-1] / step) + 1)
     return np.stack([np.interp(t, s, p[:, 0]), np.interp(t, s, p[:, 1])], 1)
-
-
-def chaikin(pts, n=2):
-    """Rounds a polyline's corners (its ends stay where they are)."""
-    p = np.asarray(pts, float)
-    for _ in range(n):
-        a, b = p[:-1], p[1:]
-        p = np.vstack([p[:1], np.stack([0.75 * a + 0.25 * b, 0.25 * a + 0.75 * b], 1).reshape(-1, 2), p[-1:]])
-    return [tuple(q) for q in p]
-
-
-def rot(pts, cx, cy, deg):
-    a = math.radians(deg)
-    c, s = math.cos(a), math.sin(a)
-    return [(cx + (x - cx) * c - (y - cy) * s, cy + (x - cx) * s + (y - cy) * c) for x, y in pts]
 
 
 def loop_pts(rng, cx, cy, rx, ry, rot_deg=0.0):
@@ -163,7 +150,7 @@ class Hand(Pen):
             return
         if over:
             pts = _overshoot(pts, self.rng.uniform(0, over), self.rng.uniform(0, over))
-        p = dense(pts)
+        p = resample(dense(pts), 5.0 * S)  # evenly spaced, so the tremor is the same however the points were given
         parts = [p]
         if breaks and arclen(p)[-1] / S > 260 and self.rng.random() < 0.4:  # in two goes: lifted, set down just beside
             i = int(len(p) * self.rng.uniform(0.35, 0.65))
@@ -217,224 +204,355 @@ class Hand(Pen):
             k += gap * self.rng.uniform(0.75, 1.25)
 
 
-# --- the first drawing's pieces, as they were placed
-def table(pen):
-    pen.line([(-10, 1470), (1090, 1462)], w=5)
-    for x in range(40, 1100, 170):
-        pen.line([(x, 1475), ((x - 540) * 1.6 + 540, 1920)], w=1.8, amp=1.2, again=0.1)
-    pen.hatch([(0, 1478), (1080, 1470), (1080, 1920), (0, 1920)], 8, 26, w=1.3, length=70)
+def spline(pts, n=8):
+    """A smooth curve through the points (Catmull-Rom), in 2D or 3D."""
+    p = np.asarray(pts, float)
+    p = np.vstack([2 * p[0] - p[1], p, 2 * p[-1] - p[-2]])
+    out = []
+    for i in range(1, len(p) - 2):
+        p0, p1, p2, p3 = p[i - 1], p[i], p[i + 1], p[i + 2]
+        for t in np.linspace(0, 1, n, endpoint=False):
+            out.append(0.5 * (2 * p1 + (p2 - p0) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t ** 2 + (3 * p1 - p0 - 3 * p2 + p3) * t ** 3))
+    out.append(p[-2])
+    return [tuple(q) for q in out]
 
 
-def body(pen):
-    """A round-neck tee: its folds, a shadow down one side, the ribbed collar; the neck."""
-    outline = [(250, 1470), (300, 1330), (420, 1255), (520, 1232), (720, 1236), (840, 1290), (930, 1400), (960, 1470)]
-    pen.line(chaikin(outline, 2), w=5, again=0.3)
-    for x0, x1 in ((380, 360), (470, 455), (800, 830), (880, 905)):
-        pen.line([(x0, 1300), ((x0 + x1) / 2 + 6, 1390), (x1, 1465)], w=2.4, amp=2.2)
-    pen.hatch([(300, 1340), (420, 1262), (470, 1300), (430, 1470), (260, 1470)], 62, 16, w=1.5)
-    collar_o = arc(625, 1215, 125, 48, 10, 170, 40)
-    collar_i = arc(625, 1200, 100, 34, 170, 10, 40)
-    pen.hatch(collar_o + collar_i, 95, 10, w=1.8)
-    pen.line(collar_o, w=3.5)
-    pen.line([(555, 1120), (562, 1205)], w=4)
-    pen.line([(690, 1125), (685, 1205)], w=4)
-    pen.hatch([(560, 1150), (690, 1150), (686, 1200), (564, 1200)], 70, 15, w=1.3)
+def hull(pts):
+    """The convex outline round points, in order."""
+    p = sorted(set(pts))
+
+    def cross(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+    lo, up = [], []
+    for q in p:
+        while len(lo) >= 2 and cross(lo[-2], lo[-1], q) <= 0:
+            lo.pop()
+        lo.append(q)
+    for q in reversed(p):
+        while len(up) >= 2 and cross(up[-2], up[-1], q) <= 0:
+            up.pop()
+        up.append(q)
+    return lo[:-1] + up[:-1]
 
 
-def cap(pen, rng, Hd):
-    """His cap, worn backwards: its crown with a little shade down one side, its seams up to the button; over
-    his forehead the opening above its strap, a little hair in it; the end of its peak, behind him, on our right."""
-    tab = [(168, -86), (204, -86), (222, -77), (218, -64), (196, -60), (172, -62)]
-    pen.poly(Hd(tab), fill=0)
-    pen.line(Hd(chaikin(tab + tab[:1], 2)), w=3.0, over=2.0)
-    dome = arc(2, -70, 178, 196, 176, 364, 60)
-    edge = bez((-176, -56), (-96, -114), (96, -114), (180, -56), 30)
-    pen.poly(Hd(dome + edge[::-1]), fill=0)
-    pen.hatch(Hd([(-176, -62), (-180, -132), (-152, -204), (-100, -246), (-74, -160), (-102, -104)]), 60, 13, w=1.3)
-    pen.line(Hd(dome), w=4.6, again=0.35)
-    pen.line(Hd(edge), w=4.2, again=0.3)
-    pen.line(Hd([(x, y - 13) for x, y in edge[5:-5]]), w=1.4, amp=1.0, again=0.0)  # its stitching
-    for x0 in (-122, 122):  # the seams, to the button
-        y0 = min(edge, key=lambda q: abs(q[0] - x0))[1] - 14
-        pen.line(Hd(bez((x0, y0), (x0 * 1.08, -160), (x0 * 0.66, -232), (0, -262), 16)), w=2.0)
-    pen.line(Hd(bez((0, -150), (2, -190), (1, -228), (0, -260), 12)), w=2.0)
-    pen.line(Hd(loop_pts(rng, 0, -264, 10, 8)), w=2.6, over=0, breaks=False, drift=0.3)
-    opening = arc(0, -103, 40, 46, 180, 360, 24)
-    pen.poly(Hd(opening), fill=0)
-    for k in range(8):  # his hair, pushed up in it
-        x = -28 + 8 * k + rng.uniform(-2, 2)
-        pen.line(Hd([(x, -116), (x + rng.uniform(-3, 5), -128 - rng.uniform(0, 14) + abs(x) * 0.4)]), w=1.6, again=0.0, over=0.0, drift=0.0, breaks=False)
-    pen.line(Hd(opening), w=3.0, over=3.0)
-    pen.line(Hd([(-44, -116), (44, -115)]), w=2.2, over=4.0)  # the strap, its holes
-    for k in range(4):
-        pen.poly(Hd(arc(-24 + 16 * k, -108, 3.4, 3.0, 0, 360, 8)))
-    for side in (-1, 1):  # his hair at the temples, below it
-        for k in range(7):
-            x = side * (158 - 3.6 * k)
-            pen.line(Hd([(x, -58 + 2 * k), (x + side * 1.5, -30 + 3 * k)]), w=1.5, amp=0.4, again=0.0, over=0.0, drift=0.0, breaks=False)
+def ellipsoid(c, r, n=40):
+    out = []
+    for y in np.linspace(c[1] - r[1] * 0.999, c[1] + r[1] * 0.999, n):
+        k = math.sqrt(max(0.0, 1 - ((y - c[1]) / r[1]) ** 2))
+        out += [(c[0] + r[0] * k * math.sin(ph), y, c[2] + r[2] * k * math.cos(ph)) for ph in np.linspace(0, 2 * math.pi, 2 * n, endpoint=False)]
+    return out
 
 
-def head(pen, rng, hx=620.0, hy=960.0, tilt=9.0, look=(0.0, 1.0), lids=12.0, smile=0.0, brow=0.0, ears=(True, False)):
-    """His head as the first drawing has it, in his cap: look is where his eyes go (-1..1), lids how open they are
-    (12 tired, 16 open), smile 0 flat to 1 a small smile, brow up when > 0. Every point turns with the tilt."""
-    def R(pts):  # the features were placed for a 9-degree tilt
-        return rot(pts, hx, hy, tilt - 9.0)
+class Head:
+    """His head: turned towards our left by yaw degrees, nodding down by pitch, leaning by roll, seen from in front
+    without perspective. Its points are given in 3D (x to our right, y down, z towards us, from the middle of his
+    head at the height of his eyes), or across his face as if seen straight on, then laid onto it."""
+    YS = [-100, -60, -30, 0, 40, 80, 110, 140, 170, 192, 202, 206]
+    A = [146, 148, 150, 151, 148, 140, 126, 106, 74, 44, 22, 0]  # half his face's width
+    ZC = [176, 182, 184, 176, 176, 178, 180, 176, 170, 166, 165, 164]  # how far forward its middle is
+    ZS = [40, 45, 55, 62, 62, 55, 50, 62, 100, 138, 152, 160]  # and its edges
 
-    def Hd(pts):  # given from the middle of his head, turned with it
-        return rot([(hx + x, hy + y) for x, y in pts], hx, hy, tilt)
-    pen.line(arc(hx, hy, 165, 190, 14, 174, 70, tilt), w=5, again=0.35)  # the jaw, the cheeks
-    pen.line(arc(hx, hy, 165, 190, 170, 206, 12, tilt), w=4)  # his left temple
-    if ears[1]:
-        pen.line(arc(hx, hy, 165, 190, -26, 18, 12, tilt), w=4)  # his right temple
-    for k in range(120):  # his beard, kept short
-        a = math.radians(rng.uniform(28, 152) + tilt)
-        rr = rng.uniform(0.8, 0.98)
-        x, y = hx + 160 * rr * math.cos(a), hy + 186 * rr * math.sin(a)
-        if y < hy + 100:
-            continue
-        pen.line([(x, y), (x + rng.uniform(-3, 3), y + rng.uniform(8, 14))], w=1.15, amp=0.3, again=0.0, over=0.0, drift=0.0, breaks=False)
-    for x, y in R(bez((hx - 56, hy + 72), (hx - 26, hy + 60), (hx + 26, hy + 62), (hx + 58, hy + 78), 20)):  # a few over his lip
-        x, y = x + rng.uniform(-4, 4), y + rng.uniform(-5, 5)
-        pen.line([(x, y), (x + rng.uniform(-2, 2), y + rng.uniform(6, 10))], w=1.2, amp=0.3, again=0.0, over=0.0, drift=0.0, breaks=False)
-    sm = smile
-    pen.line(R(bez((hx - 40, hy + 108 - 6 * sm), (hx - 10, hy + 100 + 10 * sm), (hx + 20, hy + 102 + 10 * sm), (hx + 48, hy + 112 - 8 * sm))), w=3.5)
-    pen.line(R(bez((hx - 26, hy + 126 + 3 * sm), (hx, hy + 132 + 4 * sm), (hx + 22, hy + 130 + 4 * sm), (hx + 36, hy + 125 + 3 * sm))), w=2.0)
-    if sm > 0.3:  # the corners of the smile
-        pen.line(R(bez((hx - 45, hy + 94), (hx - 52, hy + 98), (hx - 53, hy + 106), (hx - 47, hy + 111))), w=1.8, over=0.0, again=0.0)
-        pen.line(R(bez((hx + 53, hy + 98), (hx + 60, hy + 102), (hx + 61, hy + 110), (hx + 55, hy + 115))), w=1.8, over=0.0, again=0.0)
-    pen.line(R(bez((hx + 2, hy - 20), (hx - 6, hy + 10), (hx - 22, hy + 30), (hx - 8, hy + 40))), w=3)  # the nose
-    pen.line(R(bez((hx - 8, hy + 40), (hx + 8, hy + 46), (hx + 26, hy + 40), (hx + 30, hy + 30))), w=3)
-    gx, gy = look
-    for ex, ey in ((hx - 72, hy - 30), (hx + 60, hy - 22)):
-        pen.line(R(bez((ex - 30, ey), (ex - 12, ey - lids), (ex + 14, ey - lids), (ex + 32, ey + 2))), w=4.2, again=0.2)  # the lid
-        pen.line(R(bez((ex - 24, ey + 8), (ex - 8, ey + 15), (ex + 12, ey + 15), (ex + 26, ey + 8))), w=1.8)
-        (px, py), = R([(ex + 9 * gx, ey + 3 + 4 * gy)])
-        pen.poly(arc(px, py, 9.5, 8.5, 0, 360, 14))  # the pupil, and its glint
-        pen.disc(px - 6.5, py - 6.0, px - 1.5, py - 1.0, fill=0)
-        b = 6 * brow
-        pen.line(R(bez((ex - 34, ey - 36 - b), (ex - 12, ey - 46 - b), (ex + 12, ey - 46 - b), (ex + 36, ey - 38 - b))), w=4.6, again=0.3)  # the brow
-    for gx_, gy_ in ((hx - 70, hy - 24), (hx + 62, hy - 16)):  # the glasses
-        pen.line(R(loop_pts(rng, gx_, gy_, 58, 52)), w=2.6, amp=0.7, again=0.35, over=0.0, drift=0.6, breaks=False)
-    pen.line(R(bez((hx - 14, hy - 34), (hx - 6, hy - 44), (hx + 2, hy - 44), (hx + 6, hy - 30))), w=2.4)
-    pen.line(R([(hx - 128, hy - 30), (hx - 164, hy - 40)]), w=2.4)
-    if ears[0]:
-        pen.line(R(arc(hx - 168, hy - 2, 16, 34, 100, 280, 20)), w=3.5)
-        pen.line(R(bez((hx - 166, hy - 18), (hx - 176, hy - 12), (hx - 176, hy + 8), (hx - 168, hy + 14))), w=1.6, over=0.0, again=0.0)
-    if ears[1]:
-        pen.line(R([(hx + 124, hy - 16), (hx + 160, hy - 22)]), w=2.4)
-        pen.line(R(arc(hx + 168, hy + 4, 16, 34, -80, 100, 20)), w=3.5)
-        pen.line(R(bez((hx + 166, hy - 12), (hx + 176, hy - 6), (hx + 176, hy + 14), (hx + 168, hy + 20))), w=1.6, over=0.0, again=0.0)
-    cap(pen, rng, Hd)
+    def __init__(self, hx, hy, yaw=0.0, pitch=0.0, roll=0.0, k=1.0):
+        self.hx, self.hy, self.yaw, self.k = hx, hy, yaw, k
+        t, f, r = (math.radians(v) for v in (yaw, pitch, roll))
+        self.ct, self.st, self.cf, self.sf, self.cr, self.sr = math.cos(t), math.sin(t), math.cos(f), math.sin(f), math.cos(r), math.sin(r)
+
+    def a(self, y):
+        return float(np.interp(y, self.YS, self.A))
+
+    def zs(self, y):
+        return float(np.interp(y, self.YS, self.ZS))
+
+    def surf(self, x, y):
+        a = max(1.0, self.a(y))
+        zc, zs = float(np.interp(y, self.YS, self.ZC)), self.zs(y)
+        return zc - (zc - zs) * min(1.0, abs(x) / a) ** 2.5
+
+    def view(self, x, y, z):
+        """Across, down and towards us, once turned."""
+        X = x * self.ct - z * self.st
+        Z = x * self.st + z * self.ct
+        return X, y * self.cf + Z * self.sf, Z * self.cf - y * self.sf
+
+    def p(self, x, y, z):
+        X, Y, _ = self.view(x, y, z)
+        return (self.hx + (X * self.cr - Y * self.sr) * self.k, self.hy + (X * self.sr + Y * self.cr) * self.k)
+
+    def q(self, pts):
+        return [self.p(*c) for c in pts]
+
+    def f(self, pts, lift=0.0):
+        return [self.p(x, y, self.surf(x, y) + lift) for x, y in pts]
+
+    def facing(self, n):
+        return self.view(*n)[2] > 0
 
 
-def wave(pen):
-    """His elbow on the table, his forearm up, his open hand beside his face: a small hello."""
-    fore_l = [(842, 1465), (866, 1310), (878, 1176)]
-    fore_r = [(924, 1465), (940, 1310), (946, 1172)]
-    pen.poly(fore_l + fore_r[::-1], fill=0)
-    hand = chaikin([(876, 1176), (866, 1080), (860, 1062), (828, 1030), (812, 1004), (828, 992), (868, 1026), (870, 1016), (866, 926), (878, 912),
-                    (893, 920), (896, 1004), (900, 1000), (903, 900), (916, 890), (930, 899), (929, 998), (934, 1004), (941, 918), (953, 911),
-                    (965, 920), (959, 1009), (963, 1020), (973, 962), (984, 956), (991, 966), (979, 1034), (981, 1082), (950, 1176)], 2)
-    pen.poly(hand, fill=0)
-    pen.line(hand, w=4.6, again=0.3)
-    pen.line(fore_l, w=5)
-    pen.line(fore_r, w=5)
-    pen.line(bez((880, 1068), (905, 1052), (935, 1056), (962, 1072)), w=2.0)  # the palm's lines
-    pen.line(bez((878, 1110), (900, 1098), (926, 1100), (944, 1112)), w=1.7)
-    pen.hatch([(912, 1310), (940, 1310), (946, 1180), (918, 1180)], 75, 12, w=1.3)  # the shadow side of his arm
-    pen.hatch([(900, 1360), (936, 1350), (922, 1460), (890, 1460)], 75, 12, w=1.3)
-    pen.line(bez((878, 1210), (900, 1222), (926, 1220), (946, 1208)), w=2.0)  # the wrist
-    for x0, y0 in ((1012, 930), (1026, 1000)):  # it moves: two small strokes beside it
-        pen.line(bez((x0, y0), (x0 + 16, y0 + 18), (x0 + 16, y0 + 40), (x0 + 4, y0 + 58)), w=2.6, again=0.0)
+CAP_C = (0.0, -60.0, -8.0)  # the middle of his skull
+CAP_R = (156.0, 184.0, 194.0)  # the cap round it: half its width, height, depth
 
 
-def cheek_hand(pen):
-    """The first drawing's hand, holding his head: its fingers up against his temple, the thumb under his
-    cheekbone, the forearm down to the table."""
-    tips = [(756, 916, 15, 14), (785, 891, 15, 15), (814, 895, 14, 14), (841, 921, 13, 12)]  # each finger's end: x, y, half width, round
-    hand = [(762, 1160), (748, 1080), (740, 1000), (741, 940)]
-    for k, (x, y, hw, r) in enumerate(tips):
-        hand += arc(x, y, hw, r, 180, 360, 9)
-        if k < len(tips) - 1:  # down between this finger and the next
-            nx = tips[k + 1][0]
-            hand.append(((x + nx) / 2, max(y, tips[k + 1][1]) + 18))
-    hand += [(856, 950), (858, 1000), (855, 1080), (850, 1160)]
-    arm = [(762, 1160), (790, 1300), (812, 1465), (912, 1465), (888, 1300), (850, 1160)]
-    pen.poly(arm, fill=0)
-    pen.poly(hand, fill=0)
-    pen.line(hand, w=4.8, again=0.35)
-    pen.line([(762, 1160), (790, 1300), (812, 1465)], w=5)
-    pen.line([(850, 1160), (888, 1300), (912, 1465)], w=5)
-    for k in range(len(tips) - 1):  # the fingers, side by side, down to the knuckles
-        x = (tips[k][0] + tips[k + 1][0]) / 2
-        y = max(tips[k][1], tips[k + 1][1]) + 18
-        pen.line(bez((x, y), (x - 1, y + 30), (x + 1, y + 55), (x + 3, y + 82 - 6 * k)), w=2.2, again=0.0)
-    for x, y in ((770, 1002), (797, 990), (824, 996)):  # the knuckles
-        pen.line(bez((x - 9, y + 2), (x - 4, y - 4), (x + 4, y - 4), (x + 9, y + 2)), w=1.6, over=2.0, again=0.0)
-    pen.line(bez((748, 1080), (735, 1060), (728, 1030), (740, 1005)), w=3.2)  # the thumb, under the cheekbone
-    pen.hatch([(806, 1010), (852, 1004), (852, 1150), (808, 1150)], 80, 13, w=1.3)
-    pen.hatch([(860, 1200), (890, 1300), (908, 1460), (870, 1460), (845, 1300)], 75, 12, w=1.3)
-    pen.line(bez((775, 1215), (800, 1230), (830, 1228), (855, 1215)), w=2.0)  # the wrist
+def cap_pt(phi, y):
+    """The cap at the angle phi round his head (0 at his forehead, growing towards his left ear) and the height y."""
+    (cx, cy, cz), (ax, ay, az) = CAP_C, CAP_R
+    k = math.sqrt(max(0.0, 1 - ((y - cy) / ay) ** 2))
+    return (cx + ax * k * math.sin(phi), y, cz + az * k * math.cos(phi))
 
 
-def phone_on_table(pen, orange, rays=34):
-    """His phone on the table, lit: RISE's flame on it, coloured in orange; its light, strokes all round it."""
+def cap_normal(x, y, z):
+    (cx, cy, cz), (ax, ay, az) = CAP_C, CAP_R
+    return ((x - cx) / ax ** 2, (y - cy) / ay ** 2, (z - cz) / az ** 2)
+
+
+def band_y(phi):
+    """Its lower edge: high on his forehead (it is worn backwards), lower over his ears, lower still behind."""
+    return -66 - 30 * math.cos(phi) - 4 * math.cos(2 * phi)
+
+
+def runs(flags):
+    """The stretches where flags hold, as (start, end) index pairs."""
+    e = np.diff(np.r_[0, np.asarray(flags, int), 0])
+    return list(zip(np.flatnonzero(e == 1), np.flatnonzero(e == -1)))
+
+
+def draw_head(pen, hd, look=(0.0, 0.0), lids=12.0, smile=0.0, lift=0.0, worry=0.0):
+    """His head: the end of his cap's peak behind it; the outline of his face, his ear; the shade on the side away
+    from the light; his short beard; his mouth, nose, eyes and brows; his glasses; his cap.
+    look: where his eyes go (-1..1 across and down, on his face), lids: how open (8 heavy, 13 open), smile 0..1,
+    lift: his brows raised, worry: their inner ends raised."""
     rng = pen.rng
-    ph = rounded([(170, 1530), (390, 1500), (420, 1610), (195, 1645)], 16)
-    pen.poly(ph, fill=0)
-    pen.line(ph + ph[:4], w=4, over=0.0, breaks=False, again=0.3)
-    scr = rounded([(190, 1540), (378, 1514), (402, 1598), (211, 1627)], 6, 3)
-    pen.line(scr + scr[:2], w=1.8, over=0.0, breaks=False, again=0.0)
+    turned = hd.yaw >= 6
+    band3 = [cap_pt(ph, band_y(ph)) for ph in np.linspace(-math.pi, math.pi, 721)]
+    seen = [i for i, c in enumerate(band3) if hd.facing(cap_normal(*c))]
+    band3 = band3[seen[0]:seen[-1] + 1]  # the band, from the far side of his head round to the near side
+    band = hd.q(band3)
 
-    def on_screen(u, v):  # the screen's quad: u across, v down (0..1)
-        q = [(190, 1540), (378, 1514), (402, 1598), (211, 1627)]
-        a = (q[0][0] + (q[1][0] - q[0][0]) * u, q[0][1] + (q[1][1] - q[0][1]) * u)
-        b = (q[3][0] + (q[2][0] - q[3][0]) * u, q[3][1] + (q[2][1] - q[3][1]) * u)
+    # the end of the cap's peak, behind his head
+    phs = np.linspace(math.pi / 2, 3 * math.pi / 2, 41)
+    inner = [cap_pt(ph, band_y(ph)) for ph in phs]
+    outer = [(x + 125 * math.cos(ph - math.pi) * math.sin(ph), y + 16 * math.cos(ph - math.pi), z + 125 * math.cos(ph - math.pi) * math.cos(ph))
+             for (x, y, z), ph in zip(inner, phs)]
+    peak = hd.q(inner + outer[::-1])
+    pen.poly(peak, fill=0)
+    pen.hatch(peak, 115, 7, w=1.0)
+    pen.line(hd.q(outer), w=3.0)
+
+    # his face, and on the near side his jaw up to his ear and the back of his head; it hides what is behind
+    far = hd.q([(-hd.a(y), y, hd.zs(y)) for y in np.linspace(-72, 206, 48)])
+    if turned:
+        near = hd.q([(hd.a(y), y, hd.zs(y)) for y in np.linspace(206, 112, 18)][1:] + [(130, 96, 36), (136, 80, 24), (140, 64, 14)])
+        skull = hull(hd.q(ellipsoid(CAP_C, (150, 178, 188))))
+        back = sorted([q for q in skull if q[0] > hd.hx + 70 and band[-1][1] - 6 < q[1] < hd.hy + 82], key=lambda q: q[1])
+    else:
+        near = hd.q([(hd.a(y), y, hd.zs(y)) for y in np.linspace(206, -72, 48)][1:])
+        back = []
+    pen.poly(far + near + back[::-1] + band[::-1], fill=0)
+    if back:
+        pen.line(back, w=3.6)
+    pen.line(far, w=4.2, again=0.3)
+    pen.line(far[-1:] + near, w=5.0, again=0.3)
+
+    # his ear(s): the rim, the fold inside, the little flap in front
+    for side in ((1,) if turned else (-1, 1)):
+        def E(zr, yr, out):
+            return (side * (146 + out), 12 + yr, -18 + zr)
+        rim = [E(*c) for c in spline([(8, -32, 2), (-6, -42, 8), (-24, -38, 13), (-38, -20, 17), (-42, 4, 18), (-36, 28, 16), (-24, 44, 12),
+                                      (-10, 54, 7), (2, 50, 4), (6, 40, 2)], 4)]
+        pen.poly(hd.q(rim + [E(10, 30, 0), E(10, -20, 0)]), fill=0)
+        pen.line(hd.q(rim), w=3.4)
+        pen.line(hd.q([E(*c) for c in spline([(-4, -28, 6), (-20, -26, 10), (-28, -6, 12), (-24, 18, 10), (-12, 32, 6)], 4)]), w=1.8, again=0.0)
+        pen.line(hd.q([E(2, 2, 2), E(6, 10, 3), E(4, 20, 2)]), w=1.6, again=0.0, over=1.0)
+        # his hair, cut short, behind it and in front of it below the cap
+        for k in range(26):
+            y = rng.uniform(band_y(2.0) + 4, 66)
+            ph = rng.uniform(1.75, 2.15) if k < 18 else rng.uniform(1.2, 1.32)
+            x, _, z = cap_pt(side * ph, y)
+            x, z = x * 0.965, z * 0.965
+            pen.line(hd.q([(x, y, z), (x - side * 1.5, y + rng.uniform(7, 12), z)]), w=1.3, amp=0.3, again=0.0, over=0.0, drift=0.0, breaks=False)
+
+    if turned:  # the side of his face, away from the light
+        ys = np.linspace(-58, 112, 18)
+        side_in = [(0.72 * hd.a(y), y, hd.surf(0.72 * hd.a(y), y)) for y in ys]
+        side_out = [(146, -58, 10), (148, -20, 6), (148, 20, 6), (144, 56, 10), (140, 64, 14), (130, 96, 36), (126, 112, 50)]
+        pen.hatch(hd.q(side_in + side_out[::-1]), 115, 12, w=0.95)
+
+    # his beard, kept short: along his jaw and over his chin, a little over his lip
+    for k in range(190):
+        y = rng.uniform(26, 205)
+        a = hd.a(y)
+        x = rng.choice((-1, 1)) * (a - min(a, 56.0, rng.exponential(17)))
+        if abs(x) < 54 and 98 < y < 142:  # not on his lips
+            continue
+        pen.line(hd.f([(x, y), (x + rng.uniform(-2, 2), y + rng.uniform(6, 12))], lift=1), w=1.15, amp=0.3, again=0.0, over=0.0, drift=0.0, breaks=False)
+    lip = bez((-48, 96), (-18, 85), (20, 85), (50, 96), 101)
+    for t in rng.uniform(0.04, 0.96, 26):
+        x, y = lip[int(t * 100)]
+        y += rng.uniform(-4, 3)
+        pen.line(hd.f([(x, y), (x + 0.08 * x, y + rng.uniform(5, 8))], lift=2), w=1.1, amp=0.3, again=0.0, over=0.0, drift=0.0, breaks=False)
+
+    # his mouth
+    sm = smile
+    pen.line(hd.f(bez((-46, 112 - 6 * sm), (-16, 106 + 7 * sm), (18, 107 + 7 * sm), (48, 112 - 6 * sm), 24), lift=2), w=3.2)
+    pen.line(hd.f(bez((-22, 129 + 2 * sm), (-6, 135 + 3 * sm), (14, 135 + 3 * sm), (28, 128 + 2 * sm), 16), lift=2), w=2.0)
+    if sm > 0.3:
+        pen.line(hd.f(bez((-50, 104), (-55, 108), (-55, 114), (-50, 119), 8), lift=2), w=1.6, over=0.0, again=0.0)
+        pen.line(hd.f(bez((52, 104), (57, 108), (57, 114), (52, 119), 8), lift=2), w=1.6, over=0.0, again=0.0)
+
+    # his nose: down its far side, round its tip to the near nostril; the shade on its near side
+    def N(x, y, pr):
+        return (x, y, hd.surf(x, y) + pr)
+    pen.line(hd.q(spline([N(-8, -16, 4), N(-12, 14, 10), N(-15, 40, 18), N(-12, 56, 28), N(-4, 64, 36)], 5)), w=2.8)
+    pen.line(hd.q(spline([N(-4, 64, 36), N(4, 71, 32), N(12, 73, 22), N(22, 70, 10), N(27, 62, 4), N(23, 54, 6)], 5)), w=2.8)
+    pen.line(hd.q([N(-17, 70, 8), N(-25, 64, 3)]), w=2.0, again=0.0)
+    pen.hatch(hd.q([N(2, -6, 6), N(6, 30, 16), N(10, 52, 24), N(18, 60, 10), N(16, 30, 4), N(10, 0, 2)]), 115, 7, w=1.0)
+
+    # his eyes: the iris, half under the upper lid; the lid and its crease, a little of the lower lid; the brow
+    gx, gy = look
+    for o, ex in ((-1, -60.0), (1, 60.0)):
+        ey = -4.0
+        ix, iy = ex + 8 * gx, ey + 2 + 4 * gy
+        pen.poly(hd.f(arc(ix, iy, 8.5, 8.5, 0, 360, 16), lift=1))
+        upper = bez((ex - 25 * o, ey + 1), (ex - 10 * o, ey - lids), (ex + 12 * o, ey - lids), (ex + 28 * o, ey + 3), 20)
+        lower = bez((ex - 22 * o, ey + 5), (ex - 8 * o, ey + 11 - 3 * sm), (ex + 10 * o, ey + 11 - 3 * sm), (ex + 24 * o, ey + 5), 16)
+        pen.poly(hd.f(upper + [(x, y - 22) for x, y in upper[::-1]], lift=2), fill=0)
+        pen.poly(hd.f(lower + [(x, y + 16) for x, y in lower[::-1]], lift=2), fill=0)
+        (gx_, gy_), = hd.f([(ix - 3, iy - 3)], lift=2)
+        pen.disc(gx_ - 2.0, gy_ - 2.0, gx_ + 2.0, gy_ + 2.0, fill=0)
+        pen.line(hd.f(upper, lift=2), w=3.6, again=0.2)
+        pen.line(hd.f(bez((ex - 18 * o, ey - lids * 0.75 - 7), (ex - 4 * o, ey - lids - 9), (ex + 12 * o, ey - lids - 8), (ex + 24 * o, ey - lids * 0.5 - 6), 14),
+                      lift=2), w=1.3, again=0.0, over=1.0)
+        pen.line(hd.f(lower[5:], lift=2), w=1.5, again=0.0)
+        b = 6 * lift
+        brow = bez((ex - 30 * o, ey - 30 - b - 9 * worry), (ex - 10 * o, ey - 37 - b - 5 * worry), (ex + 12 * o, ey - 38 - b), (ex + 34 * o, ey - 30 - b), 18)
+        pen.line(hd.f(brow, lift=4), w=5.4, again=0.4)
+        for k in range(7):  # its hairs
+            x, y = brow[2 + 2 * k]
+            pen.line(hd.f([(x - 3 * o, y + 3), (x + 4 * o, y - 4)], lift=4), w=1.6, again=0.0, over=1.0, drift=0.0, breaks=False)
+
+    # his glasses, a little in front of his face
+    gz = 192.0
+    for o in (-1, 1):
+        pen.line(hd.q([(x, y, gz) for x, y in loop_pts(rng, 62 * o, -6, 50, 43)]), w=2.4, amp=0.7, again=0.35, over=0.0, drift=0.6, breaks=False)
+    pen.line(hd.q([(x, y, gz + 2) for x, y in bez((-13, -12), (-6, -20), (6, -20), (13, -12), 10)]), w=2.2)
+    for o in ((1,) if turned else (-1, 1)):
+        pen.line(hd.q([(110 * o, -12, gz - 6), (147 * o, -16, 16)]), w=2.2)
+
+    # his cap: what of it can be seen, over the band
+    sil = hull(hd.q(ellipsoid(CAP_C, CAP_R)))
+    i0 = min(range(len(sil)), key=lambda i: math.dist(sil[i], band[0]))
+    i1 = min(range(len(sil)), key=lambda i: math.dist(sil[i], band[-1]))
+    a1 = [sil[(i0 + k) % len(sil)] for k in range((i1 - i0) % len(sil) + 1)]
+    a2 = [sil[(i0 - k) % len(sil)] for k in range((i0 - i1) % len(sil) + 1)]
+    dome = [band[0]] + min(a1, a2, key=lambda arc_: min(q[1] for q in arc_)) + [band[-1]]
+    pen.poly(dome + band[::-1], fill=0)
+    shade = [cap_pt(ph, band_y(ph) - 2) for ph in np.linspace(0.95, 2.0, 12)] + [cap_pt(ph, -214) for ph in np.linspace(2.0, 0.95, 12)]
+    pen.hatch(hd.q([c for c in shade if hd.facing(cap_normal(*c))] or shade), 115, 11, w=1.1)
+    pen.line(dome, w=4.4, again=0.35)
+    pen.line(band, w=4.0, again=0.3)
+    stitch = [cap_pt(math.atan2(x, z + 8), band_y(math.atan2(x, z + 8)) - 13) for x, _, z in band3[8:-8]]
+    pen.line(hd.q(stitch), w=1.3, amp=1.0, again=0.0)
+    for ph in (0.0, -math.pi / 3, math.pi / 3, 2 * math.pi / 3):  # its seams, up to the button
+        y0 = band_y(ph) - (46 if ph == 0.0 else 14)
+        seam = [cap_pt(ph, y) for y in np.linspace(y0, -238, 16)]
+        for i, j in runs([hd.facing(cap_normal(*c)) for c in seam]):
+            if j - i > 1:
+                pen.line(hd.q(seam[i:j]), w=1.9)
+    top = cap_pt(0.0, -243)
+    if hd.facing(cap_normal(*top)):
+        bx, by = hd.p(*top)
+        pen.line(loop_pts(rng, bx, by, 9, 7), w=2.4, over=0.0, breaks=False, drift=0.3)
+    # the opening over his forehead, his hair in it, the strap across it
+    opening = [cap_pt(38 * math.cos(t) / 190, band_y(0) - 46 * math.sin(t)) for t in np.linspace(0, math.pi, 24)]
+    pen.poly(hd.q(opening), fill=0)
+    for k in range(8):
+        s = -28 + 8 * k + rng.uniform(-2, 2)
+        y0 = band_y(0) - 12
+        pen.line(hd.q([cap_pt(s / 190, y0), cap_pt((s + rng.uniform(-3, 5)) / 190, y0 - 12 - rng.uniform(0, 14) + abs(s) * 0.4)]), w=1.5, again=0.0, over=0.0,
+                 drift=0.0, breaks=False)
+    pen.line(hd.q(opening), w=2.8, over=3.0)
+    pen.line(hd.q([cap_pt(s / 190, band_y(0) - 14) for s in (-44, 0, 44)]), w=2.0, over=4.0)
+    for k in range(4):
+        bx, by = hd.p(*cap_pt((-24 + 16 * k) / 190, band_y(0) - 7))
+        pen.poly(arc(bx, by, 3.2, 2.8, 0, 360, 8))
+
+
+def bust(pen, hd, nx, ny):
+    """His neck, and his shoulders and chest in a plain tee, down to the table; turned a little less than his head.
+    (nx, ny): the bottom of his neck, at the front."""
+    # the neck: down from under his jaw on the far side, from behind his ear on the near side; the muscle from
+    # behind his ear to the hollow of his throat; the shade his jaw throws on it
+    jaw = hd.q([(hd.a(y) * s, y, hd.zs(y)) for s, y in [(-1, 120), (-1, 150), (-1, 176), (-1, 196), (0, 206), (1, 196), (1, 176), (1, 150), (1, 120)]])
+    pen.hatch(jaw + [(x + 4, y + 40) for x, y in jaw[::-1]], 115, 9, w=1.0)
+    pen.line(spline([hd.p(-hd.a(150), 150, hd.zs(150)), (nx - 90, ny - 60), (nx - 92, ny + 6)], 6), w=4.0)
+    pen.line(spline([hd.p(112, 70, -62), (nx + 98, ny - 62), (nx + 104, ny - 22)], 6), w=4.4)
+    pen.line(spline([hd.p(128, 70, -34), (nx + 46, ny - 46), (nx + 4, ny + 4)], 6), w=1.4, again=0.0)
+    pen.line(bez((nx - 30, ny - 66), (nx - 23, ny - 60), (nx - 21, ny - 51), (nx - 25, ny - 44), 8), w=1.6, again=0.0, over=1.0)
+    # the tee: its ribbed collar; the shoulders, the sleeves, the arms going down behind the table
+    cx = nx - 10
+    co = arc(cx, ny + 6, 130, 42, 6, 174, 40)
+    ci = arc(cx, ny - 6, 106, 28, 174, 6, 40)
+    pen.poly(co + ci, fill=0)
+    pen.hatch(co + ci, 95, 9, w=1.4)
+    pen.line(co, w=3.4)
+    pen.line([(cx + 129, ny + 10), (cx + 122, ny - 6), (nx + 104, ny - 20)], w=3.0, over=2.0)  # going round behind his neck
+    under = arc(cx, ny + 6, 130, 42, 24, 156, 24)
+    pen.hatch(under + [(x, y + 24) for x, y in under[::-1]], 115, 9, w=1.0)
+    left = [(cx - 125, ny + 12), (cx - 215, ny + 40), (cx - 290, ny + 74), (cx - 334, ny + 116), (cx - 352, ny + 186), (cx - 354, ny + 262)]
+    right = [(nx + 104, ny - 22), (cx + 220, ny + 26), (cx + 320, ny + 72), (cx + 370, ny + 118), (cx + 392, ny + 196), (cx + 396, ny + 258)]
+    pen.line(spline(left, 6), w=4.4, again=0.3)
+    pen.line(spline(right, 6), w=5.0, again=0.3)
+    pen.line(spline([(cx - 246, ny + 166), (cx - 247, ny + 230), (cx - 252, 1482)], 6), w=3.4)  # the insides of his arms, from the armpits
+    pen.line(spline([(cx + 272, ny + 172), (cx + 273, ny + 236), (cx + 278, 1482)], 6), w=3.8)
+    pen.line([(cx - 356, ny + 262), (cx - 300, ny + 271), (cx - 247, ny + 268)], w=2.8)  # the sleeves' hems
+    pen.line([(cx + 273, ny + 270), (cx + 336, ny + 268), (cx + 398, ny + 258)], w=2.8)
+    pen.line([(cx - 347, ny + 268), (cx - 349, 1482)], w=4.0)  # his arms below them
+    pen.line([(cx + 389, ny + 264), (cx + 391, 1482)], w=4.6)
+    pen.line(bez((cx - 244, ny + 176), (cx - 226, ny + 188), (cx - 206, ny + 206), (cx - 192, ny + 230), 12), w=1.9)  # folds from the armpits
+    pen.line(bez((cx + 270, ny + 182), (cx + 252, ny + 194), (cx + 232, ny + 214), (cx + 220, ny + 240), 12), w=1.9)
+    pen.hatch([(cx + 272, ny + 172), (cx + 278, 1470), (cx + 212, 1470), (cx + 224, ny + 236)], 115, 11, w=1.1)  # the shade down his near side
+    pen.hatch([(cx + 389, ny + 268), (cx + 391, 1470), (cx + 356, 1470), (cx + 358, ny + 272)], 115, 9, w=1.0)
+
+
+def table(pen, vp):
+    """The table: its far edge just in front of him, two seams between its boards running towards us, a little
+    grain; it hides what goes down behind it."""
+    pen.poly([(-20, 1474), (1100, 1461), (1100, 1940), (-20, 1940)], fill=0)
+    pen.line([(-10, 1475), (1090, 1461)], w=4.6, again=0.2)
+
+    def on_board(xe, u):  # along the line from the vanishing point through the edge at xe, u from the edge (0) to the bottom (1)
+        ye = 1475 - 14 * (xe + 10) / 1100
+        k = (ye + (1940 - ye) * u - vp[1]) / (ye - vp[1])
+        return (vp[0] + (xe - vp[0]) * k, vp[1] + (ye - vp[1]) * k)
+    for xe, u1 in ((300, 0.9), (790, 1.0)):
+        pen.line([on_board(xe, 0.0), on_board(xe, u1)], w=2.0, again=0.1)
+    for xe, u0, u1 in ((60, 0.15, 0.45), (180, 0.4, 0.75), (420, 0.1, 0.32), (560, 0.5, 0.95), (680, 0.2, 0.44), (900, 0.3, 0.7), (1010, 0.08, 0.3)):
+        pen.line([on_board(xe, u) for u in np.linspace(u0, u1, 6)], w=1.1, amp=1.0, again=0.0, drift=0.8)
+
+
+def phone_on_table(pen, orange, quad):
+    """His phone lying on the table: its edge, the screen with RISE's flame coloured in orange, its shadow."""
+    (fl, fr, nr, nl) = quad  # far left, far right, near right, near left
+    pen.hatch([(nl[0] + 4, nl[1] + 6), (nr[0] + 6, nr[1] + 4), (nr[0] + 26, nr[1] + 10), (nl[0] + 18, nl[1] + 16)], 170, 4, w=1.0)
+    side = [(nl[0], nl[1]), (nl[0] + 1, nl[1] + 8), (nr[0] + 1, nr[1] + 8), (nr[0], nr[1])]
+    pen.poly(side, fill=0)
+    pen.line(side, w=2.6, over=2.0, again=0.0)
+    ph = rounded(quad, 12, 4)
+    pen.poly(ph, fill=0)
+    pen.line(ph + ph[:3], w=3.4, over=0.0, breaks=False, again=0.3)
+
+    def on_screen(u, v):  # the screen, inside the phone's edge: u across, v from far to near
+        u, v = 0.07 + 0.86 * u, 0.12 + 0.76 * v
+        a = (fl[0] + (fr[0] - fl[0]) * u, fl[1] + (fr[1] - fl[1]) * u)
+        b = (nl[0] + (nr[0] - nl[0]) * u, nl[1] + (nr[1] - nl[1]) * u)
         return (a[0] + (b[0] - a[0]) * v, a[1] + (b[1] - a[1]) * v)
+    scr = [on_screen(u, v) for u, v in ((0, 0), (1, 0), (1, 1), (0, 1))]
+    pen.line(scr + scr[:1], w=1.4, over=2.0, breaks=False, again=0.0, corners=True)
     flame = OUTLINE["flame"][0]
     xs, ys = [q[0] for q in flame], [q[1] for q in flame]
     fx, fy, fw, fh = min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys)
-    pts = [on_screen(0.5 + ((x - fx) / fh - fw / fh / 2) * 0.32, 0.18 + (y - fy) / fh * 0.64) for x, y in flame[::3]]
-    od = ImageDraw.Draw(orange)  # coloured in quickly, not quite inside its line
-    od.polygon([tuple(q) for q in P([(x + 3, y - 2) for x, y in pts])], fill=255)
-    pen.line(pts + pts[:2], w=2.0, amp=0.5, over=0.0, breaks=False, again=0.0, drift=0.3)
-    for a in np.linspace(-172, 8, rays):  # the light, strokes all round it
-        ra = math.radians(a + rng.uniform(-2.5, 2.5))
-        r0, r1 = 150 + rng.uniform(0, 12), 150 + 190 * rng.uniform(0.45, 1.0)
-        pen.line([(295 + r0 * math.cos(ra), 1575 + r0 * 0.55 * math.sin(ra)), (295 + r1 * math.cos(ra), 1575 + r1 * 0.55 * math.sin(ra))], w=1.4, amp=0.5,
-                 again=0.0, over=0.0, drift=0.3, breaks=False)
-
-
-def bubble(pen, cx, cy, r, symbol):
-    """A thought bubble drawn freehand: a ring that does not quite close, short strokes round its inside, a sign in it."""
-    rng = pen.rng
-    pen.line(loop_pts(rng, cx, cy, r, r * 0.96), w=3.4, over=0.0, breaks=False, drift=0.6, again=0.3)
-    for a in np.linspace(0, 360, int(r * 0.5), endpoint=False):
-        ra = math.radians(a + rng.uniform(-3, 3))
-        r0 = r * rng.uniform(0.64, 0.76)
-        pen.line([(cx + r0 * math.cos(ra), cy + r0 * math.sin(ra)), (cx + r * 0.88 * math.cos(ra), cy + r * 0.88 * math.sin(ra))], w=1.3, amp=0.4,
-                 again=0.0, over=0.0, drift=0.2, breaks=False)
-    s = r * 0.32
-    if symbol == "?":
-        pen.line(arc(cx, cy - s * 0.6, s * 0.7, s * 0.7, 200, 400, 30) + [(cx, cy + s * 0.5)], w=5, again=0.0)
-        pen.poly(arc(cx, cy + s * 0.95, 5.5, 5, 0, 360, 10))
-    elif symbol == "chat":
-        pen.line([(cx - s, cy - s * 0.7), (cx + s, cy - s * 0.7), (cx + s, cy + s * 0.4), (cx - s * 0.2, cy + s * 0.4),
-                  (cx - s * 0.7, cy + s), (cx - s * 0.5, cy + s * 0.4), (cx - s, cy + s * 0.4), (cx - s, cy - s * 0.7)], w=4, corners=True, over=4.0)
-    elif symbol == "cross":
-        pen.line([(cx, cy - s * 1.1), (cx, cy + s * 1.1)], w=5)
-        pen.line([(cx - s * 0.65, cy - s * 0.4), (cx + s * 0.65, cy - s * 0.4)], w=5)
-
-
-def name_tag(pen, p=1.0):
-    """« Tony », written by hand, and an arrow down to him."""
-    st, _ = letters.layout("Tony", "scripts", 110, 0.12, hand=1.0, seed=5)
-    part, _ = letters.written([[(150 + x, 560 + y) for x, y in s_] for s_ in st], p)
-    for s_ in part:
-        if len(s_) > 1:
-            pen.line(s_, w=4.6, amp=1.0, again=0.25, over=2.0, drift=0.5, breaks=False)
-    pen.line(bez((300, 610), (330, 680), (360, 720), (410, 760), 20), w=4.0)
-    pen.line([(372, 768), (410, 760), (400, 722)], w=4.0, over=3.0, corners=True)
+    pts = [on_screen(0.5 + ((x - fx) / fh - fw / fh / 2) * 0.3, 0.12 + (y - fy) / fh * 0.76) for x, y in flame[::3]]
+    ImageDraw.Draw(orange).polygon([tuple(q) for q in P([(x + 2, y - 1) for x, y in pts])], fill=255)  # coloured in quickly
+    pen.line(pts + pts[:2], w=1.7, amp=0.5, over=0.0, breaks=False, again=0.0, drift=0.3)
 
 
 def finish(img, orange, variant):
@@ -456,36 +574,38 @@ def layers(variant):
     return img, orange, Hand(img, np.random.default_rng(100 + variant))
 
 
+PHONE = [(232, 1556), (430, 1546), (446, 1622), (236, 1634)]
+FRAME = [1.1, 560.0, 1250.0, 560.0, 1250.0]  # the camera a little closer than the drawing: zoom, the point it is about, where it lands
+
+
 def hello(variant=0):
-    """« Moi c'est Tony. »: at his table, he looks at us and says hello, a little shy."""
+    """« Moi c'est Tony. »: at his table, his head turned a little, he looks up at us with a small, shy smile."""
     img, orange, pen = layers(variant)
-    table(pen)
-    body(pen)
-    head(pen, pen.rng, hx=612.0, hy=948.0, tilt=3.0, look=(0.0, -0.1), lids=15.0, smile=0.8, brow=0.35, ears=(True, True))
-    wave(pen)
-    phone_on_table(pen, orange)
-    name_tag(pen)
+    dt.CAM[:] = FRAME
+    hd = Head(560, 856, yaw=18, pitch=4, roll=2, k=1.06)
+    bust(pen, hd, 566, 1125)
+    table(pen, (560, 860))
+    phone_on_table(pen, orange, PHONE)
+    draw_head(pen, hd, look=(0.6, -0.5), lids=12.0, smile=0.55, lift=0.2)
     return finish(img, orange, variant)
 
 
-def phone(variant=0):
-    """The first drawing, redrawn on white: his head in his hand, his phone lit on the table, his thoughts over him."""
+def bowed(variant=0):
+    """« J'ai créé un réseau social… alors que j'ose même pas parler aux gens. »: bowed over his phone."""
     img, orange, pen = layers(variant)
-    table(pen)
-    body(pen)
-    head(pen, pen.rng)
-    cheek_hand(pen)
-    phone_on_table(pen, orange, rays=40)
-    for bx, by, r, sym in ((250, 470, 120, "?"), (420, 330, 95, "chat"), (165, 720, 82, "cross"), (352, 640, 50, None), (408, 724, 24, None),
-                           (440, 776, 13, None)):
-        bubble(pen, bx, by, r, sym)
+    dt.CAM[:] = FRAME
+    hd = Head(552, 890, yaw=12, pitch=22, roll=5, k=1.06)
+    bust(pen, hd, 566, 1125)
+    table(pen, (560, 860))
+    phone_on_table(pen, orange, PHONE)
+    draw_head(pen, hd, look=(-0.5, 1.2), lids=1.0, smile=0.0, worry=0.35)
     return finish(img, orange, variant)
 
 
 def main():
     out = ROOT / "renders"
     out.mkdir(exist_ok=True)
-    for name, fn in (("tony_sketch_hello", hello), ("tony_sketch_phone", phone)):
+    for name, fn in (("tony_sketch_hello", hello), ("tony_sketch_phone", bowed)):
         fn(0).save(out / f"{name}.png")
         print(out / f"{name}.png")
 
