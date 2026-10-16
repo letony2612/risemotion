@@ -77,11 +77,17 @@ class Pen:
         p = wobble(dense(pts), self.rng, amp)
         # the ink thins and thickens along the stroke
         ws = w * (0.75 + 0.5 * gaussian_filter1d(self.rng.random(len(p)), 3))
+        # only what is on the page is drawn (a stroke can run far off it when the camera is close)
+        m = 60 * S
+        inside = (p[:, 0] > -m) & (p[:, 0] < W * S + m) & (p[:, 1] > -m) & (p[:, 1] < H * S + m)
         for i in range(len(p) - 1):
-            self.d.line([tuple(p[i]), tuple(p[i + 1])], fill=fill, width=max(1, int(ws[i] * S * ink())))
-        for q, wi in zip(p[::3], ws[::3]):  # round joints
-            r = wi * S * ink() / 2
-            self.d.ellipse([q[0] - r, q[1] - r, q[0] + r, q[1] + r], fill=fill)
+            if inside[i] or inside[i + 1]:
+                self.d.line([tuple(p[i]), tuple(p[i + 1])], fill=fill, width=max(1, int(ws[i] * S * ink())))
+        for j in range(0, len(p), 3):  # round joints
+            if inside[j]:
+                q, wi = p[j], ws[j]
+                r = wi * S * ink() / 2
+                self.d.ellipse([q[0] - r, q[1] - r, q[0] + r, q[1] + r], fill=fill)
 
     def disc(self, x0, y0, x1, y1, fill=255):
         """An ellipse in the drawing's coordinates, through the camera."""
