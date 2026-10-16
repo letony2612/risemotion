@@ -224,6 +224,10 @@ def rings(hd, radii, centre, normal, gap_world, light_fn, n_pts=120, keep=None):
         if not vis.any():
             continue
         w, _ = hd.P3(p)
+        sw = ink.to_screen(w)
+        vis &= (sw[:, 0] > -30) & (sw[:, 0] < W + 30) & (sw[:, 1] > -30) & (sw[:, 1] < H + 30)
+        if not vis.any():
+            continue
         I = light_fn(nrm, p)
         idx = np.flatnonzero(vis)
         for run in np.split(idx, np.flatnonzero(np.diff(idx) > 1) + 1):
@@ -237,6 +241,16 @@ TONY = dict(a=90, b=108, c=98, shape=(0.07, 0.06, 0.1), eye=(33, -4), eye_w=13.5
             mouth_w=21, beard=True, glasses=True, hair="slick", nose=1.0, droop=0.14)
 KID = dict(a=92, b=100, c=96, shape=(0.06, 0.03, 0.06), eye=(31, 4), eye_w=14.5, eye_h=8.6, brow_y=-20, mouth_y=52,
            mouth_w=16, beard=False, glasses=True, hair="kid", nose=0.72, droop=0.08)
+
+MATE_A = dict(a=90, b=100, c=95, shape=(0.06, 0.03, 0.08), eye=(31, 4), eye_w=14, eye_h=8.4, brow_y=-20, mouth_y=52, mouth_w=17,
+              beard=False, glasses=False, hair="short", nose=0.75, droop=0.05)
+MATE_B = dict(MATE_A, hair="pony", hair_light=1.6, eye_h=8.8, mouth_w=15)
+TEACHER = dict(a=88, b=112, c=96, shape=(0.04, 0.05, 0.1), eye=(32, -4), eye_w=13, eye_h=6.6, brow_y=-25, mouth_y=58, mouth_w=20,
+               beard=False, glasses=True, hair="short", nose=1.1, droop=0.3, hair_light=1.7)
+ADULT_W = dict(a=86, b=106, c=94, shape=(0.05, 0.05, 0.12), eye=(31, -4), eye_w=13.5, eye_h=7.4, brow_y=-24, mouth_y=56, mouth_w=18,
+               beard=False, glasses=False, hair="long", nose=0.9, droop=0.1)
+ADULT_M = dict(TEACHER, glasses=False, hair_light=1.0, droop=0.1)
+ADULT_B = dict(ADULT_M, beard=True, hair="slick", nose=1.0)
 
 
 def sockets(face):
@@ -282,6 +296,31 @@ def draw_head(cv, key, hd, face, ex, prog=1.0, lift=None):
     def skin_light(nrm, p):
         return light(nrm, p) * dark(p[:, 0], p[:, 1])
 
+    style = face["hair"]
+    hair_k = face.get("hair_light", 1.0)  # fair hair catches more light
+    # --- long hair, or a ponytail: behind everything
+    if style in ("long", "pony"):
+        if style == "long":
+            back_f = [(-a - 6, -50), (-a - 20, 40), (-a - 26, 150), (-a - 12, 236), (-40, 250), (0, 242), (40, 250), (a + 12, 236), (a + 26, 150),
+                      (a + 20, 40), (a + 6, -50), (0, -b - 16)]
+            z_b = -30
+        else:
+            back_f = [(a * 0.6, -70), (a + 26, -20), (a + 40, 70), (a + 30, 150), (a + 12, 190), (a + 2, 120), (a * 0.7, 20)]
+            z_b = -60
+        bw3 = np.array([(x, y, z_b) for x, y in ink.smooth(back_f, closed=True, n=5)])
+        bwp = hd.P3(bw3)[0].tolist()
+        cv.solid(bwp)
+        lines = []
+        xs = np.linspace(min(x for x, _ in back_f), max(x for x, _ in back_f), 26)
+        for x0 in xs:
+            ys = np.linspace(-b - 10, 250, 30)
+            p3 = np.column_stack([x0 + 6 * np.sin(ys / 40 + x0), ys, np.full_like(ys, z_b)])
+            nx = np.clip((x0 - (a + 30 if style == "pony" else 0)) / (a + 30), -1, 1)
+            nrm = norm(np.column_stack([np.full_like(ys, nx), np.zeros_like(ys), np.full_like(ys, math.sqrt(max(0.05, 1 - nx * nx)))])) @ hd.R.T
+            lines.append((hd.P3(p3)[0], light(nrm, p3) * 0.8 * hair_k))
+        ink.engrave(cv.white, lines, clip=[bwp], lo=0.25, wmax=1.7, prog=prog)
+        pen.line(bwp + bwp[:1], w=2.0, amp=0.5)
+
     # --- ears, behind everything
     for side in (-1, 1):
         ear = np.array([(side * (a - 5), -18, -2), (side * (a + 6), -23, -9), (side * (a + 13), -8, -19), (side * (a + 11), 12, -19),
@@ -314,6 +353,8 @@ def draw_head(cv, key, hd, face, ex, prog=1.0, lift=None):
     cv.solid(hair_poly)
     if face["hair"] == "kid":  # a fringe, swept to his left
         hl = [(-88, 4), (-86, -24), (-76, -44), (-56, -50), (-30, -42), (-8, -46), (16, -54), (44, -60), (66, -56), (82, -40), (88, -16), (88, 4)]
+    elif style in ("short", "long", "pony"):
+        hl = [(-89, 4), (-86, -24), (-78, -44), (-60, -58), (-30, -64), (0, -66), (30, -64), (60, -58), (78, -44), (86, -24), (89, 4)]
     else:  # slicked back: the forehead free
         hl = [(-89, 6), (-87, -24), (-80, -46), (-62, -64), (-34, -74), (0, -77), (34, -74), (62, -64), (80, -46), (87, -24), (89, 6)]
     hl = ink.smooth(hl, n=5)
@@ -336,6 +377,8 @@ def draw_head(cv, key, hd, face, ex, prog=1.0, lift=None):
             d0 = norm((p0 - hc) / hr)
             if face["hair"] == "kid":
                 target = norm(np.array([-0.55 - 0.15 * (x0 / a), -0.7, -0.45]))
+            elif style == "short":
+                target = norm(np.array([0.3 * x0 / a, -0.95, 0.1]))
             else:
                 target = norm(back + srng.normal(0, 0.04, 3))
             om = math.acos(float(np.clip(d0 @ target, -1, 1)))
@@ -352,7 +395,10 @@ def draw_head(cv, key, hd, face, ex, prog=1.0, lift=None):
             I = 0.02 + 0.32 * np.clip(nrm @ LIGHT, 0, 1) + 1.0 * np.clip(nrm @ half, 0, 1) ** 10 + 0.8 * np.clip(nrm @ RIM, 0, 1) ** 3
             if lift is not None:
                 I = I + 0.4 * lift(nrm, p)
-            I = I * srng.uniform(0.7, 1.15)
+            I = I * srng.uniform(0.7, 1.15) * hair_k
+            if style == "short":  # a short crop: only the start of each strand
+                keep_n = int(len(ts) * 0.35)
+                vis[keep_n:] = False
             idx = np.flatnonzero(vis)
             if len(idx) > 1:
                 strands.append((w[idx], I[idx]))
@@ -435,15 +481,24 @@ def draw_head(cv, key, hd, face, ex, prog=1.0, lift=None):
         tufts = []
         trng = cv.rng(key + "tufts")
         ow = np.asarray(outer)
+        Q, NV = [], []
         for i in range(len(ow) - 1):
             p0, p1 = ow[i], ow[i + 1]
             tl = float(np.hypot(*(p1 - p0))) or 1.0
             nv = np.array([(p1 - p0)[1], -(p1 - p0)[0]]) / tl
-            for f in np.linspace(0, 1, max(1, int(tl * zc / 3.5)), endpoint=False):
-                q = p0 + (p1 - p0) * f
-                L_ = trng.uniform(3.5, 8) * s / 1.6
-                I_t = max(0.42, float(beard_light(np.array([q[0]]), np.array([q[1]]))[0]))
-                tufts.append((np.array([q - nv * L_ * 0.7, q + nv * L_ * 0.4]), np.array([I_t, I_t * 0.7])))
+            for f in np.linspace(0, 1, max(1, min(40, int(tl * zc / 3.5))), endpoint=False):
+                Q.append(p0 + (p1 - p0) * f)
+                NV.append(nv)
+        if Q:
+            Q, NV = np.array(Q), np.array(NV)
+            sq = ink.to_screen(Q)
+            on_screen = (sq[:, 0] > -20) & (sq[:, 0] < W + 20) & (sq[:, 1] > -20) & (sq[:, 1] < H + 20)
+            Q, NV = Q[on_screen], NV[on_screen]
+            if len(Q):
+                I_t = np.maximum(0.42, beard_light(Q[:, 0], Q[:, 1]))
+                Ls = trng.uniform(3.5, 8, len(Q)) * s / 1.6
+                for q, nv, L_, I_ in zip(Q, NV, Ls, I_t):
+                    tufts.append((np.array([q - nv * L_ * 0.7, q + nv * L_ * 0.4]), np.array([I_, I_ * 0.7])))
         ink.engrave(cv.white, tufts, lo=0.3, hi=0.95, wmax=1.5, prog=prog)
 
     # --- the mouth: the lower lip caught by the light, the line between the lips dark (open, smiling)
@@ -777,7 +832,7 @@ def tony_pose(**k):
     """A pose with its defaults: neck base (x, y), scale s; the body's lean (deg), shrug, breath; the head's
     turn (yaw, pitch, roll) and its expression; each arm's wrist (world) and hand; the phone."""
     p = dict(x=540.0, y=1010.0, s=1.6, lean=0.0, shrug=0.0, breath=0.0, yaw=0.0, pitch=0.0, roll=0.0, hdx=0.0, hdy=0.0,
-             ex={}, arm_r=None, arm_l=None, phone=None, lift=0.0)
+             ex={}, arm_r=None, arm_l=None, phone=None, lift=0.0, face=TONY, head_k=HEAD_K, build=1.0, outfit="tee", cloth=1.0)
     p.update(k)
     return p
 
@@ -790,6 +845,30 @@ def body_point(P, x, y):
     dx, dy = x - px, y - py
     rx, ry = px + dx * math.cos(a) - dy * math.sin(a), py + dx * math.sin(a) + dy * math.cos(a)
     return np.array([P["x"] + rx * s, P["y"] + (ry - 0.0) * s])
+
+
+def hand_point(cv, key, wrist, ang, L, side, gap=5.0, prog=1.0, index=True):
+    """A fist, the index finger out (pointing along ang, deg) or folded too."""
+    a = math.radians(ang)
+    u, v = _dir(a), _dir(a + side * math.pi / 2)
+    W0 = np.asarray(wrist, float)
+
+    def at(pu, pv):
+        return W0 + u * pu * L + v * pv * L
+    fist = ink.smooth([tuple(at(0.0, -0.17)), tuple(at(0.3, -0.24)), tuple(at(0.55, -0.2)), tuple(at(0.62, 0.0)), tuple(at(0.55, 0.2)),
+                       tuple(at(0.25, 0.22)), tuple(at(0.0, 0.16))], closed=True, n=5)
+    cv.solid(fist)
+    light = ink.sphere(*at(0.3, 0.0), L * 0.35, L * 0.35, amb=0.08)
+    ink.hatch(cv.white, [fist], light, cv.rng(key + "fist"), angle=ang + 70, gap=gap, lo=0.3, wmax=1.9, cross=0.8)
+    pen = cv.pen(key + "fist")
+    pen.line(fist + fist[:1], w=2.4, amp=0.4)
+    for k in range(3 if index else 4):  # the folded fingers' knuckles
+        q0, q1 = at(0.42 + 0.03 * k, -0.18 + 0.12 * k + (0.12 if index else 0)), at(0.58, -0.14 + 0.12 * k + (0.12 if index else 0))
+        pen.line([tuple(q0), tuple(q1)], w=1.4, amp=0.3)
+    if index:
+        finger(cv, key + "idx", at(0.5, 0.12), a + side * 0.05, [0.22 * L, 0.15 * L, 0.12 * L], [0.1 * L, 0.095 * L, 0.088 * L, 0.08 * L],
+               [0, 0, 0], gap, prog)
+    finger(cv, key + "th", at(0.2, 0.2), a + side * 0.6, [0.17 * L, 0.14 * L], [0.12 * L, 0.11 * L, 0.1 * L], [0, -side * 0.5], gap, prog)
 
 
 def thumb_on_edge(cv, key, edge_pt, toward, L, side, gap, prog=1.0):
@@ -817,7 +896,7 @@ def tony_pose(**k):
     """A pose with its defaults: neck base (x, y), scale s; the body's lean (deg), shrug, breath; the head's
     turn (yaw, pitch, roll) and its expression; each arm's wrist (world) and hand; the phone."""
     p = dict(x=540.0, y=1010.0, s=1.6, lean=0.0, shrug=0.0, breath=0.0, yaw=0.0, pitch=0.0, roll=0.0, hdx=0.0, hdy=0.0,
-             ex={}, arm_r=None, arm_l=None, phone=None, lift=0.0)
+             ex={}, arm_r=None, arm_l=None, phone=None, lift=0.0, face=TONY, head_k=HEAD_K, build=1.0, outfit="tee", cloth=1.0)
     p.update(k)
     return p
 
@@ -832,18 +911,19 @@ def body_point(P, x, y):
 
 
 def head_of(P):
-    s = P["s"]
-    hs = s * HEAD_K
-    hc = body_point(P, P["hdx"], P["hdy"] - (112 * HEAD_K + 22))
-    return Head(hc[0], hc[1], hs, P["yaw"], P["pitch"], P["roll"] + P["lean"] * 0.6, a=TONY["a"], b=TONY["b"], c=TONY["c"], shape=TONY["shape"])
+    s, f, hk = P["s"], P["face"], P["head_k"]
+    hc = body_point(P, P["hdx"], P["hdy"] - (f["b"] * hk + 22))
+    return Head(hc[0], hc[1], s * hk, P["yaw"], P["pitch"], P["roll"] + P["lean"] * 0.6, a=f["a"], b=f["b"], c=f["c"], shape=f["shape"])
 
 
 def draw_arm(cv, key, P, side, arm, gap, prog):
     """An arm: the upper arm in its sleeve, the forearm bare, the hand."""
     s = P["s"]
+    bd = P["build"]
     up = P["breath"] * 4 + P["shrug"] * 20
-    sh = body_point(P, side * 138, 58 - up)
-    l1, l2 = 228 * s * arm.get("k1", 1.0), 205 * s * arm.get("k2", 1.0)  # k: how much a bone points at us (shorter)
+    sh = body_point(P, side * 138 * bd, 58 - up)
+    l1, l2 = 228 * s * arm.get("k1", 1.0) * bd ** 0.5, 205 * s * arm.get("k2", 1.0) * bd ** 0.5  # k: a bone pointing at us looks shorter
+    s = s * bd ** 0.6
     el, wr = ik(sh, arm["wrist"], l1, l2, arm.get("elbow", (side * 0.6, 1.0)))
     pen = cv.pen(key + "arm")
     mid_e = (sh + el) / 2 + np.array([side * 4 * s, 0])
@@ -885,11 +965,18 @@ def draw_arm(cv, key, P, side, arm, gap, prog):
     if hand == "open":
         hand_open(cv, key + "h", wr, arm.get("ang", -90), 150 * s, arm.get("thumb", -side), arm.get("spread", 1.0), arm.get("curl", 0.0),
                   gap * 0.85, prog)
+    elif hand == "point":
+        hand_point(cv, key + "h", wr, arm.get("ang", 0), 150 * s, arm.get("thumb", -side), gap * 0.85, prog)
+    elif hand == "fist":
+        hand_point(cv, key + "h", wr, arm.get("ang", 90), 150 * s, arm.get("thumb", -side), gap * 0.85, prog, index=False)
     return el, wr
 
 
-def draw_tony(cv, key, P, prog=1.0, screen=None):
+def draw_tony(cv, key, P, prog=1.0, screen=None, parts=("body", "head", "arms")):
+    """Tony, or anyone: the pose says whose face, how big a head, what build and clothes. parts: what to
+    draw now (a child behind his desk: his body and head, then the desk, then his arms on it)."""
     s = P["s"]
+    bd = P["build"]
     zc = dt.CAM[0]
     gap = 6.0 / zc
     pen = cv.pen(key + "body")
@@ -898,18 +985,27 @@ def draw_tony(cv, key, P, prog=1.0, screen=None):
     def B(x, y):
         return body_point(P, x, y)
 
+    out = dict(head=head_of(P), lens=[])
+    if "body" not in parts:
+        if "arms" in parts:
+            for side, name in ((1, "arm_l"), (-1, "arm_r")):
+                if P[name] is not None:
+                    out[name] = draw_arm(cv, key + name, P, side, P[name], gap, prog)
+        return out
     # --- the neck, behind the collar and the beard
-    tube(cv, key + "neck", [tuple(B(P["hdx"] * 0.5, -70)), tuple(B(P["hdx"] * 0.2, -30)), tuple(B(0, 10))], [84 * s, 88 * s, 94 * s], gap * 1.3,
-         prog, gain=0.5, lw=1.8, ends=False, lo=0.35)
+    nw = s * bd ** 0.5
+    tube(cv, key + "neck", [tuple(B(P["hdx"] * 0.5, -70)), tuple(B(P["hdx"] * 0.2, -30)), tuple(B(0, 10))], [84 * nw, 88 * nw, 94 * nw], gap * 1.3,
+         prog, gain=0.5 if P["face"]["beard"] else 0.8, lw=1.8, ends=False, lo=0.35)
 
     # --- the torso: a dark tee
     shy = 8 * P["shrug"]
     L_side = [(-54, -4), (-104, 10 - up * 0.7), (-150 + shy, 34 - up), (-166 + shy, 76 - up * 0.6), (-158, 140), (-146, 240), (-138, 420), (-136, 760)]
+    L_side = [(x * (bd if i > 0 else bd ** 0.5), y) for i, (x, y) in enumerate(L_side)]
     R_side = [(-x, y) for x, y in L_side]
     torso = [tuple(B(x, y)) for x, y in ink.smooth(L_side, n=5)] + [tuple(B(x, y)) for x, y in ink.smooth(R_side, n=5)[::-1]]
     cv.solid(torso)
     sh_l = B(-120, 60)
-    light = ink.add(ink.scale(ink.glow_at(*sh_l, 190 * s, 1.0), 0.75), ink.flat(0.05))
+    light = ink.add(ink.scale(ink.glow_at(*sh_l, 190 * s, 1.0), 0.75 * P["cloth"]), ink.flat(0.05))
     ink.hatch(cv.white, [torso], light, cv.rng(key + "tee"), angle=58 + P["lean"], gap=gap * 1.1, lo=0.42, hi=0.9, wmax=1.7, cross=0, prog=prog)
     for (x0, y0, x1, y1, x2, y2) in ((-140, 170, -96, 290, -74, 420), (140, 175, 100, 285, 84, 410), (-112, 500, -44, 540, 24, 528),
                                      (-58, 110, -36, 160, -44, 220), (40, 300, 60, 380, 52, 470)):
@@ -917,26 +1013,42 @@ def draw_tony(cv, key, P, prog=1.0, screen=None):
     n2 = len(torso) // 2
     pen.line(torso[:n2], w=2.6, amp=0.6)
     pen.line(torso[n2:], w=2.0, amp=0.6)
+    if P["outfit"] == "shirt":  # a shirt's collar, a tie
+        for side in (-1, 1):
+            col = [tuple(B(side * 10, 8)), tuple(B(side * 62, -6)), tuple(B(side * 70, 40)), tuple(B(side * 22, 56))]
+            cv.solid(col)
+            pen.line(col + col[:1], w=2.2, amp=0.4)
+        tie = [tuple(B(-14, 30)), tuple(B(14, 30)), tuple(B(22, 300)), tuple(B(0, 330)), tuple(B(-22, 300))]
+        cv.solid(tie)
+        ink.hatch(cv.white, [tie], ink.flat(0.6), cv.rng(key + "tie"), angle=40, gap=gap * 1.2, lo=0.3, wmax=1.6, cross=0)
+        pen.line(tie + tie[:1], w=2.2, amp=0.4)
+        for y in (180, 300, 420):
+            cv.disc(*B(0, y + 20), 4 * s)
     th = np.linspace(0, math.pi, 24)  # the collar: a ribbed band round the neck
-    outer = [tuple(B(58 * math.cos(t), 2 + 22 * math.sin(t))) for t in th]
-    inner = [tuple(B(44 * math.cos(t), 0 + 13 * math.sin(t))) for t in th[::-1]]
-    band = outer + inner
-    cv.solid(band)
-    ink.hatch(cv.white, [band], ink.flat(0.55), cv.rng(key + "rib"), angle=95 + P["lean"], gap=gap * 0.85, lo=0.3, wmax=1.4, cross=0)
-    pen.line(outer, w=2.4, amp=0.4)
-    pen.line(inner[::-1], w=1.8, amp=0.4)
+    if P["outfit"] != "shirt":
+        outer = [tuple(B(58 * bd ** 0.5 * math.cos(t), 2 + 22 * math.sin(t))) for t in th]
+        inner = [tuple(B(44 * bd ** 0.5 * math.cos(t), 0 + 13 * math.sin(t))) for t in th[::-1]]
+        band = outer + inner
+        cv.solid(band)
+        ink.hatch(cv.white, [band], ink.flat(0.55), cv.rng(key + "rib"), angle=95 + P["lean"], gap=gap * 0.85, lo=0.3, wmax=1.4, cross=0)
+        pen.line(outer, w=2.4, amp=0.4)
+        pen.line(inner[::-1], w=1.8, amp=0.4)
 
     # --- the head
+    if "head" not in parts:
+        return out
     hd = head_of(P)
     lift = None
     if P["lift"] > 0:
         k_l = P["lift"]
         dirl = norm(np.array([0.0, 0.85, 0.55]))
         lift = lambda n, p: k_l * 0.7 * np.clip(n @ dirl, 0, 1) ** 1.5
-    info = draw_head(cv, key, hd, TONY, P["ex"], prog=prog, lift=lift)
+    info = draw_head(cv, key, hd, P["face"], P["ex"], prog=prog, lift=lift)
 
     # --- the arms (behind the phone), the phone, the hand round it
     out = dict(head=hd, lens=info["lens"])
+    if "arms" not in parts:
+        return out
     for side, name in ((1, "arm_l"), (-1, "arm_r")):
         if P[name] is not None:
             out[name] = draw_arm(cv, key + name, P, side, P[name], gap, prog)
@@ -952,7 +1064,33 @@ def draw_tony(cv, key, P, prog=1.0, screen=None):
         def Q(x, y):
             return np.array([ph["cx"] + x * ww / 2 * ux + y * ph["h"] / 2 * vx, ph["cy"] + x * ww / 2 * uy + y * ph["h"] / 2 * vy])
         L = 150 * s
-        if ph.get("hold", "right") == "right":  # his right hand: fingertips round our left edge, the thumb on the right one
+        if k > 0.15:  # its screen to us: his right hand behind it, fingertips round our left edge, the thumb on the right one
             fingertips_on_edge(cv, key + "ft", [Q(-1.0, 0.16 + 0.2 * i) for i in range(3)], a, L * 1.25, gap, prog)
             thumb_on_edge(cv, key + "th", Q(1.0, 0.62) + np.array([ux, uy]) * 16 * s, a + math.pi + 0.75, L * 1.2, 1, gap, prog)
+        elif k < -0.15:  # its back to us: his fingers across it
+            for i in range(3):
+                q = Q(-1.06, 0.3 + 0.2 * i)
+                finger(cv, key + f"bf{i}", q, a + 0.05 * i, [ww * 0.34, ww * 0.22], [L * 0.12, L * 0.115, L * 0.1], [0.0, 0.25], gap * 1.5, prog, gain=0.95)
     return out
+
+
+def draw_shadow(cv, key, x, y, s, prog=1.0, rim_side=-1, rise=1.0):
+    """Someone close, as a looming shadow: a black figure, only its edge caught by a light (on rim_side);
+    rise: how far it has risen from below (0..1)."""
+    y = y + (1 - rise) * 900 * s
+    pen = cv.pen(key + "shadow")
+    head = [(x + 92 * s * math.cos(t), y - 190 * s + 112 * s * math.sin(t)) for t in np.linspace(0, 2 * math.pi, 48)]
+    body = ink.smooth([(x - 64 * s, y - 70 * s), (x - 190 * s, y - 20 * s), (x - 252 * s, y + 110 * s), (x - 274 * s, y + 900 * s),
+                       (x + 274 * s, y + 900 * s), (x + 252 * s, y + 110 * s), (x + 190 * s, y - 20 * s), (x + 64 * s, y - 70 * s)], n=6)
+    neck = [(x - 52 * s, y - 120 * s), (x + 52 * s, y - 120 * s), (x + 64 * s, y - 50 * s), (x - 64 * s, y - 50 * s)]
+    shapes = [body, neck, head]
+    for sh in shapes:
+        cv.solid(sh)
+    # its lit edge: the figure hatched, then covered again by itself a little shifted away from the light
+    rng = cv.rng(key + "sh")
+    ink.hatch(cv.white, shapes, ink.flat(0.75), rng, angle=62 * -rim_side, gap=6.2 / dt.CAM[0], lo=0.3, wmax=1.9, cross=0, prog=prog)
+    off = -rim_side * 26 * s
+    for sh in shapes:
+        cv.solid([(px + off, py + 8 * s) for px, py in sh])
+    pen.line(head + head[:1], w=2.2, amp=0.6)
+    pen.line(body, w=2.2, amp=0.6)

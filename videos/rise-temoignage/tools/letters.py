@@ -49,6 +49,7 @@ def layout(text, font="futural", size=40.0, slant=0.0, hand=0.0, seed=0):
     k = size / UNIT
     rng = random.Random(seed)
     pen_x, out = 0.0, []
+    text = text.replace("…", "...").replace("’", "'").replace("«", '"').replace("»", '"').replace("\u00a0", " ")
     for ch in text:
         parts = unicodedata.normalize("NFD", ch)
         base, marks = parts[0], parts[1:]
@@ -116,7 +117,7 @@ def written(strokes, p):
 
 
 def width(text, font="futural", size=40.0):
-    return layout(text, font, size)[1]
+    return layout(text, font, size)[1]  # (the same letters as layout, so the same width)
 
 
 def wrap(text, font, size, max_w):
