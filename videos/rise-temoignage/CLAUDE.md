@@ -1,8 +1,10 @@
 # Témoignage de Tony — le style de dessin (validé par Tony : « je kiffe le style de dessins, il faut garder ça »)
 
 Le style du film, c'est **son tout premier dessin** (`tools/draw_test.py`, rendu `tools/still.png`), redessiné
-**en noir sur fond blanc** par `tools/sketch.py` (rendus : `renders/tony_sketch_wavy.png`,
-`renders/tony_sketch_wavy_shaved.png`). Toute nouvelle image du film se dessine avec ce script et sa plume `Hand`.
+**en noir sur fond blanc** par `tools/sketch.py`. **Le dessin validé** (« OUAIIIS franchement ça c'est top ») est gardé
+tel quel dans `reference/tony_valide.png` ; `python3 tools/sketch.py` le refait à l'identique dans
+`renders/tony_sketch.png`. Toute nouvelle image du film se dessine avec ce script et sa plume `Hand`, et se compare à
+cette référence.
 
 ## À garder
 
@@ -22,7 +24,8 @@ Le style du film, c'est **son tout premier dessin** (`tools/draw_test.py`, rendu
   montent du front et repartent en vagues par-dessus la tête, un peu de volume sur le devant mais **le crâne pas trop
   long** (« un tout petit peu moins long »), le front dégagé, deux mèches libres qui retombent sur le front — demandé
   par Tony (« ça me ressemblerait plus »). Pas de frange.
-- **Barbe** : courte, en petits traits (et la moustache aussi en petits traits) — ou rasé. Tony doit choisir.
+- **Barbe** : courte, en petits traits, la moustache aussi en petits traits — **choisie par Tony** (la version rasée
+  existe encore : `drawing(beard=False)`).
 
 ## À ne pas faire (ses retours)
 

@@ -7,7 +7,7 @@ Drawn the way that drawing was, freehand, never gone back over to clean it: a fe
 each stroke wanders a little on its way, swells where the pen lands and thins where it lifts, runs past its ends;
 a long one is sometimes done in two goes; a circle never quite closes; hatching stops near the edge, not on it;
 here and there a line was drawn twice, a little beside itself.
-Usage: python3 tools/sketch.py  -> renders/tony_sketch_wavy.png, renders/tony_sketch_wavy_shaved.png
+Usage: python3 tools/sketch.py  -> renders/tony_sketch.png (the drawing Tony validated; reference/tony_valide.png)
 """
 import json
 import math
@@ -450,11 +450,10 @@ def drawing(variant=0, hair="wavy", beard=True):
 
 
 def main():
-    out = ROOT / "renders"
-    out.mkdir(exist_ok=True)
-    for name, beard in (("tony_sketch_wavy", True), ("tony_sketch_wavy_shaved", False)):
-        drawing(0, "wavy", beard).save(out / f"{name}.png")
-        print(out / f"{name}.png")
+    out = ROOT / "renders" / "tony_sketch.png"
+    out.parent.mkdir(exist_ok=True)
+    drawing(0).save(out)
+    print(out)
 
 
 if __name__ == "__main__":
