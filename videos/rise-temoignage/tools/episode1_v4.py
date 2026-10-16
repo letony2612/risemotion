@@ -448,7 +448,7 @@ def sound(path):
     m = np.pad(m, ((0, max(0, n - len(m))), (0, 0)))[:n]
     tt = np.arange(n) / sr
     h0 = L[28]
-    y = m * (np.clip(tt / 0.5, 0, 1) * np.clip((h0 - tt) / 0.4, 0, 1) * 0.5)[:, None]
+    y = m * 0.0  # no music (Tony asked): only his voice to come, and the boom under the logo
     boom, _ = sf.read(v3.BOOM, always_2d=True)
     at = int((h0 + 0.467) * sr)
     k = min(len(boom), n - at)
