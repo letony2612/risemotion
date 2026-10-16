@@ -208,7 +208,7 @@ def splash_frame(t):
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-c:v", "libvpx-vp9", "-ss", "0.2", "-i", str(SPLASH), "-r", str(FPS), f"{d}/%04d.png"], check=True)
         _splash["dir"] = d
         _splash["n"] = len(list(Path(d).glob("*.png")))
-    k = min(_splash["n"], int(t * FPS) + 1)
+    k = max(1, min(_splash["n"], int(t * FPS) + 1))
     im = Image.open(f'{_splash["dir"]}/{k:04d}.png').convert("RGBA")
     return im.resize((int(im.width * 0.9), int(im.height * 0.9)), Image.LANCZOS)
 
