@@ -158,7 +158,7 @@ def scribble_out(pen, x, y, w, h):
 # --- the shots: each returns the picture (L) at t
 def shot_phone1(f, t, v, c):
     els = [layer(c, "p1", v, prog(t, L[0], 0.8), lambda p: phone_body(p, 540, 1180, 380, 720)),
-           layer(c, "p1f", v, prog(t, L[0] + 0.6, 0.5), lambda p: flame(p, 540, 1150, 1.2))]
+]
     if t > L[0] + 0.9:
         els.append(layer(c, "p1g", v, 1, lambda p: glow(p, 540, 1180, 400, 470, 80, 1.8), still=True))
     for k, (x, y, w, h, side) in enumerate([(200, 560, 300, 130, -1), (860, 520, 290, 120, 1), (180, 860, 280, 115, -1),
@@ -353,7 +353,7 @@ FEATURES = [(170, 700, "?"), (910, 1000, "p"), (170, 1320, "g")]  # beside the p
 
 def shot_rise(f, t, v, c):
     els = [layer(c, "r1", v, prog(t, L[20], 0.7), lambda p: phone_body(p, 540, 1080, 400, 760)),
-           layer(c, "r1f", v, prog(t, L[20] + 0.5, 0.5), lambda p: flame(p, 540, 880, 0.8))]
+]
     if t > L[20] + 0.9:
         els.append(layer(c, "r1g", v, 1, lambda p: glow(p, 540, 1080, 430, 500, 90, 1.8)))
     if t > L[21]:  # a feed, in the phone
@@ -396,7 +396,44 @@ def shot_logo(f, t, v, c):
     return base
 
 
+_logo = {}
+
+
+def rise_logo(width):
+    """The RISE logo (its last frame: white letters, the flame on the I), cut to its ink, at a width."""
+    if "im" not in _logo:
+        with tempfile.TemporaryDirectory() as d:
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-c:v", "libvpx-vp9", "-ss", "5.0", "-i", str(v3.SPLASH), "-frames:v", "1", f"{d}/l.png"], check=True)
+            im = Image.open(f"{d}/l.png").convert("RGBA")
+        _logo["im"] = im.crop(im.getchannel("A").point(lambda a: 255 if a > 40 else 0).getbbox())
+    im = _logo["im"]
+    return im.resize((width, int(im.height * width / im.width)), Image.LANCZOS)
+
+
+# where the logo sits in a shot, from when, how wide
+LOGOS = {"phone1": (540, 1170, lambda: L[0] + 0.6, 300), "rise": (540, 860, lambda: L[20] + 0.5, 320),
+         "gather": (540, 760, lambda: shot_span("gather")[0] + 2.0, 380)}
+
+
+def with_logo(name, fn):
+    def shot(f, t, v, c):
+        pic = fn(f, t, v, c).convert("RGB")
+        x, y, at, w = LOGOS[name]
+        a = ease((t - at()) / 0.5)
+        if a > 0:
+            lg = rise_logo(w)
+            if a < 1:
+                lg.putalpha(lg.getchannel("A").point(lambda q: int(q * a)))
+            if name == "gather":  # over the drawn flame
+                ImageDraw.Draw(pic).rectangle([x - w // 2 - 10, y - 90, x + w // 2 + 10, y + 60], fill=(0, 0, 0))
+            pic.paste(lg, (x - lg.width // 2, y - lg.height // 2), lg)
+        return pic
+    return shot
+
+
 FN = {n: globals()[f"shot_{n}"] for n, _, _ in SHOTS}
+for n in LOGOS:
+    FN[n] = with_logo(n, FN[n])
 
 
 def picture(f, t, c):
