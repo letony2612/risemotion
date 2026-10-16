@@ -19,8 +19,9 @@ Le style du film, c'est **son tout premier dessin** (`tools/draw_test.py`, rendu
   épais ; le nez du premier dessin ; bouche plate ; tee-shirt à col rond côtelé, plis, hachures sur une épaule ; cou
   hachuré sous le menton.
 - **Cheveux** : ondulés façon coréenne et **tirés vers l'arrière** (« mes cheveux partent en arrière ») : ils
-  montent du front et repartent en vagues par-dessus la tête, du volume sur le devant, le front dégagé, deux mèches
-  libres qui retombent sur le front — demandé par Tony (« ça me ressemblerait plus »). Pas de frange.
+  montent du front et repartent en vagues par-dessus la tête, un peu de volume sur le devant mais **le crâne pas trop
+  long** (« un tout petit peu moins long »), le front dégagé, deux mèches libres qui retombent sur le front — demandé
+  par Tony (« ça me ressemblerait plus »). Pas de frange.
 - **Barbe** : courte, en petits traits (et la moustache aussi en petits traits) — ou rasé. Tony doit choisir.
 
 ## À ne pas faire (ses retours)
