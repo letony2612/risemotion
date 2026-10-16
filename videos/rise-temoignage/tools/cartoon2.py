@@ -56,48 +56,52 @@ def draw_head(cv, key, hd, f, e):
     pen.line(hd.pts(arc(turn * 6, 0, A, B, 168, 200, 12), 0.15), w=3.8)
     pen.line(hd.pts(arc(turn * 6, 0, A, B, -20, 12, 12), 0.15), w=3.8)
 
-    # --- the hair: black, slicked back from a soft hairline, its ends breaking its edge; lights in it
-    if f.get("hair") == "bowl":
-        top = arc(0, -30, A + 14, B + 30, 182, 358, 44)
-        fringe = ink.smooth([(A + 10, -40), (A - 20, -66), (90, -78), (50, -70), (20, -84), (-20, -72), (-60, -86), (-100, -74), (-A + 14, -60),
-                             (-A - 10, -40)], n=4)
-        hl, tp = hd.pts(fringe, 0.5)[::-1], hd.pts(top, 0.2)
-        cv.fill(hl + tp[::-1], 255)
-        line_pts, crown = fringe[::-1], (0, -B - 20)
+    # --- the hair, or a cap worn backwards (Tony's idea: simpler than his hair)
+    if f.get("hair") == "cap":
+        draw_cap(cv, pen, rng, hd, A, B)
     else:
-        line_pts = ink.smooth([(-A + 10, 18), (-A + 4, -40), (-A + 18, -96), (-108, -132), (-56, -146), (0, -150), (56, -148), (108, -136),
-                               (A - 18, -100), (A - 4, -40), (A - 10, 18)], n=5)
-        outer = ink.smooth([(A - 4, 20), (A + 10, -34), (A + 16, -94), (A - 6, -168), (98, -218), (0, -236), (-100, -222), (-A + 8, -170),
-                            (-A - 14, -96), (-A - 8, -34), (-A + 4, 20)], n=5)
-        hl, tp = hd.pts(line_pts, 0.55), hd.pts(outer, 0.2)
-        cv.fill(hl + tp, 255)
-        crown = (10, -150)
-        for k in range(14):  # a few ends, lying back along its edge
-            i = int((k + 0.5) / 14 * (len(outer) - 2))
-            q, q2 = np.asarray(outer[i]), np.asarray(outer[i + 1])
-            tg = (q2 - q) / (np.hypot(*(q2 - q)) + 1e-9)
-            nrm = np.array([tg[1], -tg[0]])
-            L_ = rng.uniform(10, 18)
-            pen.line(hd.pts([tuple(q - tg * 4), tuple(q + tg * L_ + nrm * 6)], 0.2), w=2.2, amp=0.3)
-        for side in (-1, 1):  # the sideburns, down to the stubble
-            for k in range(7):
-                x = side * (A - 6 - 3 * k)
-                pen.line(hd.pts([(x, 8 + 2 * k), (x + side * 1.5, 34 + 3 * k)], 0.3), w=1.6, amp=0.3)
-    # the light on it: long strokes from the hairline up over the top, combed back (more on the lit side, our left)
-    top_pts = outer[::-1] if f.get("hair") != "bowl" else top
-    n_l, n_t = len(line_pts), len(top_pts)
-    for k in range(44):
-        u = min(0.97, abs(rng.normal(0.0, 0.42))) if rng.random() < 0.75 else rng.uniform(0.05, 0.97)
-        i = int(u * (n_l - 1))
-        x0, y0 = line_pts[i]
-        j = min(n_t - 1, max(0, int(u * (n_t - 1)) + int(rng.integers(2, 6))))
-        x1, y1 = top_pts[j]
-        y1 += 10
-        mx, my = (x0 + x1) / 2 + rng.uniform(-8, 8), (y0 + y1) / 2 - rng.uniform(4, 16)
-        pen.line(hd.pts(bez((x0, y0 - 7), (x0 + 2, y0 - 28), (mx, my), (x1, y1), 16), 0.35), w=rng.uniform(1.0, 2.3), amp=0.7, fill=0)
-    if f.get("hair") != "bowl":
-        for sx, sy in ((-104, -132), (-90, -138)):  # two strands fallen on his forehead
-            pen.line(hd.pts(bez((sx, sy), (sx - 8, sy + 22), (sx - 12, sy + 44), (sx - 4, sy + 66), 14), 0.55), w=2.2)
+        if f.get("hair") == "bowl":
+            top = arc(0, -30, A + 14, B + 30, 182, 358, 44)
+            fringe = ink.smooth([(A + 10, -40), (A - 20, -66), (90, -78), (50, -70), (20, -84), (-20, -72), (-60, -86), (-100, -74), (-A + 14, -60),
+                                 (-A - 10, -40)], n=4)
+            hl, tp = hd.pts(fringe, 0.5)[::-1], hd.pts(top, 0.2)
+            cv.fill(hl + tp[::-1], 255)
+            line_pts, crown = fringe[::-1], (0, -B - 20)
+        else:
+            line_pts = ink.smooth([(-A + 10, 18), (-A + 4, -40), (-A + 18, -96), (-108, -132), (-56, -146), (0, -150), (56, -148), (108, -136),
+                                   (A - 18, -100), (A - 4, -40), (A - 10, 18)], n=5)
+            outer = ink.smooth([(A - 4, 20), (A + 10, -34), (A + 16, -94), (A - 6, -168), (98, -218), (0, -236), (-100, -222), (-A + 8, -170),
+                                (-A - 14, -96), (-A - 8, -34), (-A + 4, 20)], n=5)
+            hl, tp = hd.pts(line_pts, 0.55), hd.pts(outer, 0.2)
+            cv.fill(hl + tp, 255)
+            crown = (10, -150)
+            for k in range(14):  # a few ends, lying back along its edge
+                i = int((k + 0.5) / 14 * (len(outer) - 2))
+                q, q2 = np.asarray(outer[i]), np.asarray(outer[i + 1])
+                tg = (q2 - q) / (np.hypot(*(q2 - q)) + 1e-9)
+                nrm = np.array([tg[1], -tg[0]])
+                L_ = rng.uniform(10, 18)
+                pen.line(hd.pts([tuple(q - tg * 4), tuple(q + tg * L_ + nrm * 6)], 0.2), w=2.2, amp=0.3)
+            for side in (-1, 1):  # the sideburns, down to the stubble
+                for k in range(7):
+                    x = side * (A - 6 - 3 * k)
+                    pen.line(hd.pts([(x, 8 + 2 * k), (x + side * 1.5, 34 + 3 * k)], 0.3), w=1.6, amp=0.3)
+        # the light on it: long strokes from the hairline up over the top, combed back (more on the lit side, our left)
+        top_pts = outer[::-1] if f.get("hair") != "bowl" else top
+        n_l, n_t = len(line_pts), len(top_pts)
+        for k in range(44):
+            u = min(0.97, abs(rng.normal(0.0, 0.42))) if rng.random() < 0.75 else rng.uniform(0.05, 0.97)
+            i = int(u * (n_l - 1))
+            x0, y0 = line_pts[i]
+            j = min(n_t - 1, max(0, int(u * (n_t - 1)) + int(rng.integers(2, 6))))
+            x1, y1 = top_pts[j]
+            y1 += 10
+            mx, my = (x0 + x1) / 2 + rng.uniform(-8, 8), (y0 + y1) / 2 - rng.uniform(4, 16)
+            pen.line(hd.pts(bez((x0, y0 - 7), (x0 + 2, y0 - 28), (mx, my), (x1, y1), 16), 0.35), w=rng.uniform(1.0, 2.3), amp=0.7, fill=0)
+        if f.get("hair") != "bowl":
+            for sx, sy in ((-104, -132), (-90, -138)):  # two strands fallen on his forehead
+                pen.line(hd.pts(bez((sx, sy), (sx - 8, sy + 22), (sx - 12, sy + 44), (sx - 4, sy + 66), 14), 0.55), w=2.2)
+
 
     # --- a light stubble round the jaw, a moustache
     for k in range(f.get("beard_n", 0)):
@@ -176,12 +180,49 @@ def draw_head(cv, key, hd, f, e):
         if sm > 0.15:
             q0 = (side * (mw + 2), my - 12 * sm)
             pen.line(hd.pts([q0, (side * (mw + 9), my - 12 * sm - 7 * sm)], 1.0), w=2.2)
-    must = bez((-mw - 22, my - 30 - 6 * sm), (-mw * 0.5, my - 48), (mw * 0.5, my - 48), (mw + 22, my - 30 - 6 * sm), 18)
-    pen.line(hd.pts(must, 1.0), w=3.4)
-    for k in range(18):
-        x, y = must[1 + int((k + 0.5) / 18 * (len(must) - 3))]
-        pen.line(hd.pts([(x, y + 2), (x + rng.uniform(-2, 2), y + rng.uniform(6, 11))], 1.0), w=1.5, amp=0.3)
+    if f.get("beard_n", 0):  # stubble over the lip, no line (a moustache's line looked odd)
+        for k in range(30):
+            x = rng.uniform(-mw - 12, mw + 12)
+            y = my - 18 - rng.uniform(0, 22) + 8 * (abs(x) / (mw + 12)) ** 2
+            pen.line(hd.pts([(x, y), (x + rng.uniform(-2, 2), y + rng.uniform(5, 9))], 1.0), w=1.4, amp=0.3)
     return hd
+
+
+def draw_cap(cv, pen, rng, hd, A, B):
+    """A cap worn backwards: black, its seams and its button white; over the forehead, the opening for its
+    strap, a little hair in it; its peak behind, sticking out over the top; hair at the temples below it."""
+    # its peak, behind the head: only its end shows, out on our right
+    peak = ink.smooth([(40, -196), (130, -214), (A + 70, -214), (A + 104, -198), (A + 92, -180), (130, -174), (40, -168)], closed=True, n=5)
+    cv.fill(hd.pts(peak, 0.2), 255)
+    pen.line(hd.pts(ink.smooth([(A - 10, -204), (A + 64, -205), (A + 92, -194)], n=6), 0.2), w=1.6, amp=0.3, fill=0)
+    pen.line(hd.pts(ink.smooth([(A - 10, -186), (A + 60, -186), (A + 84, -183)], n=6), 0.2), w=1.4, amp=0.3, fill=0)
+    band = bez((-A - 6, -56), (-70, -88), (70, -88), (A + 6, -56), 24)
+    dome = ink.smooth([(A + 6, -56), (A + 12, -112), (150, -180), (86, -228), (0, -242), (-86, -228), (-150, -180), (-A - 12, -112),
+                       (-A - 6, -56)], n=6)
+    cv.fill(hd.pts(band + dome, 0.25), 255)
+    for xs in (-118, -50, 50, 118):  # its seams, up to the button
+        seam = bez((xs, -84 + abs(xs) * 0.2), (xs * 1.04, -150), (xs * 0.6, -208), (0, -238), 14)
+        pen.line(hd.pts(seam, 0.25), w=1.7, amp=0.4, fill=0)
+    pen.line(hd.pts([(x, y - 9) for x, y in band[2:-2]], 0.25), w=1.4, amp=0.3, fill=0)  # the stitching over its edge
+    bx, by = hd.pt(0, -240, 0.25)
+    cv.disc(bx, by, 8.5 * hd.k, 0)
+    cv.disc(bx, by, 4.5 * hd.k, 255)
+    # the opening over the forehead (worn backwards), its strap across, his hair in it
+    opening = arc(0, -82, 40, 50, 180, 360, 20)
+    cv.solid(hd.pts(opening + [(40, -82), (-40, -82)], 0.3))
+    pen.line(hd.pts(opening, 0.3), w=2.4, amp=0.3)
+    for k in range(9):
+        x = -30 + 7.5 * k
+        pen.line(hd.pts([(x, -86), (x + 4, -118 + 10 * abs(x) / 30)], 0.3), w=1.6, amp=0.4)
+    strap = [(-48, -98), (48, -98), (48, -82), (-48, -82)]
+    cv.fill(hd.pts(strap, 0.3), 255)
+    for k in range(5):
+        cv.disc(*hd.pt(-28 + 14 * k, -90, 0.3), 2.6 * hd.k, 0)
+    # his hair at the temples, below the cap
+    for side in (-1, 1):
+        for k in range(9):
+            x = side * (A - 4 - 3.2 * k)
+            pen.line(hd.pts([(x, -58 + 2 * k), (x + side * 2, -18 + 3 * k)], 0.3), w=1.8, amp=0.3)
 
 
 def draw_body(cv, key, P):
@@ -315,10 +356,14 @@ def draw_phone(cv, key, ph, screen=None):
     return body
 
 
-def draw_tony(cv, key, P, screen=None):
+def draw_tony(cv, key, P, screen=None, parts=("body", "head", "arms")):
     out = dict(head=head_of(P))
-    draw_body(cv, key, P)
-    out["head"] = draw_head(cv, key, head_of(P), P["face"], ex_of(P))
+    if "body" in parts:
+        draw_body(cv, key, P)
+    if "head" in parts:
+        out["head"] = draw_head(cv, key, head_of(P), P["face"], ex_of(P))
+    if "arms" not in parts:
+        return out
     for side, name in ((1, "arm_l"), (-1, "arm_r")):
         if P[name] is not None:
             out[name] = draw_arm(cv, key + name, P, side, P[name])
