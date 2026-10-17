@@ -37,7 +37,7 @@ LINES = [  # each line as he says it, and the pause before it (s)
     ("…ou par peur de déranger.", 0.3),
     ("J'ai souvent été rabaissé.", 0.6),
     ("Par des amis, par des proches, même par des profs…", 0.35),
-    ("À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières.", 2.5),  # (time to read his report)
+    ("À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières.", 1.9),  # (time to read his report)
     ("J'avais peur du jugement, du regard des autres.", 0.35),
     ("Aller vers les gens était devenu difficile.", 0.35),
     ("Et aujourd'hui encore, ça me freine dans ma foi.", 0.5),

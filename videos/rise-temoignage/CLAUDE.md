@@ -60,12 +60,12 @@ Tony a fait sa voix avec ElevenLabs (le bloc `[bored]` de `SCRIPT.md`), en une p
 rendre certaines phrases plus impactantes ») sans toucher aux mots ni à leur vitesse, garde un temps avant « C'est
 justement pour ça que j'ai créé RISE », et donne `assets/voice/voice.wav` et `assets/voice/take.json` (l'heure de
 chaque mot). Les pauses entre les phrases se règlent dans `LINES` de `tools/voice.py` (une pause après « même par des
-profs… », le temps de lire le bulletin : « on coupe un peu après qu'on dit par les profs » ; une avant la dernière
-phrase, le temps du câlin collectif).
+profs… », le temps de lire le bulletin : « on coupe un peu après qu'on dit par les profs », puis un peu moins ; une
+avant la dernière phrase, le temps du câlin collectif).
 
 ## Animation
 
-`tools/film.py` → `renders/film_v5.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
+`tools/film.py` → `renders/film_v6.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
 dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze dessins par seconde, chacun tenu deux images,
 l'encre qui « vibre » un peu (la main repasse les traits ; ce qui est aléatoire — les poils, les rayons, le gribouillis
 — reste en place d'un dessin à l'autre) ; peu de choses bougent à la fois ; les scènes s'enchaînent par des mouvements
@@ -74,13 +74,18 @@ reel, jamais les motifs propres à cet artiste (pas d'yeux qui flottent : « le 
 tournés vers lui).
 
 - **Pas de sous-titres** (« pour que les gens soient plus concentrés sur la vidéo ») : des mots clés s'écrivent à la
-  main dans l'image, là où ils vont, quand il les dit (RENFERMÉ, AMIS / PROCHES / PROFS, BARRIÈRES, JUGEMENT,
-  DIFFICILE, MA FOI, APPRENDRE / PARTAGER / AVEC DIEU, UNE COMMUNAUTÉ, GRANDIR DANS MA FOI…).
+  main dans l'image, là où ils vont, **bien avant qu'il les dise** (« beaucoup plus tôt avant que je dise le mot
+  carrément », `LEAD` dans `film.py` : une seconde avant, écrits vite) : RENFERMÉ, AMIS / PROCHES / PROFS, BARRIÈRES,
+  JUGEMENT, DIFFICILE, MA FOI, APPRENDRE / PARTAGER / AVEC DIEU, UNE COMMUNAUTÉ, GRANDIR DANS MA FOI… Ce qui les
+  illustre arrive aussi avant le mot (les bulles, les écrans du téléphone, le mur).
 - **Un maximum de détails sur chaque parole** (« mettre un maximum de détails sur chaque parole »).
 - **Rien d'important sous l'interface de TikTok** : les onglets en haut (200 px), la colonne de boutons à droite (x > 930,
   de 640 à 1560), le nom et la description en bas (les 440 derniers px). `python3 tools/film.py --safe T1 T2…` montre
   ces zones sur les images.
 - Son téléphone sur la table affiche **RISE** (le logo entier), pas seulement la flamme.
+- **La signature RISE à la fin de chaque vidéo** (« ça sera notre signature en gros à chaque fin de vidéo ») : le logo
+  RISE dessiné, sa flamme qui s'allume, « Disponible sur les stores » écrit à la main et les badges App Store et Google
+  Play (les vrais, `assets/brand/`, jamais redessinés), sur une page blanche après sa dernière phrase.
 
 Les scènes, dans l'ordre (le storyboard en 16 images validé avec Tony, puis ses retours) : l'alerte dans sa tête
 (« Annuler » entouré), le recul, son téléphone qui s'allume ; « Moi c'est Tony » ; renfermé, seul dans un coin ; le
@@ -93,4 +98,4 @@ lui ; « difficile » : eux au loin, et un cadenas sur le chemin ; « ça me fre
 et des barrières tout le long du chemin ; une table de frères et sœurs avec une chaise vide, qu'ils regardent sur
 « autour de nous » ; le grand téléphone RISE ; la communauté autour, lui compris, chacun avec ses « … » ; ce qu'on y
 fait (témoignages, questions, l'alerte du début avec cette fois « Demander » entouré, et « groupes » : un câlin
-collectif, en entrant dans l'écran) ; lui à sa table qui sourit un peu, sa bulle de foi qui grandit, et le logo RISE.
+collectif, en entrant dans l'écran) ; lui à sa table qui sourit un peu, sa bulle de foi qui grandit ; la signature RISE.
