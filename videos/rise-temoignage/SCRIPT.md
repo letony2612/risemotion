@@ -22,7 +22,7 @@ lui-même ; les images se calent ensuite sur sa voix. Les « paroles » qu'il a 
 >
 > C'est justement pour ça que j'ai créé RISE.
 >
-> Pour que ceux qui, comme moi, n'osent pas toujours aller vers les autres, trouvent une communauté. Un endroit où
-> partager leurs témoignages, poser leurs questions, demander de la prière et rejoindre des groupes.
+> Pour offrir une communauté à ceux qui, comme moi, n'osent pas toujours aller vers les autres. Un endroit où partager
+> leurs témoignages, poser leurs questions, demander de la prière et rejoindre des groupes.
 >
 > Parce que je voulais créer l'espace dont j'aurais moi-même eu besoin pour grandir dans ma foi.
