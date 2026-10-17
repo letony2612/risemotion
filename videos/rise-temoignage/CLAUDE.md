@@ -63,11 +63,13 @@ justement pour ça que j'ai créé RISE », et donne `assets/voice/voice.wav` et
 chaque mot). Les pauses entre les phrases se règlent dans `LINES` de `tools/voice.py`. Quand un texte s'écrit à
 l'image (le commentaire du bulletin, « Laisse-nous tranquille ! »), sa voix reprend **une demi-seconde au plus** après
 qu'il est fini (« quand tu finis d'écrire la phrase sur le bulletin laisse genre 0.5 sec max ») ; une pause avant la
-dernière phrase, le temps du câlin collectif.
+dernière phrase, le temps du câlin collectif. Une coupe entre deux phrases ne tombe jamais dans un mot (`settle`) : la
+fin de « …aller vers les autres » (son « r ») laissée seule au début de « Un endroit où… » faisait « un bruit de
+transition bizarre » ; on ne touche pas au reste de la prise (« t'es parti archi loin »).
 
 ## Animation
 
-`tools/film.py` → `renders/film_v8.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
+`tools/film.py` → `renders/film_v9.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
 dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze dessins par seconde, chacun tenu deux images,
 l'encre qui « vibre » un peu (la main repasse les traits ; ce qui est aléatoire — les poils, les rayons, le gribouillis
 — reste en place d'un dessin à l'autre) ; peu de choses bougent à la fois ; les scènes s'enchaînent par des mouvements

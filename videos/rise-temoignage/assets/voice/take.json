@@ -1,5 +1,5 @@
 {
- "duration": 52.181,
+ "duration": 51.953,
  "lines": [
   {
    "text": "Toi aussi, t'as peur de déranger ?",
@@ -766,7 +766,7 @@
   {
    "text": "Pour offrir une communauté à ceux qui, comme moi, n'osent pas toujours aller vers les autres.",
    "start": 38.234,
-   "end": 41.727,
+   "end": 41.857,
    "words": [
     {
      "w": "Pour",
@@ -846,181 +846,181 @@
     {
      "w": "autres.",
      "start": 41.554,
-     "end": 41.724
+     "end": 41.854
     }
    ]
   },
   {
    "text": "Un endroit où partager leurs témoignages, poser leurs questions, demander de la prière et rejoindre des groupes.",
-   "start": 42.077,
-   "end": 47.731,
+   "start": 42.207,
+   "end": 47.503,
    "words": [
     {
      "w": "Un",
-     "start": 42.077,
-     "end": 42.627
+     "start": 42.277,
+     "end": 42.397
     },
     {
      "w": "endroit",
-     "start": 42.507,
-     "end": 42.937
+     "start": 42.397,
+     "end": 42.707
     },
     {
      "w": "où",
-     "start": 42.937,
-     "end": 42.977
+     "start": 42.707,
+     "end": 42.747
     },
     {
      "w": "partager",
-     "start": 42.987,
-     "end": 43.327
+     "start": 42.757,
+     "end": 43.107
     },
     {
      "w": "leurs",
-     "start": 43.327,
-     "end": 43.477
+     "start": 43.107,
+     "end": 43.247
     },
     {
      "w": "témoignages,",
-     "start": 43.477,
-     "end": 44.427
+     "start": 43.247,
+     "end": 44.197
     },
     {
      "w": "poser",
-     "start": 44.367,
-     "end": 44.647
+     "start": 44.137,
+     "end": 44.417
     },
     {
      "w": "leurs",
-     "start": 44.647,
-     "end": 44.827
+     "start": 44.417,
+     "end": 44.607
     },
     {
      "w": "questions,",
-     "start": 44.827,
-     "end": 45.37
+     "start": 44.607,
+     "end": 45.14
     },
     {
      "w": "demander",
-     "start": 45.617,
-     "end": 45.937
+     "start": 45.387,
+     "end": 45.717
     },
     {
      "w": "de",
-     "start": 45.937,
-     "end": 45.977
+     "start": 45.717,
+     "end": 45.757
     },
     {
      "w": "la",
-     "start": 45.987,
-     "end": 46.137
+     "start": 45.767,
+     "end": 45.897
     },
     {
      "w": "prière",
-     "start": 46.137,
-     "end": 46.477
+     "start": 45.897,
+     "end": 46.247
     },
     {
      "w": "et",
-     "start": 46.477,
-     "end": 46.907
+     "start": 46.247,
+     "end": 46.677
     },
     {
      "w": "rejoindre",
-     "start": 46.827,
-     "end": 47.227
+     "start": 46.597,
+     "end": 46.997
     },
     {
      "w": "des",
-     "start": 47.227,
-     "end": 47.387
+     "start": 46.997,
+     "end": 47.157
     },
     {
      "w": "groupes.",
-     "start": 47.387,
-     "end": 47.707
+     "start": 47.157,
+     "end": 47.477
     }
    ]
   },
   {
    "text": "Parce que je voulais créer l'espace dont j'ai moi-même besoin pour grandir dans ma foi.",
-   "start": 49.031,
-   "end": 51.881,
+   "start": 48.803,
+   "end": 51.653,
    "words": [
     {
      "w": "Parce",
-     "start": 49.101,
-     "end": 49.251
+     "start": 48.873,
+     "end": 49.023
     },
     {
      "w": "que",
-     "start": 49.251,
-     "end": 49.291
+     "start": 49.023,
+     "end": 49.063
     },
     {
      "w": "je",
-     "start": 49.301,
-     "end": 49.391
+     "start": 49.073,
+     "end": 49.163
     },
     {
      "w": "voulais",
-     "start": 49.391,
-     "end": 49.591
+     "start": 49.163,
+     "end": 49.363
     },
     {
      "w": "créer",
-     "start": 49.591,
-     "end": 49.851
+     "start": 49.363,
+     "end": 49.623
     },
     {
      "w": "l'espace",
-     "start": 49.851,
-     "end": 50.091
+     "start": 49.623,
+     "end": 49.863
     },
     {
      "w": "dont",
-     "start": 50.091,
-     "end": 50.231
+     "start": 49.863,
+     "end": 50.003
     },
     {
      "w": "j'ai",
-     "start": 50.241,
-     "end": 50.321
+     "start": 50.013,
+     "end": 50.093
     },
     {
      "w": "moi-même",
-     "start": 50.321,
-     "end": 50.671
+     "start": 50.093,
+     "end": 50.443
     },
     {
      "w": "besoin",
-     "start": 50.671,
-     "end": 51.011
+     "start": 50.443,
+     "end": 50.783
     },
     {
      "w": "pour",
-     "start": 51.011,
-     "end": 51.131
+     "start": 50.783,
+     "end": 50.903
     },
     {
      "w": "grandir",
-     "start": 51.131,
-     "end": 51.441
+     "start": 50.903,
+     "end": 51.213
     },
     {
      "w": "dans",
-     "start": 51.441,
-     "end": 51.521
+     "start": 51.213,
+     "end": 51.293
     },
     {
      "w": "ma",
-     "start": 51.521,
-     "end": 51.671
+     "start": 51.293,
+     "end": 51.443
     },
     {
      "w": "foi.",
-     "start": 51.671,
-     "end": 51.881
+     "start": 51.443,
+     "end": 51.653
     }
    ]
   }

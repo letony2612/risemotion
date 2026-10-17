@@ -11,7 +11,7 @@ It opens on what goes on in his head when he wants to reach out to someone, draw
 la prière ? Tu risques de déranger. »), « Annuler » circled; near the end the same alert is on RISE, and this time
 « Demander » gets circled. It closes on him at his table, smiling a little, then on RISE's signature, the end of
 every video: the logo, « Disponible sur les stores » and the App Store and Google Play badges.
-Usage: python3 tools/film.py [--until SECONDS]    -> renders/film_v8.mp4
+Usage: python3 tools/film.py [--until SECONDS]    -> renders/film_v9.mp4
        python3 tools/film.py [--safe] T1 T2 ...    -> renders/film_T.png (the drawing at those times; --safe: with
                                                      TikTok's buttons and text shaded over it)
 """
@@ -105,7 +105,7 @@ PATH = [(340, 1220), (420, 1130), (540, 1070), (640, 980), (740, 860)]  # from h
 SCRAWLS = [(80, 460, 260), (720, 520, 280), (160, 720, 220), (760, 760, 240)]  # the words he heard, round him
 FAMILY = [(190, "short", "talk", False), (375, "long", "smile", False), (705, "curly", "smile", False), (860, "short", "talk", True)]
 COMMUNITY = [(180, 1150, "long"), (860, 1150, "short"), (330, 1330, "curly")]
-ME = (700.0, 1290.0)  # him among them (where his head is)
+ME = (650.0, 1300.0)  # him among them (where his head is: clear of the table of the one behind, on his right)
 SCROLLS = [(T[14] - 0.35, T[14] + 0.1), (T[15] - 0.55, T[15] - 0.1), (T[18] - 0.5, T[18] - 0.05), (T[-1] + 0.2, T[-1] + 0.65)]  # to the next page
 SIGN = SCROLLS[3][0]  # RISE's signature, at the end of every video: its logo, « Disponible sur les stores », the badges
 BADGES = [Image.open(ROOT / "assets" / "brand" / f).convert("RGBA") for f in ("badge_app_store_fr.png", "badge_google_play_fr.png")]
@@ -549,7 +549,7 @@ def _render(args):
 
 
 def main(until=END):
-    out = ROOT / "renders" / "film_v8.mp4"
+    out = ROOT / "renders" / "film_v9.mp4"
     out.parent.mkdir(exist_ok=True)
     n = int(min(until, END) * DRAWINGS)
     with tempfile.TemporaryDirectory() as d:

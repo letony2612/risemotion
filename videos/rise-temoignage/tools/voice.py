@@ -4,8 +4,9 @@ The take is cut into its lines, the script sentence by sentence as the film show
 reading of the script is warped onto the take (dtw_align, from rise-presentation) to say roughly where each line
 ends, and the cut falls in the take's pause nearest there. Inside a line, pauses are cut down to MAX_PAUSE; between
 two lines the pause is the one LINES gives, short to keep the pace, held longer where a beat makes the next line
-land (before « C'est justement pour ça que j'ai créé RISE »). The words are never touched, nor their speed. Then a
-light broadcast polish, and each word's time for the captions and the drawings (dtw_align again, line by line).
+land (before « C'est justement pour ça que j'ai créé RISE »). A cut never falls in a word (settle). The words are
+never touched, nor their speed. Then a light broadcast polish, and each word's time for the drawings (dtw_align
+again, line by line).
 Usage: python3 tools/voice.py path/to/take.mp3  -> assets/voice/voice.wav, assets/voice/take.json
 """
 import json
@@ -24,6 +25,7 @@ SR = 44100
 HOP = 0.01
 MAX_PAUSE = 0.38  # longest pause kept inside a line (s)
 FLOOR = 30  # dB under the take's loudest where its voice stops
+CORE = 20  # dB under the take's loudest: surely a word (its vowels), never a breath
 LUFS = -15.0  # loud enough for a phone, under what TikTok turns down
 
 LINES = [  # each line as he says it, and the pause before it (s)
@@ -125,6 +127,44 @@ def split(x, texts, pull=0.2):
     return [(bounds[i], bounds[i + 1]) for i in range(len(texts))]
 
 
+def stretches(lv, top, join=0.12):
+    """Where the voice is (louder than FLOOR dB under top, the take's loudest), unbroken for longer than join (a
+    consonant's closure is shorter), as ranges of levels (a, b), each with whether it holds a word: a vowel, louder
+    than CORE dB under top (a breath never is)."""
+    idx = np.where(lv > top - FLOOR)[0]
+    if not len(idx):
+        return []
+    out, a = [], idx[0]
+    for i, j in zip(idx, idx[1:]):
+        if (j - i) * HOP > join:
+            out.append((a, i))
+            a = j
+    out.append((a, idx[-1]))
+    return [(a, b, lv[a:b + 1].max() > top - CORE) for a, b in out]
+
+
+def settle(x, bounds, top, pad=0.06):
+    """The cuts between lines moved out of the words: one that falls in a word, its vowels all on one side, goes to
+    that word's edge (and pad past it, as trim keeps). The take's pause after « …aller vers les autres » was broken by
+    the release of its « r »: the cut took it from its word and left it alone, a strange breath, at the start of the
+    next line (« un bruit de transition bizarre », at 42 s)."""
+    lv = level(x)
+    words = []
+    for a, b, word in stretches(lv, top):
+        if word:
+            core = a + np.where(lv[a:b + 1] > top - CORE)[0]
+            words.append((a * HOP - pad, b * HOP + 0.03 + pad, core[0] * HOP, core[-1] * HOP))
+    cuts = []
+    for _, c in bounds[:-1]:
+        for w0, w1, c0, c1 in words:
+            if w0 < c < w1:
+                c = w1 if c1 < c else (w0 if c0 > c else c)
+                break
+        cuts.append(c)
+    edges = [bounds[0][0]] + cuts + [bounds[-1][1]]
+    return [(edges[i], edges[i + 1]) for i in range(len(bounds))]
+
+
 def trim(seg, top, pad=0.06):
     """The line without the silence round it (a little kept, so no soft ending is clipped)."""
     v = np.where(voicing(seg, top))[0]
@@ -175,7 +215,7 @@ def main(path):
     x = load(path)
     texts = [t for t, _ in LINES]
     top = level(x).max()
-    segs = [tighten(trim(x[int(a * SR):int(b * SR)], top), top) for a, b in split(x, texts)]
+    segs = [tighten(trim(x[int(a * SR):int(b * SR)], top), top) for a, b in settle(x, split(x, texts), top)]
     for s in segs:
         f = int(0.01 * SR)
         s[:f] *= np.linspace(0, 1, f)
