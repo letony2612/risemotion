@@ -11,7 +11,7 @@ It opens on what goes on in his head when he wants to reach out to someone, draw
 la prière ? Tu risques de déranger. »), « Annuler » circled; near the end the same alert is on RISE, and this time
 « Demander » gets circled. It closes on him at his table, smiling a little, then on RISE's signature, the end of
 every video: the logo, « Disponible sur les stores » and the App Store and Google Play badges.
-Usage: python3 tools/film.py [--until SECONDS]    -> renders/film_v6.mp4
+Usage: python3 tools/film.py [--until SECONDS]    -> renders/film_v7.mp4
        python3 tools/film.py [--safe] T1 T2 ...    -> renders/film_T.png (the drawing at those times; --safe: with
                                                      TikTok's buttons and text shaded over it)
 """
@@ -180,7 +180,7 @@ def key(pen, text, x, y, at, t, size=44.0, gone=None, after=None):
     not before after (its scene)."""
     start = at - LEAD if after is None else max(after, at - LEAD)
     if t >= start and (gone is None or t < gone):
-        handwritten(pen, text, x, y, size, seg(t, start, start + 0.2 + 0.015 * len(text)))
+        handwritten(pen, text, x, y, size, seg(t, start, start + 0.2 + 0.015 * len(text)), w=max(4.4, 0.07 * size))
 
 
 def tony(pen, orange, t, glow=0.9, lit=1.0, wide=True, **face):
@@ -315,6 +315,9 @@ def his_page(pen, orange, red, t, shift):
     # Tony at his table, through the camera; his wall in front of him once built; what is in his head, round him
     with his((z, qx, qy), shift):
         tony(pen, orange, t, lit=ease(seg(t, *LIGHT)), look=(lx, ly), lids=lids, smile=smile, worry=worry)
+        if t < T[4] + 0.5:  # « Moi c'est Tony »: his name beside him, and who he is (no arrow: « ça fait enfantin »)
+            key(pen, "TONY", 214, 895, said(3, "Tony"), t, 80, after=T[3] - 0.6)
+            key(pen, "CRÉATEUR DE RISE", 214, 950, said(3, "Tony") + 0.3, t, 24, after=T[3] - 0.3)
         if built > 0:
             bricks(pen, -420, 1660, 1950, 14, steady(70), p=built, h=44, length=120, orange=orange)
             if t < T[12] + 0.3:
@@ -524,7 +527,7 @@ def _render(args):
 
 
 def main(until=END):
-    out = ROOT / "renders" / "film_v6.mp4"
+    out = ROOT / "renders" / "film_v7.mp4"
     out.parent.mkdir(exist_ok=True)
     n = int(min(until, END) * DRAWINGS)
     with tempfile.TemporaryDirectory() as d:

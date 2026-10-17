@@ -40,7 +40,8 @@ cette référence.
 - Pas de rendu 3D ou gravé (« ça fait vachement 3D »).
 - Pas de tête réaliste de trois-quarts (« y a rien à voir » avec son dessin).
 - Rien d'enfantin : pas d'yeux mignons avec reflet, de grand sourire, de coucou de la main, de prénom avec une
-  flèche.
+  flèche. (Son prénom, il le veut quand même sur « Moi c'est Tony » : écrit en grand à côté de lui, « TONY », et
+  « CRÉATEUR DE RISE » dessous, comme dans un documentaire — sans flèche.)
 - Pas de gros trait entre le nez et la bouche (« bizarre ») : la moustache est faite de petits traits.
 - Pas de décor chargé (fenêtre, étagère, plante, tasse : « ça fait trop »).
 - Ne pas reprendre l'accroche d'un autre (le faux écran « contenu sensible » du reel de référence, sa phrase) :
@@ -65,7 +66,7 @@ avant la dernière phrase, le temps du câlin collectif).
 
 ## Animation
 
-`tools/film.py` → `renders/film_v6.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
+`tools/film.py` → `renders/film_v7.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
 dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze dessins par seconde, chacun tenu deux images,
 l'encre qui « vibre » un peu (la main repasse les traits ; ce qui est aléatoire — les poils, les rayons, le gribouillis
 — reste en place d'un dessin à l'autre) ; peu de choses bougent à la fois ; les scènes s'enchaînent par des mouvements
