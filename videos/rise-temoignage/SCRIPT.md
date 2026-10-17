@@ -29,30 +29,30 @@ lui-même ; les images se calent ensuite sur sa voix. Les « paroles » qu'il a 
 
 ## Version pour ElevenLabs (modèle Eleven v3), avec les émotions
 
-Ton voulu par Tony : **triste** (« sad normal »), sombre et **linéaire** — la même voix du début à la fin, sans montée ni
+Ton voulu par Tony : **ennuyé** (« bored »), sombre et **linéaire** — la même voix du début à la fin, sans montée ni
 changement d'émotion, comme le reel de référence. Une seule indication, la même en tête de chaque paragraphe pour que
 la voix ne dérive pas ; pas d'autres consignes ; la ponctuation du texte telle quelle. Les indications entre crochets
 sont en anglais (le modèle les lit comme des consignes, il ne les prononce pas). Réglage conseillé : Stability sur
 « Natural » ; « Creative » si ce n'est pas assez triste, « Robust » si la voix varie trop. Si la voix prononce mal « RISE », l'écrire comme il se dit.
 
 ```
-[sad] J'ai créé un réseau social… alors que j'ose même pas parler aux gens.
+[bored] J'ai créé un réseau social… alors que j'ose même pas parler aux gens.
 
-[sad] Moi c'est Tony.
+[bored] Moi c'est Tony.
 
-[sad] Pendant longtemps, j'ai été quelqu'un de renfermé. Le genre de personne qui n'osait pas poser de questions. Peut-être par peur de dire n'importe quoi… ou par peur de déranger.
+[bored] Pendant longtemps, j'ai été quelqu'un de renfermé. Le genre de personne qui n'osait pas poser de questions. Peut-être par peur de dire n'importe quoi… ou par peur de déranger.
 
-[sad] J'ai souvent été rabaissé. Par des amis, par des proches, même par des profs…
+[bored] J'ai souvent été rabaissé. Par des amis, par des proches, même par des profs…
 
-[sad] À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières. J'avais peur du jugement, du regard des autres. Aller vers les gens était devenu difficile.
+[bored] À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières. J'avais peur du jugement, du regard des autres. Aller vers les gens était devenu difficile.
 
-[sad] Même en grandissant dans ma foi, j'avais du mal à faire le premier pas pour échanger avec d'autres chrétiens.
+[bored] Même en grandissant dans ma foi, j'avais du mal à faire le premier pas pour échanger avec d'autres chrétiens.
 
-[sad] Pourtant, j'avais besoin de cet entourage pour apprendre, partager et avancer avec Dieu.
+[bored] Pourtant, j'avais besoin de cet entourage pour apprendre, partager et avancer avec Dieu.
 
-[sad] C'est justement pour ça que j'ai créé RISE.
+[bored] C'est justement pour ça que j'ai créé RISE.
 
-[sad] Pour offrir une communauté à ceux qui, comme moi, n'osent pas toujours aller vers les autres. Un endroit où partager leurs témoignages, poser leurs questions, demander de la prière et rejoindre des groupes.
+[bored] Pour offrir une communauté à ceux qui, comme moi, n'osent pas toujours aller vers les autres. Un endroit où partager leurs témoignages, poser leurs questions, demander de la prière et rejoindre des groupes.
 
-[sad] Parce que je voulais créer l'espace dont j'aurais moi-même eu besoin pour grandir dans ma foi.
+[bored] Parce que je voulais créer l'espace dont j'aurais moi-même eu besoin pour grandir dans ma foi.
 ```
