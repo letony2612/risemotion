@@ -35,9 +35,9 @@ LINES = [  # each line as he says it, and the pause before it (s)
     ("Le genre de personne qui n'osait pas poser de questions.", 0.35),
     ("Peut-être par peur de dire n'importe quoi…", 0.35),
     ("…ou par peur de déranger.", 0.3),
-    ("J'ai souvent été rabaissé.", 0.6),
+    ("J'ai souvent été rabaissé.", 0.6),  # (« Laisse-nous tranquille ! » written by then, half a second before)
     ("Par des amis, par des proches, même par des profs…", 0.35),
-    ("À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières.", 1.9),  # (time to read his report)
+    ("À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières.", 0.7),  # (his report: half a second once written, « 0.5 sec max »)
     ("J'avais peur du jugement, du regard des autres.", 0.35),
     ("Aller vers les gens était devenu difficile.", 0.35),
     ("Et aujourd'hui encore, ça me freine dans ma foi.", 0.5),

@@ -1,5 +1,5 @@
 {
- "duration": 53.381,
+ "duration": 52.181,
  "lines": [
   {
    "text": "Toi aussi, t'as peur de déranger ?",
@@ -388,639 +388,639 @@
   },
   {
    "text": "À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières.",
-   "start": 21.576,
-   "end": 24.236,
+   "start": 20.376,
+   "end": 23.036,
    "words": [
     {
      "w": "À",
-     "start": 21.646,
-     "end": 21.806
+     "start": 20.446,
+     "end": 20.606
     },
     {
      "w": "force",
-     "start": 21.806,
-     "end": 22.016
+     "start": 20.606,
+     "end": 20.816
     },
     {
      "w": "d'entendre",
-     "start": 22.016,
-     "end": 22.246
+     "start": 20.816,
+     "end": 21.046
     },
     {
      "w": "ce",
-     "start": 22.246,
-     "end": 22.346
+     "start": 21.046,
+     "end": 21.146
     },
     {
      "w": "genre",
-     "start": 22.346,
-     "end": 22.516
+     "start": 21.146,
+     "end": 21.316
     },
     {
      "w": "de",
-     "start": 22.516,
-     "end": 22.646
+     "start": 21.316,
+     "end": 21.446
     },
     {
      "w": "paroles,",
-     "start": 22.656,
-     "end": 23.036
+     "start": 21.456,
+     "end": 21.836
     },
     {
      "w": "j'ai",
-     "start": 23.046,
-     "end": 23.166
+     "start": 21.846,
+     "end": 21.966
     },
     {
      "w": "fini",
-     "start": 23.166,
-     "end": 23.376
+     "start": 21.966,
+     "end": 22.176
     },
     {
      "w": "par",
-     "start": 23.376,
-     "end": 23.456
+     "start": 22.176,
+     "end": 22.256
     },
     {
      "w": "me",
-     "start": 23.456,
-     "end": 23.576
+     "start": 22.256,
+     "end": 22.376
     },
     {
      "w": "créer",
-     "start": 23.576,
-     "end": 23.776
+     "start": 22.376,
+     "end": 22.576
     },
     {
      "w": "des",
-     "start": 23.776,
-     "end": 23.846
+     "start": 22.576,
+     "end": 22.646
     },
     {
      "w": "barrières.",
-     "start": 23.846,
-     "end": 24.236
+     "start": 22.646,
+     "end": 23.036
     }
    ]
   },
   {
    "text": "J'avais peur du jugement, du regard des autres.",
-   "start": 24.586,
-   "end": 26.724,
+   "start": 23.386,
+   "end": 25.524,
    "words": [
     {
      "w": "J'avais",
-     "start": 24.586,
-     "end": 24.796
+     "start": 23.386,
+     "end": 23.596
     },
     {
      "w": "peur",
-     "start": 24.796,
-     "end": 24.966
+     "start": 23.596,
+     "end": 23.766
     },
     {
      "w": "du",
-     "start": 24.966,
-     "end": 25.116
+     "start": 23.766,
+     "end": 23.916
     },
     {
      "w": "jugement,",
-     "start": 25.116,
-     "end": 25.781
+     "start": 23.916,
+     "end": 24.581
     },
     {
      "w": "du",
-     "start": 25.806,
-     "end": 26.006
+     "start": 24.606,
+     "end": 24.806
     },
     {
      "w": "regard",
-     "start": 26.006,
-     "end": 26.266
+     "start": 24.806,
+     "end": 25.066
     },
     {
      "w": "des",
-     "start": 26.266,
-     "end": 26.446
+     "start": 25.066,
+     "end": 25.246
     },
     {
      "w": "autres.",
-     "start": 26.446,
-     "end": 26.716
+     "start": 25.246,
+     "end": 25.516
     }
    ]
   },
   {
    "text": "Aller vers les gens était devenu difficile.",
-   "start": 27.074,
-   "end": 28.864,
+   "start": 25.874,
+   "end": 27.664,
    "words": [
     {
      "w": "Aller",
-     "start": 27.134,
-     "end": 27.414
+     "start": 25.934,
+     "end": 26.214
     },
     {
      "w": "vers",
-     "start": 27.414,
-     "end": 27.484
+     "start": 26.214,
+     "end": 26.284
     },
     {
      "w": "les",
-     "start": 27.484,
-     "end": 27.614
+     "start": 26.284,
+     "end": 26.414
     },
     {
      "w": "gens",
-     "start": 27.614,
-     "end": 27.864
+     "start": 26.414,
+     "end": 26.664
     },
     {
      "w": "était",
-     "start": 27.864,
-     "end": 28.104
+     "start": 26.664,
+     "end": 26.904
     },
     {
      "w": "devenu",
-     "start": 28.104,
-     "end": 28.274
+     "start": 26.904,
+     "end": 27.074
     },
     {
      "w": "difficile.",
-     "start": 28.274,
-     "end": 28.864
+     "start": 27.074,
+     "end": 27.664
     }
    ]
   },
   {
    "text": "Et aujourd'hui encore, ça me freine dans ma foi.",
-   "start": 29.364,
-   "end": 31.274,
+   "start": 28.164,
+   "end": 30.074,
    "words": [
     {
      "w": "Et",
-     "start": 29.369,
-     "end": 29.524
+     "start": 28.169,
+     "end": 28.324
     },
     {
      "w": "aujourd'hui",
-     "start": 29.534,
-     "end": 29.784
+     "start": 28.334,
+     "end": 28.584
     },
     {
      "w": "encore,",
-     "start": 29.784,
-     "end": 30.294
+     "start": 28.584,
+     "end": 29.094
     },
     {
      "w": "ça",
-     "start": 30.304,
-     "end": 30.444
+     "start": 29.104,
+     "end": 29.244
     },
     {
      "w": "me",
-     "start": 30.444,
-     "end": 30.534
+     "start": 29.244,
+     "end": 29.334
     },
     {
      "w": "freine",
-     "start": 30.534,
-     "end": 30.764
+     "start": 29.334,
+     "end": 29.564
     },
     {
      "w": "dans",
-     "start": 30.764,
-     "end": 30.834
+     "start": 29.564,
+     "end": 29.634
     },
     {
      "w": "ma",
-     "start": 30.834,
-     "end": 31.004
+     "start": 29.634,
+     "end": 29.804
     },
     {
      "w": "foi.",
-     "start": 31.004,
-     "end": 31.264
+     "start": 29.804,
+     "end": 30.064
     }
    ]
   },
   {
    "text": "Pourtant, je pense qu'on a tous besoin de frères et sœurs autour de nous pour apprendre, partager et avancer avec Dieu.",
-   "start": 31.774,
-   "end": 36.344,
+   "start": 30.574,
+   "end": 35.144,
    "words": [
     {
      "w": "Pourtant,",
-     "start": 31.844,
-     "end": 32.104
+     "start": 30.644,
+     "end": 30.904
     },
     {
      "w": "je",
-     "start": 32.104,
-     "end": 32.314
+     "start": 30.904,
+     "end": 31.114
     },
     {
      "w": "pense",
-     "start": 32.324,
-     "end": 32.554
+     "start": 31.124,
+     "end": 31.354
     },
     {
      "w": "qu'on",
-     "start": 32.564,
-     "end": 32.714
+     "start": 31.364,
+     "end": 31.514
     },
     {
      "w": "a",
-     "start": 32.714,
-     "end": 32.824
+     "start": 31.514,
+     "end": 31.624
     },
     {
      "w": "tous",
-     "start": 32.824,
-     "end": 32.864
+     "start": 31.624,
+     "end": 31.664
     },
     {
      "w": "besoin",
-     "start": 32.874,
-     "end": 32.914
+     "start": 31.674,
+     "end": 31.714
     },
     {
      "w": "de",
-     "start": 32.924,
-     "end": 32.964
+     "start": 31.724,
+     "end": 31.764
     },
     {
      "w": "frères",
-     "start": 32.974,
-     "end": 33.304
+     "start": 31.774,
+     "end": 32.104
     },
     {
      "w": "et",
-     "start": 33.314,
-     "end": 33.354
+     "start": 32.114,
+     "end": 32.154
     },
     {
      "w": "sœurs",
-     "start": 33.364,
-     "end": 33.504
+     "start": 32.164,
+     "end": 32.304
     },
     {
      "w": "autour",
-     "start": 33.524,
-     "end": 33.804
+     "start": 32.324,
+     "end": 32.604
     },
     {
      "w": "de",
-     "start": 33.804,
-     "end": 33.844
+     "start": 32.604,
+     "end": 32.644
     },
     {
      "w": "nous",
-     "start": 33.854,
-     "end": 33.954
+     "start": 32.654,
+     "end": 32.754
     },
     {
      "w": "pour",
-     "start": 33.954,
-     "end": 34.034
+     "start": 32.754,
+     "end": 32.834
     },
     {
      "w": "apprendre,",
-     "start": 34.044,
-     "end": 34.759
+     "start": 32.844,
+     "end": 33.559
     },
     {
      "w": "partager",
-     "start": 34.834,
-     "end": 35.364
+     "start": 33.634,
+     "end": 34.164
     },
     {
      "w": "et",
-     "start": 35.374,
-     "end": 35.574
+     "start": 34.174,
+     "end": 34.374
     },
     {
      "w": "avancer",
-     "start": 35.574,
-     "end": 35.774
+     "start": 34.374,
+     "end": 34.574
     },
     {
      "w": "avec",
-     "start": 35.774,
-     "end": 36.064
+     "start": 34.574,
+     "end": 34.864
     },
     {
      "w": "Dieu.",
-     "start": 36.064,
-     "end": 36.334
+     "start": 34.864,
+     "end": 35.134
     }
    ]
   },
   {
    "text": "C'est justement pour ça que j'ai créé RISE.",
-   "start": 37.144,
-   "end": 38.834,
+   "start": 35.944,
+   "end": 37.634,
    "words": [
     {
      "w": "C'est",
-     "start": 37.144,
-     "end": 37.304
+     "start": 35.944,
+     "end": 36.104
     },
     {
      "w": "justement",
-     "start": 37.304,
-     "end": 37.704
+     "start": 36.104,
+     "end": 36.504
     },
     {
      "w": "pour",
-     "start": 37.704,
-     "end": 37.844
+     "start": 36.504,
+     "end": 36.644
     },
     {
      "w": "ça",
-     "start": 37.844,
-     "end": 38.044
+     "start": 36.644,
+     "end": 36.844
     },
     {
      "w": "que",
-     "start": 38.044,
-     "end": 38.144
+     "start": 36.844,
+     "end": 36.944
     },
     {
      "w": "j'ai",
-     "start": 38.144,
-     "end": 38.294
+     "start": 36.944,
+     "end": 37.094
     },
     {
      "w": "créé",
-     "start": 38.304,
-     "end": 38.604
+     "start": 37.104,
+     "end": 37.404
     },
     {
      "w": "RISE.",
-     "start": 38.604,
-     "end": 38.824
+     "start": 37.404,
+     "end": 37.624
     }
    ]
   },
   {
    "text": "Pour offrir une communauté à ceux qui, comme moi, n'osent pas toujours aller vers les autres.",
-   "start": 39.434,
-   "end": 42.927,
+   "start": 38.234,
+   "end": 41.727,
    "words": [
     {
      "w": "Pour",
-     "start": 39.514,
-     "end": 39.644
+     "start": 38.314,
+     "end": 38.444
     },
     {
      "w": "offrir",
-     "start": 39.644,
-     "end": 40.064
+     "start": 38.444,
+     "end": 38.864
     },
     {
      "w": "une",
-     "start": 40.064,
-     "end": 40.239
+     "start": 38.864,
+     "end": 39.039
     },
     {
      "w": "communauté",
-     "start": 40.239,
-     "end": 40.894
+     "start": 39.039,
+     "end": 39.694
     },
     {
      "w": "à",
-     "start": 40.814,
-     "end": 40.934
+     "start": 39.614,
+     "end": 39.734
     },
     {
      "w": "ceux",
-     "start": 40.934,
-     "end": 41.034
+     "start": 39.734,
+     "end": 39.834
     },
     {
      "w": "qui,",
-     "start": 41.044,
-     "end": 41.184
+     "start": 39.844,
+     "end": 39.984
     },
     {
      "w": "comme",
-     "start": 41.194,
-     "end": 41.364
+     "start": 39.994,
+     "end": 40.164
     },
     {
      "w": "moi,",
-     "start": 41.364,
-     "end": 41.774
+     "start": 40.164,
+     "end": 40.574
     },
     {
      "w": "n'osent",
-     "start": 41.784,
-     "end": 41.984
+     "start": 40.584,
+     "end": 40.784
     },
     {
      "w": "pas",
-     "start": 41.994,
-     "end": 42.114
+     "start": 40.794,
+     "end": 40.914
     },
     {
      "w": "toujours",
-     "start": 42.114,
-     "end": 42.254
+     "start": 40.914,
+     "end": 41.054
     },
     {
      "w": "aller",
-     "start": 42.254,
-     "end": 42.464
+     "start": 41.054,
+     "end": 41.264
     },
     {
      "w": "vers",
-     "start": 42.464,
-     "end": 42.604
+     "start": 41.264,
+     "end": 41.404
     },
     {
      "w": "les",
-     "start": 42.604,
-     "end": 42.754
+     "start": 41.404,
+     "end": 41.554
     },
     {
      "w": "autres.",
-     "start": 42.754,
-     "end": 42.924
+     "start": 41.554,
+     "end": 41.724
     }
    ]
   },
   {
    "text": "Un endroit où partager leurs témoignages, poser leurs questions, demander de la prière et rejoindre des groupes.",
-   "start": 43.277,
-   "end": 48.931,
+   "start": 42.077,
+   "end": 47.731,
    "words": [
     {
      "w": "Un",
-     "start": 43.277,
-     "end": 43.827
+     "start": 42.077,
+     "end": 42.627
     },
     {
      "w": "endroit",
-     "start": 43.707,
-     "end": 44.137
+     "start": 42.507,
+     "end": 42.937
     },
     {
      "w": "où",
-     "start": 44.137,
-     "end": 44.177
+     "start": 42.937,
+     "end": 42.977
     },
     {
      "w": "partager",
-     "start": 44.187,
-     "end": 44.527
+     "start": 42.987,
+     "end": 43.327
     },
     {
      "w": "leurs",
-     "start": 44.527,
-     "end": 44.677
+     "start": 43.327,
+     "end": 43.477
     },
     {
      "w": "témoignages,",
-     "start": 44.677,
-     "end": 45.627
+     "start": 43.477,
+     "end": 44.427
     },
     {
      "w": "poser",
-     "start": 45.567,
-     "end": 45.847
+     "start": 44.367,
+     "end": 44.647
     },
     {
      "w": "leurs",
-     "start": 45.847,
-     "end": 46.027
+     "start": 44.647,
+     "end": 44.827
     },
     {
      "w": "questions,",
-     "start": 46.027,
-     "end": 46.57
+     "start": 44.827,
+     "end": 45.37
     },
     {
      "w": "demander",
-     "start": 46.817,
-     "end": 47.137
+     "start": 45.617,
+     "end": 45.937
     },
     {
      "w": "de",
-     "start": 47.137,
-     "end": 47.177
+     "start": 45.937,
+     "end": 45.977
     },
     {
      "w": "la",
-     "start": 47.187,
-     "end": 47.337
+     "start": 45.987,
+     "end": 46.137
     },
     {
      "w": "prière",
-     "start": 47.337,
-     "end": 47.677
+     "start": 46.137,
+     "end": 46.477
     },
     {
      "w": "et",
-     "start": 47.677,
-     "end": 48.107
+     "start": 46.477,
+     "end": 46.907
     },
     {
      "w": "rejoindre",
-     "start": 48.027,
-     "end": 48.427
+     "start": 46.827,
+     "end": 47.227
     },
     {
      "w": "des",
-     "start": 48.427,
-     "end": 48.587
+     "start": 47.227,
+     "end": 47.387
     },
     {
      "w": "groupes.",
-     "start": 48.587,
-     "end": 48.907
+     "start": 47.387,
+     "end": 47.707
     }
    ]
   },
   {
    "text": "Parce que je voulais créer l'espace dont j'ai moi-même besoin pour grandir dans ma foi.",
-   "start": 50.231,
-   "end": 53.081,
+   "start": 49.031,
+   "end": 51.881,
    "words": [
     {
      "w": "Parce",
-     "start": 50.301,
-     "end": 50.451
+     "start": 49.101,
+     "end": 49.251
     },
     {
      "w": "que",
-     "start": 50.451,
-     "end": 50.491
+     "start": 49.251,
+     "end": 49.291
     },
     {
      "w": "je",
-     "start": 50.501,
-     "end": 50.591
+     "start": 49.301,
+     "end": 49.391
     },
     {
      "w": "voulais",
-     "start": 50.591,
-     "end": 50.791
+     "start": 49.391,
+     "end": 49.591
     },
     {
      "w": "créer",
-     "start": 50.791,
-     "end": 51.051
+     "start": 49.591,
+     "end": 49.851
     },
     {
      "w": "l'espace",
-     "start": 51.051,
-     "end": 51.291
+     "start": 49.851,
+     "end": 50.091
     },
     {
      "w": "dont",
-     "start": 51.291,
-     "end": 51.431
+     "start": 50.091,
+     "end": 50.231
     },
     {
      "w": "j'ai",
+     "start": 50.241,
+     "end": 50.321
+    },
+    {
+     "w": "moi-même",
+     "start": 50.321,
+     "end": 50.671
+    },
+    {
+     "w": "besoin",
+     "start": 50.671,
+     "end": 51.011
+    },
+    {
+     "w": "pour",
+     "start": 51.011,
+     "end": 51.131
+    },
+    {
+     "w": "grandir",
+     "start": 51.131,
+     "end": 51.441
+    },
+    {
+     "w": "dans",
      "start": 51.441,
      "end": 51.521
     },
     {
-     "w": "moi-même",
-     "start": 51.521,
-     "end": 51.871
-    },
-    {
-     "w": "besoin",
-     "start": 51.871,
-     "end": 52.211
-    },
-    {
-     "w": "pour",
-     "start": 52.211,
-     "end": 52.331
-    },
-    {
-     "w": "grandir",
-     "start": 52.331,
-     "end": 52.641
-    },
-    {
-     "w": "dans",
-     "start": 52.641,
-     "end": 52.721
-    },
-    {
      "w": "ma",
-     "start": 52.721,
-     "end": 52.871
+     "start": 51.521,
+     "end": 51.671
     },
     {
      "w": "foi.",
-     "start": 52.871,
-     "end": 53.081
+     "start": 51.671,
+     "end": 51.881
     }
    ]
   }

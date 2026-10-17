@@ -460,6 +460,10 @@ def bubble(pen, cx, cy, r, symbol, squash=1.0, rng=None):
     elif symbol == "cross":
         pen.line([(cx, cy - s * 1.1), (cx, cy + s * 1.1)], w=5)
         pen.line([(cx - s * 0.65, cy - s * 0.4), (cx + s * 0.65, cy - s * 0.4)], w=5)
+    elif symbol == "heart":  # a heart: two round lobes down to a point
+        a = np.linspace(0, 2 * math.pi, 48)
+        pen.line(list(zip(cx + s * 1.25 * np.sin(a) ** 3, cy - s * 1.25 * (13 * np.cos(a) - 5 * np.cos(2 * a) - 2 * np.cos(3 * a) - np.cos(4 * a)) / 16
+                          + s * 0.2)), w=4.4, over=0.0, breaks=False, again=0.0)
     elif symbol == "book":  # an open book: two pages from its spine, a line or two on each
         for sx in (-1, 1):
             pen.line([(cx, cy - s * 0.5), (cx + sx * s * 0.5, cy - s * 0.72), (cx + sx * s * 1.05, cy - s * 0.58), (cx + sx * s * 1.05, cy + s * 0.62),
@@ -797,6 +801,30 @@ def big_phone(pen, cx, cy, s=1.0, glow=0.0, rng=None):
     pen.line(scr + scr[:2], w=2.2, over=0.0, breaks=False, again=0.0)
     pen.line([(cx - 40 * s, cy - h + 36 * s), (cx + 40 * s, cy - h + 36 * s)], w=3.0, over=0.0, again=0.0)  # its speaker
     return x0, y0, x1, y1
+
+
+def laptop(pen, cx, hinge, s=1.0, shut=0.0):
+    """His laptop on the table, open towards him: from across the table, the back of its lid with « </> » on it (he
+    codes), the edge of its keyboard under it; shut: the lid coming down onto the keyboard (0 open, 1 shut). It hides
+    what is behind it."""
+    e = smoothstep(shut)
+    h = (300 - 262 * e) * s  # the lid from in front: tall while open, a thin slab once down on the keyboard
+    wb, wt = 228 * s, (238 - 20 * e) * s  # half its width at the hinge and at its top (nearer us open, further shut)
+    base = rounded([(cx - 236 * s, hinge - 8 * s), (cx + 236 * s, hinge - 8 * s), (cx + 242 * s, hinge + 14 * s), (cx - 242 * s, hinge + 14 * s)],
+                   7 * s, 3)
+    lid = rounded([(cx - wt, hinge - h), (cx + wt, hinge - h), (cx + wb, hinge - 4 * s), (cx - wb, hinge - 4 * s)], (22 - 14 * e) * s, 5)
+    pen.poly(base, fill=0)
+    pen.poly(lid, fill=0)
+    pen.line(base + base[:3], w=3.6, over=0.0, breaks=False, again=0.2)
+    pen.line(lid + lid[:3], w=4.6, over=0.0, breaks=False, again=0.3)
+    k = h / (300 * s)  # « </> », in the middle of the lid, flattened with it as it comes down
+
+    def C(pts):
+        return [(cx + x * s, hinge - h / 2 + y * s * k) for x, y in pts]
+    if k > 0.3:
+        pen.line(C([(-34, -40), (-82, 0), (-34, 40)]), w=7.0, corners=True, over=1.0, again=0.0)
+        pen.line(C([(34, -40), (82, 0), (34, 40)]), w=7.0, corners=True, over=1.0, again=0.0)
+        pen.line(C([(18, -52), (-18, 52)]), w=7.0, over=1.0, again=0.0, breaks=False)
 
 
 def rise_logo(pen, orange, cx, cy, width, p=1.0, letters_=True):

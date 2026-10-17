@@ -40,8 +40,8 @@ cette référence.
 - Pas de rendu 3D ou gravé (« ça fait vachement 3D »).
 - Pas de tête réaliste de trois-quarts (« y a rien à voir » avec son dessin).
 - Rien d'enfantin : pas d'yeux mignons avec reflet, de grand sourire, de coucou de la main, de prénom avec une
-  flèche. (Son prénom, il le veut quand même sur « Moi c'est Tony » : écrit en grand à côté de lui, « TONY », et
-  « CRÉATEUR DE RISE » dessous, comme dans un documentaire — sans flèche.)
+  flèche. (Son prénom, il le veut quand même sur « Moi c'est Tony » : écrit en grand à côté de lui, « TONY », sans
+  flèche, et rien dessous — « créateur de RISE », « ça sert à rien ».)
 - Pas de gros trait entre le nez et la bouche (« bizarre ») : la moustache est faite de petits traits.
 - Pas de décor chargé (fenêtre, étagère, plante, tasse : « ça fait trop »).
 - Ne pas reprendre l'accroche d'un autre (le faux écran « contenu sensible » du reel de référence, sa phrase) :
@@ -60,13 +60,14 @@ Tony a fait sa voix avec ElevenLabs (le bloc `[bored]` de `SCRIPT.md`), en une p
 `dtw_align`, repris de `rise-presentation`), raccourcit les silences trop longs (« n'hésite pas à cut si besoin pour
 rendre certaines phrases plus impactantes ») sans toucher aux mots ni à leur vitesse, garde un temps avant « C'est
 justement pour ça que j'ai créé RISE », et donne `assets/voice/voice.wav` et `assets/voice/take.json` (l'heure de
-chaque mot). Les pauses entre les phrases se règlent dans `LINES` de `tools/voice.py` (une pause après « même par des
-profs… », le temps de lire le bulletin : « on coupe un peu après qu'on dit par les profs », puis un peu moins ; une
-avant la dernière phrase, le temps du câlin collectif).
+chaque mot). Les pauses entre les phrases se règlent dans `LINES` de `tools/voice.py`. Quand un texte s'écrit à
+l'image (le commentaire du bulletin, « Laisse-nous tranquille ! »), sa voix reprend **une demi-seconde au plus** après
+qu'il est fini (« quand tu finis d'écrire la phrase sur le bulletin laisse genre 0.5 sec max ») ; une pause avant la
+dernière phrase, le temps du câlin collectif.
 
 ## Animation
 
-`tools/film.py` → `renders/film_v7.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
+`tools/film.py` → `renders/film_v8.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
 dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze dessins par seconde, chacun tenu deux images,
 l'encre qui « vibre » un peu (la main repasse les traits ; ce qui est aléatoire — les poils, les rayons, le gribouillis
 — reste en place d'un dessin à l'autre) ; peu de choses bougent à la fois ; les scènes s'enchaînent par des mouvements
@@ -89,11 +90,16 @@ tournés vers lui).
   Play (les vrais, `assets/brand/`, jamais redessinés), sur une page blanche après sa dernière phrase.
 
 Les scènes, dans l'ordre (le storyboard en 16 images validé avec Tony, puis ses retours) : l'alerte dans sa tête
-(« Annuler » entouré), le recul, son téléphone qui s'allume ; « Moi c'est Tony » ; renfermé, seul dans un coin ; le
-« ? » coincé ; la bulle gribouillée ; le groupe qui parle sans lui ; ces trois-là qui deviennent de grandes silhouettes
+(« Annuler » entouré) ; le recul : c'est une pensée au-dessus de lui, **à son bureau, en train de coder** sur son
+ordinateur portable (« je suis sur mon bureau et je code », seulement sur « Et pourtant… j'ai créé un réseau social » :
+le dos de l'écran avec « </> », « {} », « (); », « 01 » qui en sortent ; pas de mains, l'écran les cache) ; son téléphone
+qui s'allume sur RISE, un cœur, une bulle de message, un « ? » et une croix qui en sortent (« réseau social ») ;
+l'écran qui se rabat et l'ordinateur qui s'en va (« après on remet le bureau vide ») ; « Moi c'est Tony » ; renfermé,
+seul dans un coin ; le « ? » coincé ; la bulle gribouillée ; le groupe qui parle sans lui, et la bulle de ce qu'il a
+peur qu'ils lui disent (« Laisse-nous tranquille ! ») ; ces trois-là qui deviennent de grandes silhouettes
 au-dessus de lui, leurs noms sur leur banc (amis, proches, profs) ; son bulletin, qui vient en grand, avec « Tony se
-complaît dans sa médiocrité » écrit en rouge (sans notes : elles étaient inventées), le temps de le lire (une pause
-dans sa voix après « profs ») ; les paroles illisibles qui tombent dans un mur de briques ; « jugement » : une bulle qui
+complaît dans sa médiocrité » écrit en rouge (sans notes : elles étaient inventées), lu pendant qu'il s'écrit, puis
+une demi-seconde ; les paroles illisibles qui tombent dans un mur de briques ; « jugement » : une bulle qui
 se moque (« Haha, n'importe quoi… », qui reprend sa peur de dire n'importe quoi) ; « regard » : les gens qui rient de
 lui ; « difficile » : eux au loin, et un cadenas sur le chemin ; « ça me freine dans ma foi » : l'église autour d'eux,
 et des barrières tout le long du chemin ; une table de frères et sœurs avec une chaise vide, qu'ils regardent sur

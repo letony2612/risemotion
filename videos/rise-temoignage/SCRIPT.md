@@ -7,8 +7,9 @@ lui-même ; les images se calent ensuite sur sa voix. Les « paroles » qu'il a 
 L'accroche se voit avant de s'entendre : la première image, en grand (« c'est bien d'avoir le truc en grand »), est ce
 qu'il a dans la tête, dessiné comme une alerte de téléphone — ⚠ « Demander de la prière ? » et, en gros, « Tu risques
 de déranger. » [Annuler] [Demander]. La voix dit la même chose (« peur de déranger ») pour qu'on comprenne tout de
-suite ; « Annuler » s'entoure sur « Moi, tout le temps », la caméra recule et c'est une pensée au-dessus de lui ; son
-téléphone, éteint, s'allume en orange sur « réseau social ». C'est notre idée à nous, dans notre niche : on ne reprend
+suite ; « Annuler » s'entoure sur « Moi, tout le temps », la caméra recule et c'est une pensée au-dessus de lui, à son
+bureau, en train de coder sur son ordinateur ; son téléphone, éteint, s'allume en orange sur « réseau social », puis
+l'ordinateur se referme et s'en va : le bureau est vide pour « Moi c'est Tony ». C'est notre idée à nous, dans notre niche : on ne reprend
 ni l'écran ni la phrase du reel de référence (« ça va faire copieur »). Si « demander de la prière » n'est pas vrai
 pour Tony, l'alerte dit « Envoyer le message ? » (`ALERTS` dans `tools/sketch.py`).
 

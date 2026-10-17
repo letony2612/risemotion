@@ -11,7 +11,7 @@ It opens on what goes on in his head when he wants to reach out to someone, draw
 la prière ? Tu risques de déranger. »), « Annuler » circled; near the end the same alert is on RISE, and this time
 « Demander » gets circled. It closes on him at his table, smiling a little, then on RISE's signature, the end of
 every video: the logo, « Disponible sur les stores » and the App Store and Google Play badges.
-Usage: python3 tools/film.py [--until SECONDS]    -> renders/film_v7.mp4
+Usage: python3 tools/film.py [--until SECONDS]    -> renders/film_v8.mp4
        python3 tools/film.py [--safe] T1 T2 ...    -> renders/film_T.png (the drawing at those times; --safe: with
                                                      TikTok's buttons and text shaded over it)
 """
@@ -27,7 +27,8 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageOps
 
 from sketch import (S, H, W, Hand, alert, back_table, barrier, big_phone, body, bricks, bubble, bulletin, chair, church, dashes, finish,
-                    framed, handwritten, head, hug, loop_pts, padlock, person, phone_on_table, rise_logo, scrawl, spline, speech, table)
+                    framed, handwritten, head, hug, laptop, loop_pts, padlock, person, phone_on_table, rise_logo, scrawl, spline, speech,
+                    table)
 
 ROOT = Path(__file__).resolve().parents[1]
 FPS, DRAWINGS = 24, 12  # twelve drawings a second, each held two frames
@@ -54,6 +55,8 @@ LOW, WALL, FAR = (0.42, 540.0, 1330.0), (0.75, 560.0, 1000.0), (0.3, 300.0, 1300
 ALERT, A_S = (300.0, 520.0), 0.75  # the alert in his head: where it is on his page, and its size there
 TRAIL = [(470, 732, 10), (432, 706, 15), (390, 678, 21)]  # little bubbles, from his head up to it
 RING = (601.0, 1231.0)  # the bubble he is shut in, round him and his table, on his page
+NOTES = [(37, 1395), (142, 1251), (31, 1106), (131, 973)]  # « …un réseau social »: where what comes out of his phone goes
+CODE = [("{}", (842, 1196)), ("();", (866, 1066)), ("01", (874, 924))]  # « …j'ai créé… »: what he types, coming off his laptop's screen
 
 
 def close(z):
@@ -64,6 +67,9 @@ def close(z):
 CIRCLED = (said(1, "Moi"), said(1, "Moi") + 0.55)  # « Annuler » circled
 PULL = (T[2] - 0.1, said(2, "j'ai") + 0.3)  # the camera pulls back: it is a thought over him
 LIGHT = (said(2, "réseau") - 0.05, said(2, "réseau") + 0.3)  # his phone lights up
+TYPING = said(2, "créé") - 0.05  # he codes (the camera has come back far enough to see his laptop)
+SHUT = (T[3] - 0.62, T[3] - 0.38)  # once it is said, his laptop shuts…
+AWAY = (T[3] - 0.38, T[3] - 0.12)  # …and goes: his table bare again for « Moi c'est Tony »
 CAMERA = [(0.0, close(2.3)), (PULL[0], close(2.42)), (PULL[1], BASE),
           (T[4], BASE), (T[4] + 0.8, CORNER), (T[5], CORNER), (T[5] + 0.55, BASE),  # « renfermé »: far off, in a corner
           (T[7], BASE), (T[7] + 0.7, GROUP),  # « …ou par peur de déranger »: the others, at their table
@@ -235,10 +241,11 @@ def his_page(pen, orange, red, t, shift):
             for j, (at, name) in enumerate(names):  # their names on the bench, as he says them
                 key(pen, name, GIANTS[j][0], 1150 - gone, at, t, 40, after=T[9] - 0.4)
             key(pen, "RABAISSÉ", 820, 1420 - gone, said(8, "rabaissé"), t, 46, after=T[8] + 0.3)
-            if e == 0:
-                b = pop(seg(t, T[7] + 0.7, T[7] + 1.0)) * (1 - ease(seg(t, T[8] - 0.2, T[8])))
+            if e == 0:  # what he fears they would say to him
+                b = pop(seg(t, T[7] + 0.35, T[7] + 0.65)) * (1 - ease(seg(t, T[8] - 0.25, T[8] - 0.1)))
                 if b > 0.05:
-                    speech(pen, 700 + dx, 500, 100 * b, 60 * b, grown(700 + dx, 500, (695 + dx, 590), b), "talk", rng=steady(40))
+                    speech(pen, 620 + dx, 470, 290 * b, 85 * b, grown(620 + dx, 470, (680 + dx, 620), b), "text", p=seg(t, T[7] + 0.55, T[7] + 1.3),
+                           rng=steady(40), text="Laisse-nous tranquille !")
                 key(pen, "DÉRANGER", 540, 330, said(7, "déranger"), t, 46, gone=T[8] - 0.1, after=T[7])
             b = pop(seg(t, CARD - 0.1, CARD + 0.3))  # his school report, then big, the teacher's comment written on it in red
             if b > 0:
@@ -315,13 +322,28 @@ def his_page(pen, orange, red, t, shift):
     # Tony at his table, through the camera; his wall in front of him once built; what is in his head, round him
     with his((z, qx, qy), shift):
         tony(pen, orange, t, lit=ease(seg(t, *LIGHT)), look=(lx, ly), lids=lids, smile=smile, worry=worry)
-        if t < T[4] + 0.5:  # « Moi c'est Tony »: his name beside him, and who he is (no arrow: « ça fait enfantin »)
+        if t < AWAY[1]:  # « Et pourtant… j'ai créé un réseau social »: at his table, coding on his laptop (« je code »)
+            laptop(pen, 668, 1560, 1 - ease(seg(t, *AWAY)), shut=seg(t, *SHUT))
+            for j, (sym, (cx_, cy_)) in enumerate(CODE):
+                b = pop(seg(t, TYPING + 0.22 * j, TYPING + 0.22 * j + 0.3)) * (1 - ease(seg(t, SHUT[0] - 0.12, SHUT[0] + 0.08)))
+                if b > 0.05:
+                    handwritten(pen, sym, cx_, cy_, 54 * b, w=5.4)
+        if t < T[3] + 0.2:
+            key(pen, "RÉSEAU SOCIAL", 620 + (650 - 620) / 0.9, 962 + (300 - 880) / 0.9, said(2, "réseau"), t, 46 / 0.9, after=T[2] + 0.3)
+        if t < T[4] + 0.5:  # « Moi c'est Tony »: his name beside him (no arrow: « ça fait enfantin »)
             key(pen, "TONY", 214, 895, said(3, "Tony"), t, 80, after=T[3] - 0.6)
-            key(pen, "CRÉATEUR DE RISE", 214, 950, said(3, "Tony") + 0.3, t, 24, after=T[3] - 0.3)
         if built > 0:
             bricks(pen, -420, 1660, 1950, 14, steady(70), p=built, h=44, length=120, orange=orange)
             if t < T[12] + 0.3:
                 key(pen, "BARRIÈRES", 620, 1500, said(10, "barrières"), t, 62, after=said(10, "barrières") - 0.9)
+
+        # « …j'ai créé un réseau social »: what it is made of comes out of his phone, one thing after another
+        if LIGHT[0] <= t < T[3] - 0.4:
+            out = 1 - ease(seg(t, T[3] - 0.65, T[3] - 0.4))
+            for j, ((bx, by), sym) in enumerate(zip(NOTES, ("heart", "chat", "?", "cross"))):
+                f = ease(seg(t, LIGHT[0] + 0.15 * j, LIGHT[0] + 0.15 * j + 0.35))
+                if f > 0.05 and out > 0.05:
+                    bubble(pen, lerp(295, bx, f), lerp(1575, by, f), 46 * pop(f) * out, sym, rng=steady(170 + j))
 
         # « Toi aussi, t'as peur de déranger ? Moi, tout le temps. »: seen close, the alert in his head, « Annuler »
         # circled; « Et pourtant… »: the camera pulls back, it is a thought over him; « Moi c'est Tony »: it goes
@@ -527,7 +549,7 @@ def _render(args):
 
 
 def main(until=END):
-    out = ROOT / "renders" / "film_v7.mp4"
+    out = ROOT / "renders" / "film_v8.mp4"
     out.parent.mkdir(exist_ok=True)
     n = int(min(until, END) * DRAWINGS)
     with tempfile.TemporaryDirectory() as d:
