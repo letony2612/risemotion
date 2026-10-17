@@ -28,7 +28,7 @@ pour Tony, l'alerte dit « Envoyer le message ? » (`ALERTS` dans `tools/sketch.
 >
 > Et aujourd'hui encore, ça me freine dans ma foi.
 >
-> Pourtant, j'ai besoin d'autres chrétiens autour de moi pour apprendre, partager et avancer avec Dieu.
+> Pourtant, je pense qu'on a tous besoin de frères et sœurs autour de nous pour apprendre, partager et avancer avec Dieu.
 >
 > C'est justement pour ça que j'ai créé RISE.
 >
@@ -60,7 +60,7 @@ sont en anglais (le modèle les lit comme des consignes, il ne les prononce pas)
 
 [bored] Et aujourd'hui encore, ça me freine dans ma foi.
 
-[bored] Pourtant, j'ai besoin d'autres chrétiens autour de moi pour apprendre, partager et avancer avec Dieu.
+[bored] Pourtant, je pense qu'on a tous besoin de frères et sœurs autour de nous pour apprendre, partager et avancer avec Dieu.
 
 [bored] C'est justement pour ça que j'ai créé RISE.
 
