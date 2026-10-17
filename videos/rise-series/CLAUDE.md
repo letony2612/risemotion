@@ -17,6 +17,9 @@ la même animation (`rise-temoignage/tools`), d'autres sujets. Les scripts gard�
   la voix de temps en temps seulement, quand l'appli répond vraiment au sujet.
 - **Sa voix à lui**, enregistrée au téléphone : plus d'ElevenLabs (« ça fonctionne pas bien »).
 - **Que du vrai** : une phrase à la première personne (« moi… ») seulement si Tony l'a vécue.
+- **Jamais de présentation au début** : sur son témoignage, les gens partaient sur « Et pourtant… j'ai créé un réseau
+  social. Moi c'est Tony. » (« les gens s'arrêtent quand j'ai dit moi c'est Tony ») : la vidéo arrêtait de parler
+  d'eux pour parler de lui et de son appli. Après l'accroche, on entre tout de suite dans l'histoire.
 - **Les sujets qu'il cherche** : ce que vit un introverti à l'église, avoir du mal à y trouver sa place, en prenant
   son exemple (« à la fin de l'église tu vois les gens, une famille qui discute entre eux, et toi t'es au fond, on
   dirait le fou du bus qui regarde de travers, alors que tu meurs d'envie de parler aux gens ») ; un regard
