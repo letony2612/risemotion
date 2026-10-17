@@ -489,40 +489,41 @@ def lettering(pen, text, cx, y, size, w=3.6):
         x += letters.width(ch, "futural", size) + gap
 
 
-ALERTS = {  # what the alert in his head says: its title (two lines), its message, its two buttons
-    "prière": (("DEMANDER", "DE LA PRIÈRE ?"), "TU RISQUES DE DÉRANGER.", ("ANNULER", "DEMANDER")),
-    "message": (("TU RISQUES", "DE DÉRANGER."), "ENVOYER QUAND MÊME ?", ("ANNULER", "ENVOYER")),
+ALERTS = {  # what the alert in his head says: what he was about to do, the warning (in big), its two buttons
+    "prière": ("DEMANDER DE LA PRIÈRE ?", ("TU RISQUES", "DE DÉRANGER."), ("ANNULER", "DEMANDER")),
+    "message": ("ENVOYER LE MESSAGE ?", ("TU RISQUES", "DE DÉRANGER."), ("ANNULER", "ENVOYER")),
 }
 
 
 def alert(pen, cx, cy, s=1.0, circled=0.0, rng=None, says="prière"):
     """What goes on in his head when he wants to reach out to someone, drawn as his phone's alert: a warning sign,
-    its words (ALERTS[says]: « Demander de la prière ? Tu risques de déranger. », Annuler or Demander); circled: how
-    far the pen has gone round « Annuler » (0..1). s: its size, as it comes and goes like a thought. It hides what is
-    behind it."""
+    what he was about to do and the warning, in big (ALERTS[says]: « Demander de la prière ? Tu risques de
+    déranger. »), Annuler or Demander; circled: how far the pen has gone round « Annuler » (0..1). s: its size, as it
+    comes and goes like a thought. It hides what is behind it."""
     rng = rng or pen.rng
-    title, message, buttons = ALERTS[says]
+    question, warning, buttons = ALERTS[says]
     w, h = 490 * s, 360 * s
     x0, y0, x1, y1 = cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2
     card = rounded([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], 36 * s, 6)
     pen.poly(card, fill=0)
     pen.line(card + card[:3], w=4, over=0.0, breaks=False, again=0.3)
-    tx, ty = cx, y0 + 28 * s  # the warning sign
-    pen.line([(tx, ty), (tx + 38 * s, ty + 64 * s), (tx - 38 * s, ty + 64 * s), (tx, ty)], w=3.6, corners=True, over=3.0, again=0.0)
-    pen.line([(tx, ty + 24 * s), (tx + 0.5 * s, ty + 44 * s)], w=4.4, over=0.0, again=0.0, breaks=False)
-    pen.poly(arc(tx, ty + 53 * s, 3.8 * s, 3.5 * s, 0, 360, 10))
+    tx, ty = cx, y0 + 22 * s  # the warning sign
+    pen.line([(tx, ty), (tx + 33 * s, ty + 56 * s), (tx - 33 * s, ty + 56 * s), (tx, ty)], w=3.6, corners=True, over=3.0, again=0.0)
+    pen.line([(tx, ty + 21 * s), (tx + 0.5 * s, ty + 38 * s)], w=4.2, over=0.0, again=0.0, breaks=False)
+    pen.poly(arc(tx, ty + 46 * s, 3.5 * s, 3.2 * s, 0, 360, 10))
+
     def fit(lines, size, room):  # as big as it can be, up to size, inside room
         return size * min([1.0] + [room / (letters.width(t, "futural", size) + size * 0.12 * len(t)) for t in lines])
-    big = fit(title, 34 * s, 0.84 * w)
-    lettering(pen, title[0], cx, y0 + 150 * s, big, 4.2)
-    lettering(pen, title[1], cx, y0 + 197 * s, big, 4.2)
-    lettering(pen, message, cx, y0 + 242 * s, fit([message], 18 * s, 0.88 * w), 2.8)
-    yl = y0 + 274 * s  # the buttons
+    lettering(pen, question, cx, y0 + 118 * s, fit([question], 18 * s, 0.88 * w), 2.8)
+    big = fit(warning, 36 * s, 0.86 * w)
+    lettering(pen, warning[0], cx, y0 + 174 * s, big, 4.4)
+    lettering(pen, warning[1], cx, y0 + 223 * s, big, 4.4)
+    yl = y0 + 256 * s  # the buttons
     pen.line([(x0 + 4 * s, yl), (x1 - 4 * s, yl + 2 * s)], w=2.4, over=2.0, again=0.0, breaks=False)
     pen.line([(cx, yl + 1 * s), (cx + 1 * s, y1 - 3 * s)], w=2.4, over=1.0, again=0.0, breaks=False)
-    lettering(pen, buttons[0], cx - w / 4, y0 + 330 * s, 22 * s, 3.4)
-    lettering(pen, buttons[1], cx + w / 4, y0 + 330 * s, 22 * s, 3.4)
-    ring = loop_pts(rng, cx - w / 4, y0 + 319 * s, 100 * s, 33 * s, -3)
+    lettering(pen, buttons[0], cx - w / 4, y0 + 320 * s, 22 * s, 3.4)
+    lettering(pen, buttons[1], cx + w / 4, y0 + 320 * s, 22 * s, 3.4)
+    ring = loop_pts(rng, cx - w / 4, y0 + 309 * s, 100 * s, 33 * s, -3)
     n = int(len(ring) * circled)
     if n > 1:
         pen.line(ring[:n], w=3.4, over=0.0, breaks=False, drift=0.6, again=0.0)
