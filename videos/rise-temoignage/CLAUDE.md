@@ -53,7 +53,7 @@ listes `SCRIPT` des anciens `tools/episode1_v*.py`.
 
 ## Animation
 
-`tools/film.py` → `renders/film_v2.mp4` (il s'ouvre sur l'alerte qu'il a dans la tête, voir `SCRIPT.md` ; la v1
+`tools/film.py` → `renders/film_v3.mp4` (il s'ouvre en grand sur l'alerte qu'il a dans la tête, voir `SCRIPT.md` ; la v1
 s'ouvrait sur le premier dessin et ses bulles) : les dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze
 dessins par seconde, chacun tenu deux images, l'encre qui « vibre » un peu (la main repasse les traits ; ce qui est
 aléatoire — les poils, les rayons, le gribouillis — reste en place d'un dessin à l'autre) ; peu de choses bougent à

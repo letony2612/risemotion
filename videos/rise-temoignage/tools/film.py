@@ -7,7 +7,7 @@ la prière ? Tu risques de déranger. »): « Annuler » gets circled, the camer
 head; his phone, dark till then, lights up as he says he created a social network.
 His voice is not recorded yet: each line is written at the top, word by word, at a speaking pace; everything is
 retimed to his voice once he has recorded it.
-Usage: python3 tools/film.py [--until SECONDS]  -> renders/film_v2.mp4
+Usage: python3 tools/film.py [--until SECONDS]  -> renders/film_v3.mp4
        python3 tools/film.py T1 T2 ...         -> renders/film_T.png (the drawing at those times)
 """
 import math
@@ -30,7 +30,7 @@ FPS, DRAWINGS = 24, 12  # twelve drawings a second, each held two frames
 WPS = 2.9  # words a second, as he would say them
 PAUSE = 0.3  # and how long he stops where a line is cut (after « … » or the end of a sentence)
 LINES = [  # each line of SCRIPT.md and how long it is given
-    ("Dans ma tête, dès que je veux parler à quelqu'un… Annuler. Et pourtant… j'ai créé un réseau social.", 7.6),
+    ("Toi aussi, t'as peur de déranger ? Moi, tout le temps. Et pourtant… j'ai créé un réseau social.", 7.6),
     ("Moi c'est Tony.", 2.0),
     ("Pendant longtemps, j'ai été quelqu'un de renfermé.", 3.0),
     ("Le genre de personne qui n'osait pas poser de questions.", 3.9),
@@ -50,7 +50,7 @@ def close(z):
     return (z, 540.0 + (620.0 - ALERT[0]) * z, 900.0 + (962.0 - ALERT[1]) * z)
 
 
-CIRCLED, PULL, LIGHT = (3.8, 4.15), (4.4, 5.5), (6.45, 6.8)  # « Annuler » circled; the camera pulls back; his phone lights up
+CIRCLED, PULL, LIGHT = (2.95, 3.55), (4.4, 5.5), (6.45, 6.8)  # « Annuler » circled; the camera pulls back; his phone lights up
 CAMERA = [(0.0, close(2.0)), (PULL[0], close(2.12)), (PULL[1], BASE), (T[2], BASE), (T[2] + 1.1, CORNER), (T[3], CORNER), (T[3] + 0.9, BASE),
           (T[5] + 0.1, BASE), (T[5] + 1.0, GROUP)]
 # his face: where he looks (across, down), how open his lids are, his smile, his worry
@@ -211,7 +211,7 @@ def frame_at(t, v):
         head(pen, steady(1), hx=620.0, hy=962.0, tilt=6.0, look=(lx, ly), lids=lids, smile=smile, worry=worry, blink=blink)
         phone_on_table(pen, orange, glow=0.9 + 0.07 * math.sin(2 * math.pi * t / 1.6), rng=steady(2), lit=ease(seg(t, *LIGHT)))
 
-        # « Dans ma tête, dès que je veux parler à quelqu'un… Annuler. »: seen close, the alert in his head, « Annuler »
+        # « Toi aussi, t'as peur de déranger ? Moi, tout le temps. »: seen close, the alert in his head, « Annuler »
         # circled; « Et pourtant… »: the camera pulls back, it is a thought over him; « Moi c'est Tony »: it goes
         gone = 1 - ease(seg(t, T[1], T[1] + 0.25))
         if gone > 0.05:
@@ -268,7 +268,7 @@ def _render(args):
 
 
 def main(until=END):
-    out = ROOT / "renders" / "film_v2.mp4"
+    out = ROOT / "renders" / "film_v3.mp4"
     out.parent.mkdir(exist_ok=True)
     n = int(min(until, END) * DRAWINGS)
     with tempfile.TemporaryDirectory() as d:

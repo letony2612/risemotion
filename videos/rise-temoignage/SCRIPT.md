@@ -4,14 +4,15 @@ Toute l'histoire en une vidéo, de l'accroche à RISE : environ 1 min 10 à 1 mi
 lui-même ; les images se calent ensuite sur sa voix. Les « paroles » qu'il a entendues se montrent écrites à la main
 à l'image (comme le commentaire du bulletin « Tony se complaît dans sa médiocrité »), elles ne se disent pas.
 
-L'accroche se voit avant de s'entendre : la première image est ce qu'il a dans la tête, dessiné comme une alerte de
-téléphone — ⚠ « Demander de la prière ? Tu risques de déranger. » [Annuler] [Demander] ; « Annuler » s'entoure,
-la caméra recule et c'est une pensée au-dessus de lui ; son téléphone, éteint, s'allume en orange sur « réseau
-social ». C'est notre idée à nous, dans notre niche : on ne reprend ni l'écran ni la phrase du reel de référence
-(« ça va faire copieur »). Si « demander de la prière » n'est pas vrai pour Tony, l'alerte dit « Tu risques de
-déranger. Envoyer quand même ? » [Annuler] [Envoyer] (`ALERTS` dans `tools/sketch.py`).
+L'accroche se voit avant de s'entendre : la première image, en grand (« c'est bien d'avoir le truc en grand »), est ce
+qu'il a dans la tête, dessiné comme une alerte de téléphone — ⚠ « Demander de la prière ? » et, en gros, « Tu risques
+de déranger. » [Annuler] [Demander]. La voix dit la même chose (« peur de déranger ») pour qu'on comprenne tout de
+suite ; « Annuler » s'entoure sur « Moi, tout le temps », la caméra recule et c'est une pensée au-dessus de lui ; son
+téléphone, éteint, s'allume en orange sur « réseau social ». C'est notre idée à nous, dans notre niche : on ne reprend
+ni l'écran ni la phrase du reel de référence (« ça va faire copieur »). Si « demander de la prière » n'est pas vrai
+pour Tony, l'alerte dit « Envoyer le message ? » (`ALERTS` dans `tools/sketch.py`).
 
-> Dans ma tête, dès que je veux parler à quelqu'un… Annuler.
+> Toi aussi, t'as peur de déranger ? Moi, tout le temps.
 >
 > Et pourtant… j'ai créé un réseau social.
 >
@@ -45,7 +46,7 @@ sont en anglais (le modèle les lit comme des consignes, il ne les prononce pas)
 « Natural » ; « Creative » si ce n'est pas assez triste, « Robust » si la voix varie trop. Si la voix prononce mal « RISE », l'écrire comme il se dit.
 
 ```
-[bored] Dans ma tête, dès que je veux parler à quelqu'un… Annuler.
+[bored] Toi aussi, t'as peur de déranger ? Moi, tout le temps.
 
 [bored] Et pourtant… j'ai créé un réseau social.
 
