@@ -69,6 +69,12 @@ transition bizarre » ; on ne touche pas au reste de la prise (« t'es parti arc
 
 ## Animation
 
+**La version courte** (`python3 tools/voice.py assets/voice/take_elevenlabs.mp3 --court`, puis
+`python3 tools/film.py --court` → `renders/film_v9_court.mp4`) : sans « Et pourtant… j'ai créé un réseau social. Moi
+c'est Tony. », là où les gens partaient (« les gens s'arrêtent quand j'ai dit moi c'est Tony »). De « Moi, tout le
+temps » on va droit à son histoire ; son téléphone reste éteint, et RISE n'apparaît que sur « C'est justement pour ça
+que j'ai créé RISE ». Les lignes laissées de côté se règlent dans `CUTS` de `tools/voice.py`.
+
 `tools/film.py` → `renders/film_v9.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
 dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze dessins par seconde, chacun tenu deux images,
 l'encre qui « vibre » un peu (la main repasse les traits ; ce qui est aléatoire — les poils, les rayons, le gribouillis

@@ -11,7 +11,8 @@ It opens on what goes on in his head when he wants to reach out to someone, draw
 la prière ? Tu risques de déranger. »), « Annuler » circled; near the end the same alert is on RISE, and this time
 « Demander » gets circled. It closes on him at his table, smiling a little, then on RISE's signature, the end of
 every video: the logo, « Disponible sur les stores » and the App Store and Google Play badges.
-Usage: python3 tools/film.py [--until SECONDS]    -> renders/film_v9.mp4
+Usage: python3 tools/film.py [--court] [--until SECONDS]    -> renders/film_v9.mp4 (--court: film_v9_court.mp4, without
+                                                               « Et pourtant… j'ai créé un réseau social. Moi c'est Tony. »)
        python3 tools/film.py [--safe] T1 T2 ...    -> renders/film_T.png (the drawing at those times; --safe: with
                                                      TikTok's buttons and text shaded over it)
 """
@@ -33,7 +34,12 @@ from sketch import (S, H, W, Hand, alert, back_table, barrier, big_phone, body, 
 ROOT = Path(__file__).resolve().parents[1]
 FPS, DRAWINGS = 24, 12  # twelve drawings a second, each held two frames
 VOICE = ROOT / "assets" / "voice"
-TAKE = json.loads((VOICE / "take.json").read_text())
+# --court: the version without « Et pourtant… j'ai créé un réseau social. Moi c'est Tony. », where viewers left (« les
+# gens s'arrêtent quand j'ai dit moi c'est Tony »): from « Moi, tout le temps » straight into his story; its voice
+# (voice.py --court) keeps the film's line numbers, the two lines left out without words
+SHORT = "--court" in sys.argv
+NAME = "_court" if SHORT else ""
+TAKE = json.loads((VOICE / f"take{NAME}.json").read_text())
 LINES = [line["text"] for line in TAKE["lines"]]
 WORDS = [line["words"] for line in TAKE["lines"]]
 T = [line["start"] for line in TAKE["lines"]] + [TAKE["duration"]]  # when each line starts; T[-1]: the end of his voice
@@ -65,11 +71,16 @@ def close(z):
 
 
 CIRCLED = (said(1, "Moi"), said(1, "Moi") + 0.55)  # « Annuler » circled
-PULL = (T[2] - 0.1, said(2, "j'ai") + 0.3)  # the camera pulls back: it is a thought over him
-LIGHT = (said(2, "réseau") - 0.05, said(2, "réseau") + 0.3)  # his phone lights up
-TYPING = said(2, "créé") - 0.05  # he codes (the camera has come back far enough to see his laptop)
-SHUT = (T[3] - 0.62, T[3] - 0.38)  # once it is said, his laptop shuts…
-AWAY = (T[3] - 0.38, T[3] - 0.12)  # …and goes: his table bare again for « Moi c'est Tony »
+if SHORT:  # the camera pulls back once « Annuler » is circled; his phone stays off, the alert goes as his story starts
+    PULL, LIGHT, GONE = (CIRCLED[1] + 0.05, T[4] - 0.1), (1e9, 1e9 + 0.35), T[4] + 0.3
+    TYPING, SHUT, AWAY = 0.0, (0.0, 0.0), (0.0, 0.0)  # (no laptop)
+else:
+    PULL = (T[2] - 0.1, said(2, "j'ai") + 0.3)  # the camera pulls back: it is a thought over him
+    LIGHT = (said(2, "réseau") - 0.05, said(2, "réseau") + 0.3)  # his phone lights up
+    GONE = T[3]  # « Moi c'est Tony »: the alert in his head goes
+    TYPING = said(2, "créé") - 0.05  # he codes (the camera has come back far enough to see his laptop)
+    SHUT = (T[3] - 0.62, T[3] - 0.38)  # once it is said, his laptop shuts…
+    AWAY = (T[3] - 0.38, T[3] - 0.12)  # …and goes: his table bare again for « Moi c'est Tony »
 CAMERA = [(0.0, close(2.3)), (PULL[0], close(2.42)), (PULL[1], BASE),
           (T[4], BASE), (T[4] + 0.8, CORNER), (T[5], CORNER), (T[5] + 0.55, BASE),  # « renfermé »: far off, in a corner
           (T[7], BASE), (T[7] + 0.7, GROUP),  # « …ou par peur de déranger »: the others, at their table
@@ -79,8 +90,9 @@ CAMERA = [(0.0, close(2.3)), (PULL[0], close(2.42)), (PULL[1], BASE),
 PROFS, CARD = said(9, "profs"), said(9, "même")  # « …même par des profs »: his report card comes
 q_up = said(5, "n'osait")
 # his face: where he looks (across, down), how open his lids are, his smile, his worry
-FACE = [(0.0, (0.0, 1.0, 12.0, 0.0, 0.0)), (T[3] + 0.05, (0.0, 1.0, 12.0, 0.0, 0.0)), (T[3] + 0.3, (0.12, -0.3, 13.5, 0.0, 0.0)),
-        (T[3] + 0.45, (0.12, -0.3, 13.5, 0.0, 0.0)), (T[3] + 0.75, (0.12, -0.3, 13.5, 0.3, 0.0)), (T[4], (0.12, -0.3, 13.5, 0.3, 0.0)),
+FACE = [(0.0, (0.0, 1.0, 12.0, 0.0, 0.0))] + ([] if SHORT else [  # « Moi c'est Tony »: up at us, a little smile
+            (T[3] + 0.05, (0.0, 1.0, 12.0, 0.0, 0.0)), (T[3] + 0.3, (0.12, -0.3, 13.5, 0.0, 0.0)),
+            (T[3] + 0.45, (0.12, -0.3, 13.5, 0.0, 0.0)), (T[3] + 0.75, (0.12, -0.3, 13.5, 0.3, 0.0)), (T[4], (0.12, -0.3, 13.5, 0.3, 0.0))]) + [
         (T[4] + 0.25, (0.0, 1.0, 12.0, 0.0, 0.1)), (T[4] + 0.7, (0.0, 1.0, 12.0, 0.0, 0.35)), (q_up, (0.0, 1.0, 12.0, 0.0, 0.35)),
         (q_up + 0.3, (0.15, -1.1, 13.0, -0.25, 0.45)), (T[6] + 0.1, (0.15, -1.1, 13.0, -0.25, 0.45)),
         (T[6] + 0.35, (-0.9, -0.35, 12.5, -0.3, 0.6)), (T[7] + 0.3, (-0.9, -0.35, 12.5, -0.3, 0.6)), (T[7] + 0.6, (0.95, -0.6, 13.0, -0.15, 0.4)),
@@ -328,9 +340,9 @@ def his_page(pen, orange, red, t, shift):
                 b = pop(seg(t, TYPING + 0.22 * j, TYPING + 0.22 * j + 0.3)) * (1 - ease(seg(t, SHUT[0] - 0.12, SHUT[0] + 0.08)))
                 if b > 0.05:
                     handwritten(pen, sym, cx_, cy_, 54 * b, w=5.4)
-        if t < T[3] + 0.2:
+        if not SHORT and t < T[3] + 0.2:
             key(pen, "RÉSEAU SOCIAL", 620 + (650 - 620) / 0.9, 962 + (300 - 880) / 0.9, said(2, "réseau"), t, 46 / 0.9, after=T[2] + 0.3)
-        if t < T[4] + 0.5:  # « Moi c'est Tony »: his name beside him (no arrow: « ça fait enfantin »)
+        if not SHORT and t < T[4] + 0.5:  # « Moi c'est Tony »: his name beside him (no arrow: « ça fait enfantin »)
             key(pen, "TONY", 214, 895, said(3, "Tony"), t, 80, after=T[3] - 0.6)
         if built > 0:
             bricks(pen, -420, 1660, 1950, 14, steady(70), p=built, h=44, length=120, orange=orange)
@@ -347,7 +359,7 @@ def his_page(pen, orange, red, t, shift):
 
         # « Toi aussi, t'as peur de déranger ? Moi, tout le temps. »: seen close, the alert in his head, « Annuler »
         # circled; « Et pourtant… »: the camera pulls back, it is a thought over him; « Moi c'est Tony »: it goes
-        gone = 1 - ease(seg(t, T[3], T[3] + 0.25))
+        gone = 1 - ease(seg(t, GONE, GONE + 0.25))
         if gone > 0.05:
             for k, (bx, by, r) in enumerate(TRAIL):
                 bubble(pen, bx, by, r * gone, None, rng=steady(10 + k))
@@ -549,7 +561,7 @@ def _render(args):
 
 
 def main(until=END):
-    out = ROOT / "renders" / "film_v9.mp4"
+    out = ROOT / "renders" / f"film_v9{NAME}.mp4"
     out.parent.mkdir(exist_ok=True)
     n = int(min(until, END) * DRAWINGS)
     with tempfile.TemporaryDirectory() as d:
@@ -557,7 +569,7 @@ def main(until=END):
             for i, _ in enumerate(pool.imap_unordered(_render, [(g, d) for g in range(n)], chunksize=2)):
                 if i % 48 == 0:
                     print(f"{i}/{n}", flush=True)
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-framerate", str(DRAWINGS), "-i", f"{d}/%05d.png", "-i", str(VOICE / "voice.wav"),
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-framerate", str(DRAWINGS), "-i", f"{d}/%05d.png", "-i", str(VOICE / f"voice{NAME}.wav"),
                         "-af", "apad", "-ac", "2", "-r", str(FPS), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", "-c:a", "aac", "-b:a", "192k",
                         "-shortest", "-movflags", "+faststart", str(out)], check=True)
     print(out, f"{n / DRAWINGS:.1f}s")
@@ -566,13 +578,13 @@ def main(until=END):
 if __name__ == "__main__":
     args = sys.argv[1:]
     safe = "--safe" in args
-    args = [a for a in args if a != "--safe"]
+    args = [a for a in args if a not in ("--safe", "--court")]
     if len(args) > 1 and args[0] == "--until":
         main(float(args[1]))
     elif args:
         for s_ in args:
             g = int(float(s_) * DRAWINGS)
             im = frame_at(g / DRAWINGS, g % 3)
-            (shaded(im) if safe else im).save(ROOT / "renders" / f"film_{s_}.png")
+            (shaded(im) if safe else im).save(ROOT / "renders" / f"film{NAME}_{s_}.png")
     else:
         main()

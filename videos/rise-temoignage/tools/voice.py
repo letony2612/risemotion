@@ -7,7 +7,8 @@ two lines the pause is the one LINES gives, short to keep the pace, held longer 
 land (before « C'est justement pour ça que j'ai créé RISE »). A cut never falls in a word (settle). The words are
 never touched, nor their speed. Then a light broadcast polish, and each word's time for the drawings (dtw_align
 again, line by line).
-Usage: python3 tools/voice.py path/to/take.mp3  -> assets/voice/voice.wav, assets/voice/take.json
+Usage: python3 tools/voice.py path/to/take.mp3 [--court]  -> assets/voice/voice.wav, assets/voice/take.json
+       (--court: the version in CUTS without its lines 2 and 3 -> voice_court.wav, take_court.json)
 """
 import json
 import subprocess
@@ -27,6 +28,12 @@ MAX_PAUSE = 0.38  # longest pause kept inside a line (s)
 FLOOR = 30  # dB under the take's loudest where its voice stops
 CORE = 20  # dB under the take's loudest: surely a word (its vowels), never a breath
 LUFS = -15.0  # loud enough for a phone, under what TikTok turns down
+
+CUTS = {  # the film's other versions: the lines left out, and the pauses that change
+    # « Et pourtant… j'ai créé un réseau social. Moi c'est Tony. » left out: viewers left there (« les gens s'arrêtent
+    # quand j'ai dit moi c'est Tony »); from « Moi, tout le temps » straight into his story
+    "court": ({2, 3}, {4: 0.7}),
+}
 
 LINES = [  # each line as he says it, and the pause before it (s)
     ("Toi aussi, t'as peur de déranger ?", 0.0),
@@ -210,8 +217,10 @@ def polish(y):
     return y * min(1.0, 10 ** (-1.0 / 20) / np.abs(y).max())
 
 
-def main(path):
+def main(path, cut=None):
     from dtw_align import align
+    skip, gaps = CUTS[cut] if cut else (set(), {})
+    name = f"_{cut}" if cut else ""
     x = load(path)
     texts = [t for t, _ in LINES]
     top = level(x).max()
@@ -221,7 +230,11 @@ def main(path):
         s[:f] *= np.linspace(0, 1, f)
         s[-f:] *= np.linspace(1, 0, f)
     pieces, spans, t = [], [], 0.0
-    for (text, gap), seg in zip(LINES, segs):
+    for i, ((text, gap), seg) in enumerate(zip(LINES, segs)):
+        if i in skip:
+            spans.append(None)
+            continue
+        gap = gaps.get(i, gap)
         pieces += [np.zeros(int(gap * SR)), seg]
         t += gap
         spans.append((t, t + len(seg) / SR))
@@ -230,19 +243,24 @@ def main(path):
     edit = np.concatenate(pieces)
     voice = polish(edit)
     OUT.mkdir(parents=True, exist_ok=True)
-    sf.write(OUT / "voice.wav", voice, SR, subtype="PCM_16")
+    sf.write(OUT / f"voice{name}.wav", voice, SR, subtype="PCM_16")
     lines = []
     with tempfile.TemporaryDirectory() as d:
-        for i, ((text, _), (a, b)) in enumerate(zip(LINES, spans)):  # (timed on the edit before its polish: the same times)
+        for i, ((text, _), span) in enumerate(zip(LINES, spans)):  # (timed on the edit before its polish: the same times)
+            if span is None:  # left out: no words, where the next line starts (the film keeps its line numbers)
+                a = next(sp[0] for sp in spans[i:] if sp)
+                lines.append({"text": text, "start": round(a, 3), "end": round(a, 3), "words": []})
+                continue
+            a, b = span
             wav = Path(d) / f"{i}.wav"
             sf.write(wav, edit[int(a * SR):int(b * SR)], SR)
             words, _, _ = align(wav, text)
             lines.append({"text": text, "start": round(a, 3), "end": round(b, 3),
                           "words": [{"w": w["w"], "start": round(a + w["start"], 3), "end": round(a + w["end"], 3)} for w in words]})
             print(f"{a:6.2f}-{b:6.2f}  {text}")
-    (OUT / "take.json").write_text(json.dumps({"duration": round(len(voice) / SR, 3), "lines": lines}, ensure_ascii=False, indent=1))
-    print(f"{len(x) / SR:.1f}s read -> {len(voice) / SR:.1f}s", OUT / "voice.wav")
+    (OUT / f"take{name}.json").write_text(json.dumps({"duration": round(len(voice) / SR, 3), "lines": lines}, ensure_ascii=False, indent=1))
+    print(f"{len(x) / SR:.1f}s read -> {len(voice) / SR:.1f}s", OUT / f"voice{name}.wav")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2].lstrip("-") if len(sys.argv) > 2 else None)
