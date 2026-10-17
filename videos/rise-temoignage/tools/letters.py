@@ -49,7 +49,7 @@ def layout(text, font="futural", size=40.0, slant=0.0, hand=0.0, seed=0):
     k = size / UNIT
     rng = random.Random(seed)
     pen_x, out = 0.0, []
-    text = text.replace("…", "...").replace("’", "'").replace("«", '"').replace("»", '"').replace("\u00a0", " ")
+    text = text.replace("…", "...").replace("’", "'").replace("«", '"').replace("»", '"').replace("\u00a0", " ").replace("œ", "oe").replace("Œ", "OE")
     for ch in text:
         parts = unicodedata.normalize("NFD", ch)
         base, marks = parts[0], parts[1:]

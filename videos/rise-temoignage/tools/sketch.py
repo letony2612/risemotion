@@ -441,6 +441,13 @@ def bubble(pen, cx, cy, r, symbol, squash=1.0, rng=None):
     elif symbol == "cross":
         pen.line([(cx, cy - s * 1.1), (cx, cy + s * 1.1)], w=5)
         pen.line([(cx - s * 0.65, cy - s * 0.4), (cx + s * 0.65, cy - s * 0.4)], w=5)
+    elif symbol == "book":  # an open book: two pages from its spine, a line or two on each
+        for sx in (-1, 1):
+            pen.line([(cx, cy - s * 0.5), (cx + sx * s * 0.5, cy - s * 0.72), (cx + sx * s * 1.05, cy - s * 0.58), (cx + sx * s * 1.05, cy + s * 0.62),
+                      (cx + sx * s * 0.5, cy + s * 0.48), (cx, cy + s * 0.7)], w=3.8, corners=True, over=2.0)
+            for k in (-0.2, 0.15):
+                pen.line([(cx + sx * s * 0.22, cy + s * k), (cx + sx * s * 0.82, cy + s * (k + 0.02))], w=1.8, over=0.0, again=0.0)
+        pen.line([(cx, cy - s * 0.5), (cx, cy + s * 0.7)], w=3.0)
 
 
 def speech(pen, cx, cy, rx, ry, tip, content="talk", p=1.0, rng=None):
@@ -495,11 +502,11 @@ ALERTS = {  # what the alert in his head says: what he was about to do, the warn
 }
 
 
-def alert(pen, cx, cy, s=1.0, circled=0.0, rng=None, says="prière"):
+def alert(pen, cx, cy, s=1.0, circled=0.0, rng=None, says="prière", pick=0):
     """What goes on in his head when he wants to reach out to someone, drawn as his phone's alert: a warning sign,
     what he was about to do and the warning, in big (ALERTS[says]: « Demander de la prière ? Tu risques de
-    déranger. »), Annuler or Demander; circled: how far the pen has gone round « Annuler » (0..1). s: its size, as it
-    comes and goes like a thought. It hides what is behind it."""
+    déranger. »), Annuler or Demander; circled: how far the pen has gone round the button picked (0: « Annuler »,
+    1: « Demander »), 0..1. s: its size, as it comes and goes like a thought. It hides what is behind it."""
     rng = rng or pen.rng
     question, warning, buttons = ALERTS[says]
     w, h = 490 * s, 360 * s
@@ -523,16 +530,222 @@ def alert(pen, cx, cy, s=1.0, circled=0.0, rng=None, says="prière"):
     pen.line([(cx, yl + 1 * s), (cx + 1 * s, y1 - 3 * s)], w=2.4, over=1.0, again=0.0, breaks=False)
     lettering(pen, buttons[0], cx - w / 4, y0 + 320 * s, 22 * s, 3.4)
     lettering(pen, buttons[1], cx + w / 4, y0 + 320 * s, 22 * s, 3.4)
-    ring = loop_pts(rng, cx - w / 4, y0 + 309 * s, 100 * s, 33 * s, -3)
+    ring = loop_pts(rng, cx + (w / 4 if pick else -w / 4), y0 + 309 * s, (114 if pick else 100) * s, 33 * s, -3)
     n = int(len(ring) * circled)
     if n > 1:
         pen.line(ring[:n], w=3.4, over=0.0, breaks=False, drift=0.6, again=0.0)
 
 
-def person(pen, x, y, s, hair="short", look=(0.0, 0.0), mouth="smile", beard=False, tilt=0.0, rng=None):
+# --- what the rest of the film needs (scenes 7 to 16 of the storyboard), drawn with the same pen
+def scrawl_words(x, y, width, rng, size=1.0):
+    """A line of handwriting nobody can read, as strokes, a word each: little loops and waves running along it, some
+    letters taller than the rest."""
+    words, cx = [], x
+    while cx < x + width - 30 * size:
+        ln = min(rng.uniform(40, 110) * size, x + width - cx)
+        t = np.arange(0, ln, 1.5 * size)
+        lam = rng.uniform(11, 15) * size
+        tall = np.repeat(rng.choice([1.0, 1.0, 1.0, 2.1], int(ln / lam) + 2), int(np.ceil(lam / (1.5 * size))))[:len(t)]
+        xs = cx + t - 3.2 * size * np.sin(2 * np.pi * t / lam)
+        ys = y - 5.5 * size * tall * (1 - np.cos(2 * np.pi * t / lam)) / 2 + rng.normal(0, 0.4, len(t)).cumsum() * 0.15 * size
+        words.append(list(zip(xs, ys)))
+        cx += ln + rng.uniform(14, 22) * size
+    return words
+
+
+def scrawl(pen, x, y, width, rng, p=1.0, size=1.0, w=2.2):
+    """A line of handwriting nobody can read: the words he heard, shown but never said; p: how far it has been
+    written."""
+    words = scrawl_words(x, y, width, rng, size)
+    total = sum(len(wd) for wd in words)
+    left = int(total * p)
+    for wd in words:
+        if left < 2:
+            break
+        pen.line(wd[:left], w=w, amp=0.5, again=0.0, over=0.0, drift=0.2, breaks=False, taper=0.4)
+        left -= len(wd)
+
+
+def bricks(pen, x0, x1, y_base, rows, rng, p=1.0, h=46.0, length=118.0, orange=None):
+    """A wall built row by row from y_base up, freehand bricks staggered from one row to the next, a few of them
+    hatched; p: how many of its rows are up (0..1). It hides what is behind it (in orange too, given that layer)."""
+    up = rows * p
+    for r in range(rows):
+        f = min(1.0, up - r)
+        if f <= 0:
+            break
+        y1, y0 = y_base - r * h, y_base - r * h - h * f
+        pen.poly([(x0, y1), (x1, y1), (x1, y0), (x0, y0)], fill=0)
+        if orange is not None:
+            ImageDraw.Draw(orange).polygon([tuple(c) for c in P([(x0, y1), (x1, y1), (x1, y0), (x0, y0)])], fill=0)
+        pen.line([(x0 - 6, y0), (x1 + 6, y0)], w=3.2, over=0.0, again=0.0)
+        if r == 0:
+            pen.line([(x0 - 6, y1), (x1 + 6, y1)], w=3.6, over=0.0, again=0.0)
+        off = (r % 2) * length / 2
+        bx = x0 - off
+        while bx < x1:
+            if bx > x0 + 8:
+                pen.line([(bx, y1), (bx + rng.uniform(-2, 2), y0)], w=2.4, over=0.0, again=0.0, breaks=False)
+            if rng.random() < 0.18 and f >= 1:
+                a, b = max(x0, bx) + 10, min(x1, bx + length) - 10
+                if b - a > 30:
+                    pen.hatch([(a, y1 - 8), (b, y1 - 8), (b, y0 + 8), (a, y0 + 8)], 58, 9, w=1.3)
+            bx += length * rng.uniform(0.92, 1.08)
+    for sx in (x0, x1):  # its ends
+        if up > 0:
+            pen.line([(sx, y_base), (sx, y_base - min(up, rows) * h)], w=3.2, over=2.0, again=0.0)
+
+
+def bulletin(pen, cx, cy, s=1.0, tilt=-5.0, comment=1.0, rng=None):
+    """His school report: a sheet with its lines of subjects (handwriting nobody reads, no grades: Tony never gave
+    them) and, written by hand at the bottom, the teacher's comment « Tony se complaît dans sa médiocrité » (comment:
+    how far it has been written, 0..1). It hides what is behind it."""
+    rng = rng or pen.rng
+
+    def S(pts):
+        return rot([(cx + px * s, cy + py * s) for px, py in pts], cx, cy, tilt)
+    w, h = 300, 390
+    sheet = rounded([(-w, -h), (w, -h), (w, h), (-w, h)], 10, 3)
+    pen.poly(S(sheet), fill=0)
+    pen.line(S(sheet + sheet[:2]), w=3.4, over=0.0, breaks=False, again=0.2)
+    word, adv = letters.layout("BULLETIN", "futural", 30 * s)[0], letters.width("BULLETIN", "futural", 30 * s)
+    for st in word:
+        pen.line(S([(-adv / 2 / s + a / s, -h + 70 + b / s) for a, b in st]), w=3.2, amp=0.3, again=0.0, over=0.0, drift=0.0, breaks=False, taper=0.2)
+    pen.line(S([(-w + 30, -h + 100), (w - 30, -h + 100)]), w=2.2, over=0.0, again=0.0)
+    for k in range(5):  # the subjects, and an empty box for each grade
+        yk = -h + 160 + k * 58
+        for word in scrawl_words(-w + 40, yk, rng.uniform(150, 280), rng, 0.8):
+            pen.line(S(word), w=1.8, amp=0.4, again=0.0, over=0.0, drift=0.1, breaks=False, taper=0.4)
+        box = [(w - 120, yk - 30), (w - 40, yk - 30), (w - 40, yk + 10), (w - 120, yk + 10)]
+        pen.line(S(box + box[:1]), w=1.8, corners=True, over=1.5, again=0.0)
+    pen.line(S([(-w + 30, h - 150), (w - 30, h - 150)]), w=2.2, over=0.0, again=0.0)
+    strokes = []
+    for i, (text, dx) in enumerate((("Tony se complaît", -w + 40), ("dans sa médiocrité", -w + 70))):
+        st, _ = letters.layout(text, "scripts", 40, slant=0.15, hand=1.0, seed=31 + i)
+        strokes += [[(dx + a, h - 92 + 54 * i + b) for a, b in q] for q in st]
+    done, _ = letters.written(strokes, comment)
+    for q in done:
+        if len(q) > 1:
+            pen.line(S(q), w=2.6, amp=0.3, again=0.0, over=0.0, drift=0.0, breaks=False, taper=0.3)
+
+
+def church(pen, cx, base, s=1.0, p=1.0, rng=None):
+    """A small church, drawn plainly: its front, the roof, a cross on top, a round window, the door open; p: how far
+    it has been drawn (front, roof, cross, window, door). It hides what is behind it only once drawn."""
+    rng = rng or pen.rng
+
+    def S(pts):
+        return [(cx + px * s, base + py * s) for px, py in pts]
+    parts = [
+        [(-230, 0), (-230, -330), (230, -330), (230, 0)],
+        [(-262, -318), (0, -560), (262, -318)],
+        [(0, -560), (0, -680)],
+        [(-42, -636), (42, -636)],
+    ]
+    k = p * 6
+    if k >= 2:
+        pen.poly(S([(-230, 0), (-230, -330), (0, -560), (230, -330), (230, 0)]), fill=0)
+    for i, part in enumerate(parts):
+        f = min(1.0, k - i)
+        if f <= 0:
+            break
+        pts = resample(np.array(S(part), float), 4.0)
+        n = max(2, int(len(pts) * f))
+        pen.line([tuple(q) for q in pts[:n]], w=4.2 if i < 2 else 4.8, over=2.0, again=0.2, corners=True)
+    if k > 4:
+        pen.line(S(loop_pts(rng, 0, -420, 46, 46)), w=3.0, over=0.0, breaks=False, again=0.0)
+        pen.line(S([(0, -466), (0, -374)]), w=1.8, over=0.0, again=0.0)
+        pen.line(S([(-46, -420), (46, -420)]), w=1.8, over=0.0, again=0.0)
+    if k > 5:
+        door = [(-70, 0), (-70, -150)] + arc(0, -150, 70, 70, 180, 360, 16) + [(70, -150), (70, 0)]
+        pen.hatch(S(door), 70, 9, w=1.4)
+        pen.line(S(door), w=3.6, over=0.0, again=0.0)
+
+
+def dashes(pen, pts, p=1.0, dash=22.0, gap=18.0):
+    """A path of dashes along a smooth curve through pts, drawn as far as p."""
+    path = resample(np.array(spline(pts, 10), float), 2.0)
+    L = arclen(path)
+    end = L[-1] * p
+    a = 0.0
+    while a < end:
+        b = min(a + dash, end)
+        i0, i1 = np.searchsorted(L, a), np.searchsorted(L, b)
+        if i1 - i0 > 1:
+            pen.line([tuple(q) for q in path[i0:i1]], w=2.6, amp=0.4, again=0.0, over=0.0, drift=0.0, breaks=False)
+        a += dash + gap
+
+
+def chair(pen, x, y, s=1.0):
+    """An empty chair behind a table, its back towards us: its two posts, a curved top rail, a rail across and
+    spindles between them (the table hides the seat)."""
+    def C(pts):
+        return [(x + px * s, y + py * s) for px, py in pts]
+    for sx in (-1, 1):
+        pen.line(C([(sx * 100, 0), (sx * 104, -268)]), w=4.2, again=0.2)
+    pen.line(C(spline([(-114, -258), (-60, -290), (0, -297), (60, -290), (114, -258)], 6)), w=4.6, again=0.3)
+    pen.line(C(spline([(-100, -186), (0, -196), (100, -186)], 6)), w=3.0)
+    for sx in (-50, 0, 50):
+        pen.line(C([(sx, -194), (sx * 1.04, -286)]), w=2.4, over=0.0, again=0.0)
+
+
+def big_phone(pen, cx, cy, s=1.0, glow=0.0, rng=None):
+    """A phone standing up, big, its screen lit; glow: its light scratched out round it (0..1). Returns its screen
+    (x0, y0, x1, y1), for what is on it. It hides what is behind it."""
+    rng = rng or pen.rng
+    w, h = 250 * s, 500 * s
+    body_ = rounded([(cx - w, cy - h), (cx + w, cy - h), (cx + w, cy + h), (cx - w, cy + h)], 60 * s, 6)
+    if glow > 0:
+        for a in np.linspace(0, 360, 64, endpoint=False):
+            ra = math.radians(a + rng.uniform(-2, 2))
+            r0 = 1.0 + 0.06
+            r1 = r0 + 0.5 * glow * rng.uniform(0.4, 1.0)
+            ex, ey = w * 1.05, h * 1.03
+            pen.line([(cx + ex * r0 * math.cos(ra), cy + ey * r0 * math.sin(ra)), (cx + ex * r1 * math.cos(ra), cy + ey * r1 * math.sin(ra))], w=1.5,
+                     amp=0.5, again=0.0, over=0.0, drift=0.3, breaks=False)
+    pen.poly(body_, fill=0)
+    pen.line(body_ + body_[:4], w=5.0, over=0.0, breaks=False, again=0.3)
+    x0, y0, x1, y1 = cx - w + 24 * s, cy - h + 70 * s, cx + w - 24 * s, cy + h - 70 * s
+    scr = rounded([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], 22 * s, 4)
+    pen.line(scr + scr[:2], w=2.2, over=0.0, breaks=False, again=0.0)
+    pen.line([(cx - 40 * s, cy - h + 36 * s), (cx + 40 * s, cy - h + 36 * s)], w=3.0, over=0.0, again=0.0)  # its speaker
+    return x0, y0, x1, y1
+
+
+def rise_logo(pen, orange, cx, cy, width, p=1.0, letters_=True):
+    """RISE's logo drawn by hand from its real outlines: the letters outlined and hatched, the flame coloured in
+    orange (p: the flame's light, 0..1, as it comes on)."""
+    x0, y0 = cx - width / 2, cy - OUTLINE["aspect"] * width / 2
+
+    def at(c):
+        return [(x0 + q[0] * width, y0 + q[1] * width) for q in c]
+    if letters_:
+        ctrs = [at(c) for c in OUTLINE["letters"]]
+        boxes = [(min(x for x, _ in c), max(x for x, _ in c), min(y for _, y in c), max(y for _, y in c)) for c in ctrs]
+        inside = [any(j != i and boxes[j][0] < boxes[i][0] and boxes[i][1] < boxes[j][1] and boxes[j][2] < boxes[i][2] and boxes[i][3] < boxes[j][3]
+                      for j in range(len(ctrs))) for i in range(len(ctrs))]
+        for c, hole in zip(ctrs, inside):
+            if not hole:
+                pen.hatch(c, -58, 7, w=1.5)
+        for c, hole in zip(ctrs, inside):
+            if hole:
+                pen.poly(c, fill=0)
+        for c in ctrs:
+            pen.line(c[::3] + c[:1], w=2.8, amp=0.5, over=0.0, breaks=False, again=0.2)
+    if p > 0:
+        fl = at(OUTLINE["flame"][0])
+        mx, my = sum(x for x, _ in fl) / len(fl), sum(y for _, y in fl) / len(fl)
+        k = 0.4 + 0.6 * p
+        fl = [(mx + (x - mx) * k, my + (y - my) * k) for x, y in fl]
+        ImageDraw.Draw(orange).polygon([tuple(c) for c in P(fl)], fill=255)
+        pen.line(fl[::3] + fl[:1], w=2.6, amp=0.5, over=0.0, breaks=False, again=0.0)
+
+
+def person(pen, x, y, s, hair="short", look=(0.0, 0.0), mouth="smile", beard=False, tilt=0.0, rng=None, brow=0.0, shade=False):
     """Someone else, from the chest up, drawn the way Tony is (a round face, plain features), with their own hair;
     never their hands: they sit behind a table that hides the rest. (x, y): the middle of their face; s: their size
-    against Tony's; look: where their eyes go; mouth: 'talk', 'smile' or 'flat'. They hide what is behind them."""
+    against Tony's; look: where their eyes go; mouth: 'talk', 'smile' or 'flat'; brow > 0: stern, the brows' inner
+    ends down; shade: the body hatched dark, a silhouette. They hide what is behind them."""
     rng = rng or pen.rng
 
     def L(pts):  # their own coordinates, Tony's head's size, to the page
@@ -544,6 +757,8 @@ def person(pen, x, y, s, hair="short", look=(0.0, 0.0), mouth="smile", beard=Fal
     pen.line(L(chaikin(shoulders[4:], 2)), w=4.4, again=0.25)
     pen.line(L([(-200, 330), (-214, 430), (-206, 560)]), w=2.0, amp=1.6)  # a fold or two
     pen.line(L([(186, 340), (204, 440), (196, 560)]), w=2.0, amp=1.6)
+    if shade:
+        pen.hatch(L(shoulders + [(0, 560)]), 62, 11, w=1.7)
     pen.hatch(L(arc(0, 268, 112, 42, 10, 170, 20) + arc(0, 256, 90, 30, 170, 10, 20)), 95, 9, w=1.6)  # the collar
     pen.line(L(arc(0, 268, 112, 42, 10, 170, 24)), w=3.0)
     pen.line(L([(-62, 150), (-58, 262)]), w=3.6)  # the neck, its shade under the chin
@@ -567,7 +782,9 @@ def person(pen, x, y, s, hair="short", look=(0.0, 0.0), mouth="smile", beard=Fal
         pen.line(L(bez((ex - 18, ey + 7), (ex - 6, ey + 12), (ex + 8, ey + 12), (ex + 19, ey + 7))), w=1.5)
         (px, py), = L([(ex + 8 * gx, ey + 3 + 3 * gy)])
         pen.poly(arc(px, py, 7.5 * s / 0.55, 6.5 * s / 0.55, 0, 360, 12))
-        pen.line(L(bez((ex - 28, ey - 30), (ex - 10, ey - 38), (ex + 10, ey - 38), (ex + 28, ey - 31))), w=4.4, again=0.2)
+        il, ir = (0.0, brow) if ex < 0 else (brow, 0.0)  # stern: the inner end comes down, the outer one up
+        pen.line(L(bez((ex - 28, ey - 30 + 14 * il - 4 * ir), (ex - 10, ey - 38 + 6 * il), (ex + 10, ey - 38 + 6 * ir),
+                       (ex + 28, ey - 31 + 14 * ir - 4 * il))), w=4.4, again=0.2)
     pen.line(L(bez((2, -14), (-4, 12), (-16, 28), (-6, 38))), w=2.8)  # the nose
     pen.line(L(bez((-6, 38), (6, 43), (20, 38), (24, 30))), w=2.8)
     if mouth == "talk":
@@ -625,12 +842,13 @@ def person(pen, x, y, s, hair="short", look=(0.0, 0.0), mouth="smile", beard=Fal
                      again=0.0)
 
 
-def back_table(pen, y0, x0=-40, x1=1120):
-    """A table further off: its edge, a band of its top, a few boards; it hides who sits behind it below their chest."""
-    pen.poly([(x0, y0), (x1, y0 - 4), (x1, y0 + 150), (x0, y0 + 150)], fill=0)
+def back_table(pen, y0, x0=-40, x1=1120, h=150.0, vanish=820.0):
+    """A table further off: its edge, a band of its top (h deep), a few boards running to vanish; it hides who sits
+    behind it below their chest."""
+    pen.poly([(x0, y0), (x1, y0 - 4), (x1, y0 + h), (x0, y0 + h)], fill=0)
     pen.line([(x0, y0), (x1, y0 - 4)], w=4.0)
-    for x in np.arange(x0 + 90, x1, 150):
-        pen.line([(x, y0 + 3), (x + (x - 820) * 0.25, y0 + 120)], w=1.5, amp=1.0, again=0.0, drift=0.5)
+    for x in np.arange(x0 + 0.6 * h, x1, h):
+        pen.line([(x, y0 + 0.02 * h), (x + (x - vanish) * 0.25, y0 + 0.8 * h)], w=1.5, amp=1.0, again=0.0, drift=0.5)
 
 
 def framed(cam):

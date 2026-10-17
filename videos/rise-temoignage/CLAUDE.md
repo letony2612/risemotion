@@ -51,12 +51,30 @@ cette référence.
 Le texte du film est dans `SCRIPT.md` (version de Tony ; « Depuis tout jeune » retiré à sa demande). Il remplace les
 listes `SCRIPT` des anciens `tools/episode1_v*.py`.
 
+## Sa voix
+
+Tony a fait sa voix avec ElevenLabs (le bloc `[bored]` de `SCRIPT.md`), en une prise : `assets/voice/take_elevenlabs.mp3`.
+`python3 tools/voice.py assets/voice/take_elevenlabs.mp3` la coupe phrase par phrase (le texte calé sur la prise par
+`dtw_align`, repris de `rise-presentation`), raccourcit les silences trop longs (« n'hésite pas à cut si besoin pour
+rendre certaines phrases plus impactantes ») sans toucher aux mots ni à leur vitesse, garde un temps avant « C'est
+justement pour ça que j'ai créé RISE », et donne `assets/voice/voice.wav` et `assets/voice/take.json` (l'heure de
+chaque mot). Les pauses entre les phrases se règlent dans `LINES` de `tools/voice.py`.
+
 ## Animation
 
-`tools/film.py` → `renders/film_v3.mp4` (il s'ouvre en grand sur l'alerte qu'il a dans la tête, voir `SCRIPT.md` ; la v1
-s'ouvrait sur le premier dessin et ses bulles) : les dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze
-dessins par seconde, chacun tenu deux images, l'encre qui « vibre » un peu (la main repasse les traits ; ce qui est
-aléatoire — les poils, les rayons, le gribouillis — reste en place d'un dessin à l'autre) ; peu de choses bougent à
-la fois ; les scènes s'enchaînent par des mouvements de caméra, pas par des coupes. Tant que sa voix n'est pas
-enregistrée, la phrase s'écrit en haut mot à mot (petites capitales, coupée à ses pauses) ; tout se recale ensuite
-sur sa voix. On reprend la technique du reel, jamais les motifs propres à cet artiste.
+`tools/film.py` → `renders/film_v4.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
+dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze dessins par seconde, chacun tenu deux images,
+l'encre qui « vibre » un peu (la main repasse les traits ; ce qui est aléatoire — les poils, les rayons, le gribouillis
+— reste en place d'un dessin à l'autre) ; peu de choses bougent à la fois ; les scènes s'enchaînent par des mouvements
+de caméra, pas par des coupes (un défilement vers la page suivante quand le lieu change). La phrase qu'il dit s'écrit
+en haut, mot à mot quand il le dit. On reprend la technique du reel, jamais les motifs propres à cet artiste (pas
+d'yeux qui flottent : « le regard des autres », ce sont des gens tournés vers lui).
+
+Les scènes, dans l'ordre (le storyboard en 16 images validé avec Tony) : l'alerte dans sa tête (« Annuler » entouré),
+le recul, son téléphone qui s'allume ; « Moi c'est Tony » ; renfermé, seul dans un coin ; le « ? » coincé ; la bulle
+gribouillée ; le groupe qui parle sans lui ; ces trois-là qui deviennent de grandes silhouettes au-dessus de lui
+(amis, proches, profs) et son bulletin avec « Tony se complaît dans sa médiocrité » écrit à la main (sans notes :
+elles étaient inventées) ; les paroles illisibles qui tombent dans un mur de briques ; les gens tournés vers lui ;
+le long chemin vers eux, qui sont à l'église ; une table de frères et sœurs avec une chaise vide ; le grand téléphone
+RISE ; la communauté autour, lui compris ; ce qu'on y fait (témoignages, questions, l'alerte du début avec cette fois
+« Demander » entouré, groupes) ; lui à sa table qui sourit un peu, et le logo RISE.
