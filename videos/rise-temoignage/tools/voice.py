@@ -159,12 +159,15 @@ def loudness(y):
 
 
 def polish(y):
-    """Low rumble out, gentle compression, a little presence, brought to LUFS with a safety limiter."""
+    """Low rumble out, gentle compression, a little presence, its peaks held by a limiter, brought to LUFS and kept
+    1 dB under full scale."""
     from pedalboard import Compressor, HighpassFilter, Limiter, PeakFilter, Pedalboard
     y = Pedalboard([HighpassFilter(80), Compressor(threshold_db=-24, ratio=2.5, attack_ms=5, release_ms=100),
                     PeakFilter(3200, 2.0, 0.8)])(y.astype(np.float32)[None, :], SR)[0].astype(np.float64)
-    y *= 10 ** ((LUFS - loudness(y)) / 20)
-    return Pedalboard([Limiter(threshold_db=-1.5, release_ms=60)])(y.astype(np.float32)[None, :], SR)[0].astype(np.float64)
+    y *= 10 ** ((LUFS - 2.0 - loudness(y)) / 20)
+    y = Pedalboard([Limiter(threshold_db=-3.0, release_ms=60)])(y.astype(np.float32)[None, :], SR)[0].astype(np.float64)
+    y *= 10 ** ((LUFS - loudness(y)) / 20)  # (it lifts more than that where it holds a lot: set it right again)
+    return y * min(1.0, 10 ** (-1.0 / 20) / np.abs(y).max())
 
 
 def main(path):
@@ -184,14 +187,15 @@ def main(path):
         spans.append((t, t + len(seg) / SR))
         t += len(seg) / SR
     pieces.append(np.zeros(int(0.3 * SR)))
-    voice = polish(np.concatenate(pieces))
+    edit = np.concatenate(pieces)
+    voice = polish(edit)
     OUT.mkdir(parents=True, exist_ok=True)
     sf.write(OUT / "voice.wav", voice, SR, subtype="PCM_16")
     lines = []
     with tempfile.TemporaryDirectory() as d:
-        for i, ((text, _), (a, b)) in enumerate(zip(LINES, spans)):
+        for i, ((text, _), (a, b)) in enumerate(zip(LINES, spans)):  # (timed on the edit before its polish: the same times)
             wav = Path(d) / f"{i}.wav"
-            sf.write(wav, voice[int(a * SR):int(b * SR)], SR)
+            sf.write(wav, edit[int(a * SR):int(b * SR)], SR)
             words, _, _ = align(wav, text)
             lines.append({"text": text, "start": round(a, 3), "end": round(b, 3),
                           "words": [{"w": w["w"], "start": round(a + w["start"], 3), "end": round(a + w["end"], 3)} for w in words]})
