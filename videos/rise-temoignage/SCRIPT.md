@@ -26,9 +26,9 @@ pour Tony, l'alerte dit « Envoyer le message ? » (`ALERTS` dans `tools/sketch.
 > À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières. J'avais peur du jugement, du regard
 > des autres. Aller vers les gens était devenu difficile.
 >
-> Même aujourd'hui, j'ai du mal à grandir dans ma foi, parce que j'ose pas aller vers d'autres chrétiens.
+> Et aujourd'hui encore, ça me freine dans ma foi.
 >
-> Pourtant, j'ai besoin de cet entourage pour apprendre, partager et avancer avec Dieu.
+> Pourtant, j'ai besoin d'autres chrétiens autour de moi pour apprendre, partager et avancer avec Dieu.
 >
 > C'est justement pour ça que j'ai créé RISE.
 >
@@ -58,9 +58,9 @@ sont en anglais (le modèle les lit comme des consignes, il ne les prononce pas)
 
 [bored] À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières. J'avais peur du jugement, du regard des autres. Aller vers les gens était devenu difficile.
 
-[bored] Même aujourd'hui, j'ai du mal à grandir dans ma foi, parce que j'ose pas aller vers d'autres chrétiens.
+[bored] Et aujourd'hui encore, ça me freine dans ma foi.
 
-[bored] Pourtant, j'ai besoin de cet entourage pour apprendre, partager et avancer avec Dieu.
+[bored] Pourtant, j'ai besoin d'autres chrétiens autour de moi pour apprendre, partager et avancer avec Dieu.
 
 [bored] C'est justement pour ça que j'ai créé RISE.
 
