@@ -35,15 +35,24 @@ sur son voisin, qui a lui aussi son « ? » ; la rangée silencieuse ; l'alerte 
 entre « Annuler » et « Demander » et la vidéo s'arrête avant qu'il choisisse ; la signature RISE.
 Description : la dernière phrase, puis les hashtags.
 
-## Sujets proposés : être le « bon » chrétien
+## Sujets proposés : être le « bon » chrétien, ce qui fait parler
 
-1. Le chrétien du dimanche : « Le dimanche, t'es le chrétien parfait. Et le lundi… t'es qui ? »
-2. Rater l'église : « T'as pas été à l'église dimanche… et depuis, t'as l'impression que Dieu t'en veut. »
-3. La Bible pas lue : « T'avais promis de lire ta Bible tous les jours. T'as tenu trois jours. »
+Ceux où les chrétiens ne sont pas d'accord entre eux (« des sujets qui font parler ») : on ne tranche pas, on raconte
+ce que ça fait de le vivre, et chacun donne son avis en commentaire.
+
+1. « T'es pas un vrai chrétien si… » : toutes les phrases qu'on se lance entre chrétiens (le rap, les tatouages, un
+   verre…). Le premier conseillé : il ouvre tous les autres.
+2. Les tatouages : « T'as un tatouage… et à l'église, certains te regardent de travers. »
+3. L'alcool, les soirées : « Un verre en soirée, et on te regarde comme si t'avais trahi. »
 4. La musique : « Un "vrai" chrétien, ça écoute que des chants ? »
-5. L'alcool, les soirées : « Un verre en soirée, et on te regarde comme si t'avais trahi. »
-6. Les potes pas chrétiens : « On t'a déjà dit de faire attention à tes potes pas chrétiens ? »
-7. Le combat que personne n'avoue (la pureté) : « Il y a un combat que beaucoup mènent en silence… et dont personne
-   parle à l'église. » Le plus fort, à faire avec beaucoup de délicatesse.
-8. Les doutes : « T'as déjà douté… et t'as eu peur de plus être un vrai chrétien ? »
-9. « T'es pas un vrai chrétien si… » : toutes les phrases qu'on se lance entre chrétiens.
+5. Sortir avec quelqu'un qui n'est pas chrétien : « On t'a dit que c'était pas possible… mais ton cœur, lui, a pas
+   demandé. »
+6. Le sexe avant le mariage : « Il y a un combat que beaucoup mènent en silence… et dont personne parle à l'église. »
+   Le plus fort, à faire avec beaucoup de délicatesse.
+
+Moins de débat, mais tout le monde s'y reconnaît :
+
+7. Le chrétien du dimanche : « Le dimanche, t'es le chrétien parfait. Et le lundi… t'es qui ? »
+8. Rater l'église : « T'as pas été à l'église dimanche… et depuis, t'as l'impression que Dieu t'en veut. »
+9. La Bible pas lue : « T'avais promis de lire ta Bible tous les jours. T'as tenu trois jours. »
+10. Les doutes : « T'as déjà douté… et t'as eu peur de plus être un vrai chrétien ? »
