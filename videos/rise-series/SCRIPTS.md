@@ -35,24 +35,44 @@ sur son voisin, qui a lui aussi son « ? » ; la rangée silencieuse ; l'alerte 
 entre « Annuler » et « Demander » et la vidéo s'arrête avant qu'il choisisse ; la signature RISE.
 Description : la dernière phrase, puis les hashtags.
 
-## Sujets proposés : être le « bon » chrétien, ce qui fait parler
+## À valider : « Le fou du bus »
 
-Ceux où les chrétiens ne sont pas d'accord entre eux (« des sujets qui font parler ») : on ne tranche pas, on raconte
-ce que ça fait de le vivre, et chacun donne son avis en commentaire.
+Sa scène à lui. Environ 55 s. « Moi, souvent. » seulement si c'est vrai pour Tony.
 
-1. « T'es pas un vrai chrétien si… » : toutes les phrases qu'on se lance entre chrétiens (le rap, les tatouages, un
-   verre…). Le premier conseillé : il ouvre tous les autres.
-2. Les tatouages : « T'as un tatouage… et à l'église, certains te regardent de travers. »
-3. L'alcool, les soirées : « Un verre en soirée, et on te regarde comme si t'avais trahi. »
-4. La musique : « Un "vrai" chrétien, ça écoute que des chants ? »
-5. Sortir avec quelqu'un qui n'est pas chrétien : « On t'a dit que c'était pas possible… mais ton cœur, lui, a pas
-   demandé. »
-6. Le sexe avant le mariage : « Il y a un combat que beaucoup mènent en silence… et dont personne parle à l'église. »
-   Le plus fort, à faire avec beaucoup de délicatesse.
+> T'as déjà eu l'impression d'être le fou du bus… à l'église ?
+> Moi, souvent.
+> À la fin de l'église, d'un coup, tout le monde se met à parler.
+> Des petits groupes. Des rires. Des bises.
+> On dirait une grande famille.
+> Et toi, t'es au fond.
+> Debout, les mains dans les poches.
+> Tu regardes les gens… un peu de travers.
+> Comme le fou du bus.
+> Pourtant, dans ta tête, t'as mille questions.
+> Tu voudrais savoir qui ils sont.
+> Comment ils ont connu Dieu.
+> Ce qu'ils ont traversé.
+> Tu meurs d'envie d'entendre leurs histoires.
+> Mais t'avances pas.
+> Parce que t'as peur de déranger.
+> Alors t'attends que quelqu'un vienne vers toi.
+> Personne vient.
+> Et tu rentres chez toi… avec toutes tes questions.
+> Le pire, c'est que quelque part dans la salle… quelqu'un d'autre attendait aussi qu'on vienne vers lui.
 
-Moins de débat, mais tout le monde s'y reconnaît :
+À l'image : les petits groupes qui discutent et se font la bise ; lui au fond, debout, les mains dans les poches (pas
+de mains, comme toujours), les yeux en coin ; plein de petits « ? » au-dessus de sa tête, et dans des bulles, les
+histoires qu'il imagine ; il fait un pas… et recule ; la salle qui se vide ; chez lui, à sa table (le premier
+dessin), ses « ? » toujours là ; puis retour dans la salle : la caméra traverse et trouve, de l'autre côté, quelqu'un
+d'autre au fond, seul, les mains dans les poches, qui regarde de travers lui aussi ; la signature RISE.
 
-7. Le chrétien du dimanche : « Le dimanche, t'es le chrétien parfait. Et le lundi… t'es qui ? »
-8. Rater l'église : « T'as pas été à l'église dimanche… et depuis, t'as l'impression que Dieu t'en veut. »
-9. La Bible pas lue : « T'avais promis de lire ta Bible tous les jours. T'as tenu trois jours. »
-10. Les doutes : « T'as déjà douté… et t'as eu peur de plus être un vrai chrétien ? »
+## Sujets proposés : un introverti à l'église
+
+1. Le fou du bus (ci-dessus) : à la fin de l'église, tout le monde discute comme une famille… et toi, t'es au fond.
+2. « Dites bonjour à votre voisin » : le moment où il faut saluer les gens autour, et ton cœur qui s'accélère.
+3. Les prénoms : « Ça fait deux ans que tu vas dans cette église… et tu connais le prénom de personne. »
+4. Le café d'après : tu tiens ton gobelet pour avoir l'air occupé.
+5. Le groupe de jeunes : tout le monde se connaît déjà, les blagues entre eux… et tu reviens pas la semaine d'après.
+6. La prière en cercle : ton tour qui arrive, et toi qui cherches tes mots.
+7. « Ça va ? » : tu réponds « oui » à l'église… alors que non.
+8. La nouvelle église : tu t'assois au fond, et tu pars juste avant la fin pour pas avoir à parler.
