@@ -26,16 +26,16 @@ pour Tony, l'alerte dit « Envoyer le message ? » (`ALERTS` dans `tools/sketch.
 > À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières. J'avais peur du jugement, du regard
 > des autres. Aller vers les gens était devenu difficile.
 >
-> Même en grandissant dans ma foi, j'avais du mal à faire le premier pas pour échanger avec d'autres chrétiens.
+> Même aujourd'hui, j'ai du mal à grandir dans ma foi, parce que j'ose pas aller vers d'autres chrétiens.
 >
-> Pourtant, j'avais besoin de cet entourage pour apprendre, partager et avancer avec Dieu.
+> Pourtant, j'ai besoin de cet entourage pour apprendre, partager et avancer avec Dieu.
 >
 > C'est justement pour ça que j'ai créé RISE.
 >
 > Pour offrir une communauté à ceux qui, comme moi, n'osent pas toujours aller vers les autres. Un endroit où partager
 > leurs témoignages, poser leurs questions, demander de la prière et rejoindre des groupes.
 >
-> Parce que je voulais créer l'espace dont j'aurais moi-même eu besoin pour grandir dans ma foi.
+> Parce que je voulais créer l'espace dont j'ai moi-même besoin pour grandir dans ma foi.
 
 ## Version pour ElevenLabs (modèle Eleven v3), avec les émotions
 
@@ -58,13 +58,13 @@ sont en anglais (le modèle les lit comme des consignes, il ne les prononce pas)
 
 [bored] À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières. J'avais peur du jugement, du regard des autres. Aller vers les gens était devenu difficile.
 
-[bored] Même en grandissant dans ma foi, j'avais du mal à faire le premier pas pour échanger avec d'autres chrétiens.
+[bored] Même aujourd'hui, j'ai du mal à grandir dans ma foi, parce que j'ose pas aller vers d'autres chrétiens.
 
-[bored] Pourtant, j'avais besoin de cet entourage pour apprendre, partager et avancer avec Dieu.
+[bored] Pourtant, j'ai besoin de cet entourage pour apprendre, partager et avancer avec Dieu.
 
 [bored] C'est justement pour ça que j'ai créé RISE.
 
 [bored] Pour offrir une communauté à ceux qui, comme moi, n'osent pas toujours aller vers les autres. Un endroit où partager leurs témoignages, poser leurs questions, demander de la prière et rejoindre des groupes.
 
-[bored] Parce que je voulais créer l'espace dont j'aurais moi-même eu besoin pour grandir dans ma foi.
+[bored] Parce que je voulais créer l'espace dont j'ai moi-même besoin pour grandir dans ma foi.
 ```
