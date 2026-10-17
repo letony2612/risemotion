@@ -2,9 +2,12 @@
 way the reel he sent plays: held drawings redrawn twelve times a second so the ink boils a little, a few things
 moving at once, the scenes joined by camera moves rather than cuts. What is random in a drawing (where the hairs,
 the rays, the tangle are) stays put from one drawing to the next; only the hand that traces them changes.
+It opens on what goes on in his head when he wants to reach out to someone, drawn as his phone's alert (« Demander de
+la prière ? Tu risques de déranger. »): « Annuler » gets circled, the camera pulls back and it is a thought over his
+head; his phone, dark till then, lights up as he says he created a social network.
 His voice is not recorded yet: each line is written at the top, word by word, at a speaking pace; everything is
 retimed to his voice once he has recorded it.
-Usage: python3 tools/film.py [--until SECONDS]  -> renders/film_v1.mp4
+Usage: python3 tools/film.py [--until SECONDS]  -> renders/film_v2.mp4
        python3 tools/film.py T1 T2 ...         -> renders/film_T.png (the drawing at those times)
 """
 import math
@@ -19,14 +22,15 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageOps
 
 import letters
-from sketch import (S, H, W, Hand, back_table, body, bubble, finish, framed, head, loop_pts, person, phone_on_table, speech,
-                    table)
+from sketch import (S, H, W, Hand, alert, back_table, body, bubble, finish, framed, head, loop_pts, person, phone_on_table,
+                    speech, table)
 
 ROOT = Path(__file__).resolve().parents[1]
 FPS, DRAWINGS = 24, 12  # twelve drawings a second, each held two frames
 WPS = 2.9  # words a second, as he would say them
+PAUSE = 0.3  # and how long he stops where a line is cut (after « … » or the end of a sentence)
 LINES = [  # each line of SCRIPT.md and how long it is given
-    ("J'ai créé un réseau social… alors que j'ose même pas parler aux gens.", 5.0),
+    ("Dans ma tête, dès que je veux parler à quelqu'un… Annuler. Et pourtant… j'ai créé un réseau social.", 7.6),
     ("Moi c'est Tony.", 2.0),
     ("Pendant longtemps, j'ai été quelqu'un de renfermé.", 3.0),
     ("Le genre de personne qui n'osait pas poser de questions.", 3.9),
@@ -38,16 +42,25 @@ END = float(T[-1])
 
 # where the camera is: zoom, and where his head lands on the page (it is at 620, 962 in the drawing)
 BASE, CORNER, GROUP = (1.0, 620.0, 962.0), (0.42, 790.0, 1481.0), (0.92, 330.0, 1143.0)
-CAMERA = [(0.0, BASE), (T[2], BASE), (T[2] + 1.1, CORNER), (T[3], CORNER), (T[3] + 0.9, BASE), (T[5] + 0.1, BASE), (T[5] + 1.0, GROUP)]
+ALERT = (300.0, 385.0)  # the alert in his head: where it is on the page, over him
+
+
+def close(z):
+    """Close on the alert, at zoom z: it fills the page, a little above the middle."""
+    return (z, 540.0 + (620.0 - ALERT[0]) * z, 900.0 + (962.0 - ALERT[1]) * z)
+
+
+CIRCLED, PULL, LIGHT = (3.8, 4.15), (4.4, 5.5), (6.45, 6.8)  # « Annuler » circled; the camera pulls back; his phone lights up
+CAMERA = [(0.0, close(2.0)), (PULL[0], close(2.12)), (PULL[1], BASE), (T[2], BASE), (T[2] + 1.1, CORNER), (T[3], CORNER), (T[3] + 0.9, BASE),
+          (T[5] + 0.1, BASE), (T[5] + 1.0, GROUP)]
 # his face: where he looks (across, down), how open his lids are, his smile, his worry
 FACE = [(0.0, (0.0, 1.0, 12.0, 0.0, 0.0)), (T[1] + 0.1, (0.0, 1.0, 12.0, 0.0, 0.0)), (T[1] + 0.35, (0.12, -0.3, 13.5, 0.0, 0.0)),
         (T[1] + 0.5, (0.12, -0.3, 13.5, 0.0, 0.0)), (T[1] + 0.9, (0.12, -0.3, 13.5, 0.3, 0.0)), (T[2], (0.12, -0.3, 13.5, 0.3, 0.0)),
         (T[2] + 0.3, (0.0, 1.0, 12.0, 0.0, 0.1)), (T[2] + 0.8, (0.0, 1.0, 12.0, 0.0, 0.35)), (T[3] + 1.0, (0.0, 1.0, 12.0, 0.0, 0.35)),
         (T[3] + 1.3, (0.15, -1.1, 13.0, -0.25, 0.45)), (T[4] + 0.15, (0.15, -1.1, 13.0, -0.25, 0.45)),
         (T[4] + 0.4, (-0.9, -0.35, 12.5, -0.3, 0.6)), (T[5] + 0.6, (-0.9, -0.35, 12.5, -0.3, 0.6)), (T[5] + 0.9, (0.95, -0.6, 13.0, -0.15, 0.4))]
-BLINKS = [3.7, T[5] + 2.25]
-THOUGHTS = [((456, 724, 12, None), 0.5), ((414, 692, 22, None), 0.65), ((345, 625, 50, None), 0.8), ((250, 470, 120, "?"), 1.1),
-            ((420, 330, 95, "chat"), 1.7), ((165, 720, 82, "cross"), 2.3)]  # the first drawing's bubbles, and when each comes
+BLINKS = [LIGHT[1] + 0.15, T[5] + 2.25]
+TRAIL = [(456, 724, 12), (414, 692, 22), (345, 625, 50)]  # the first drawing's little bubbles, from his head up to the alert
 GROUP_PEOPLE = [(850, 770, 0.5, "short", (-0.6, 0.2), "talk", True), (690, 800, 0.5, "long", (0.8, 0.1), "smile", False),
                 (1004, 815, 0.5, "curly", (-0.9, 0.1), "smile", False)]
 CAP = dict(font="futural", size=32, line=52, top=128, width=960)
@@ -119,11 +132,11 @@ def balanced(text):
 
 
 def chunks(text):
-    """A line cut where he pauses (after « … »): each piece is written on its own."""
+    """A line cut where he pauses (after « … », or where a sentence ends): each piece is written on its own."""
     out, cur = [], []
     for word in text.split(" "):
         cur.append(word)
-        if word.endswith("…") and len(cur) > 0:
+        if word.endswith(("…", ".", "?", "!")):
             out.append(cur)
             cur = []
     return out + ([cur] if cur else [])
@@ -131,9 +144,17 @@ def chunks(text):
 
 def caption(pen, t):
     """The line being said, written by hand at the top, word by word as it would be said, a piece at a time."""
+    if t < 0.25:
+        return  # the very first image: the alert alone
     i = max(k for k in range(len(LINES)) if T[k] <= t)
-    said = 1 + int(max(0.0, t - T[i] - 0.1) * WPS)
     pieces = chunks(LINES[i][0].upper())
+    starts, at = [], T[i] + 0.1
+    for piece in pieces:
+        for _ in piece:
+            starts.append(at)
+            at += 1 / WPS
+        at += PAUSE
+    said = 1 + sum(1 for s_ in starts[1:] if s_ <= t)  # (its first word as soon as the line starts)
     for k, piece in enumerate(pieces):
         if said <= len(piece) or k == len(pieces) - 1:
             break
@@ -188,15 +209,15 @@ def frame_at(t, v):
         table(pen, wide=True)
         body(pen)
         head(pen, steady(1), hx=620.0, hy=962.0, tilt=6.0, look=(lx, ly), lids=lids, smile=smile, worry=worry, blink=blink)
-        phone_on_table(pen, orange, glow=0.9 + 0.07 * math.sin(2 * math.pi * t / 1.6), rng=steady(2))
+        phone_on_table(pen, orange, glow=0.9 + 0.07 * math.sin(2 * math.pi * t / 1.6), rng=steady(2), lit=ease(seg(t, *LIGHT)))
 
-    # « J'ai créé un réseau social… »: his thoughts come one by one; « Moi c'est Tony »: they go
-    if t < T[1] + 0.3:
+        # « Dans ma tête, dès que je veux parler à quelqu'un… Annuler. »: seen close, the alert in his head, « Annuler »
+        # circled; « Et pourtant… »: the camera pulls back, it is a thought over him; « Moi c'est Tony »: it goes
         gone = 1 - ease(seg(t, T[1], T[1] + 0.25))
-        for k, ((bx, by, r, sym), at) in enumerate(THOUGHTS):
-            sc = pop(seg(t, at, at + 0.3)) * gone
-            if sc > 0.05:
-                bubble(pen, bx, by, r * sc, sym, rng=steady(10 + k))
+        if gone > 0.05:
+            for k, (bx, by, r) in enumerate(TRAIL):
+                bubble(pen, bx, by, r * gone, None, rng=steady(10 + k))
+            alert(pen, *ALERT, s=gone, circled=seg(t, *CIRCLED), rng=steady(80))
 
     # « …renfermé »: seen from far off, he is shut in his own bubble; what is outside it goes
     if T[2] + 1.0 <= t < T[3]:
@@ -247,7 +268,7 @@ def _render(args):
 
 
 def main(until=END):
-    out = ROOT / "renders" / "film_v1.mp4"
+    out = ROOT / "renders" / "film_v2.mp4"
     out.parent.mkdir(exist_ok=True)
     n = int(min(until, END) * DRAWINGS)
     with tempfile.TemporaryDirectory() as d:

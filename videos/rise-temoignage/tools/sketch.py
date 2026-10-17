@@ -12,6 +12,7 @@ Usage: python3 tools/sketch.py  -> renders/tony_sketch.png (the drawing Tony val
 """
 import json
 import math
+import zlib
 from pathlib import Path
 
 import numpy as np
@@ -19,6 +20,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageOps
 from scipy.ndimage import gaussian_filter1d
 
 import draw_test as dt
+import letters
 from draw_test import P, Pen, arc, bez, dense, ink, wobble
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -386,9 +388,10 @@ def wavy_hair(pen, rng, Hd):
                  breaks=False)
 
 
-def phone_on_table(pen, orange, glow=0.9, rng=None):
+def phone_on_table(pen, orange, glow=0.9, rng=None, lit=1.0):
     """His phone on the table, lit: RISE's flame on it, coloured in orange; its light, scratched out round it (glow:
-    how far it reaches). rng: what is random in it, to keep it put from one drawing to the next."""
+    how far it reaches). rng: what is random in it, to keep it put from one drawing to the next. lit: 0 while it is
+    off (its screen dark), up to 1 as its light comes on."""
     rng = rng or pen.rng
     ph = rounded([(170, 1530), (390, 1500), (420, 1610), (195, 1645)], 16)
     pen.poly(ph, fill=0)
@@ -396,6 +399,9 @@ def phone_on_table(pen, orange, glow=0.9, rng=None):
     q = [(190, 1540), (378, 1514), (402, 1598), (211, 1627)]
     scr = rounded(q, 6, 3)
     pen.line(scr + scr[:2], w=1.8, over=0.0, breaks=False, again=0.0)
+    if lit <= 0:  # off: the screen hatched dark
+        pen.hatch(scr, 58, 8, w=1.6)
+        return
 
     def on_screen(u, v):  # the screen: u across, v down (0..1)
         a = (q[0][0] + (q[1][0] - q[0][0]) * u, q[0][1] + (q[1][1] - q[0][1]) * u)
@@ -409,9 +415,10 @@ def phone_on_table(pen, orange, glow=0.9, rng=None):
     pen.line(pts + pts[:2], w=2.0, amp=0.5, over=0.0, breaks=False, again=0.0, drift=0.3)
     for a in np.linspace(-170, 10, 46):  # the light, scratched out round it
         ra = math.radians(a + rng.uniform(-2, 2))
-        r0, r1 = 140, 140 + 230 * glow * rng.uniform(0.5, 1.0)
-        pen.line([(295 + r0 * math.cos(ra), 1575 + r0 * 0.55 * math.sin(ra)), (295 + r1 * math.cos(ra), 1575 + r1 * 0.55 * math.sin(ra))], w=1.4, amp=0.5,
-                 again=0.0, over=0.0, drift=0.3, breaks=False)
+        r0, r1 = 140, 140 + 230 * glow * lit * rng.uniform(0.5, 1.0)
+        if r1 - r0 > 4:
+            pen.line([(295 + r0 * math.cos(ra), 1575 + r0 * 0.55 * math.sin(ra)), (295 + r1 * math.cos(ra), 1575 + r1 * 0.55 * math.sin(ra))], w=1.4,
+                     amp=0.5, again=0.0, over=0.0, drift=0.3, breaks=False)
 
 
 def bubble(pen, cx, cy, r, symbol, squash=1.0, rng=None):
@@ -467,6 +474,58 @@ def speech(pen, cx, cy, rx, ry, tip, content="talk", p=1.0, rng=None):
         n = int(len(u) * p)
         if n > 1:
             pen.line(list(zip(xs[:n], ys[:n])), w=2.2, amp=1.0, again=0.0, over=0.0, drift=0.4, breaks=False)
+
+
+def lettering(pen, text, cx, y, size, w=3.6):
+    """A line of spaced capitals written freehand (the Hershey letters, as in the captions), centred on cx, sitting
+    on y."""
+    gap = size * 0.12
+    x = cx - (letters.width(text, "futural", size) + gap * len(text)) / 2
+    for i, ch in enumerate(text):
+        strokes, _ = letters.layout(ch, "futural", size, hand=0.9, seed=zlib.crc32(text.encode()) + i)
+        for s in strokes:
+            if len(s) > 1:
+                pen.line([(x + a, y + b) for a, b in s], w=w, amp=0.4, again=0.0, over=0.0, drift=0.0, breaks=False, taper=0.2)
+        x += letters.width(ch, "futural", size) + gap
+
+
+ALERTS = {  # what the alert in his head says: its title (two lines), its message, its two buttons
+    "prière": (("DEMANDER", "DE LA PRIÈRE ?"), "TU RISQUES DE DÉRANGER.", ("ANNULER", "DEMANDER")),
+    "message": (("TU RISQUES", "DE DÉRANGER."), "ENVOYER QUAND MÊME ?", ("ANNULER", "ENVOYER")),
+}
+
+
+def alert(pen, cx, cy, s=1.0, circled=0.0, rng=None, says="prière"):
+    """What goes on in his head when he wants to reach out to someone, drawn as his phone's alert: a warning sign,
+    its words (ALERTS[says]: « Demander de la prière ? Tu risques de déranger. », Annuler or Demander); circled: how
+    far the pen has gone round « Annuler » (0..1). s: its size, as it comes and goes like a thought. It hides what is
+    behind it."""
+    rng = rng or pen.rng
+    title, message, buttons = ALERTS[says]
+    w, h = 490 * s, 360 * s
+    x0, y0, x1, y1 = cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2
+    card = rounded([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], 36 * s, 6)
+    pen.poly(card, fill=0)
+    pen.line(card + card[:3], w=4, over=0.0, breaks=False, again=0.3)
+    tx, ty = cx, y0 + 28 * s  # the warning sign
+    pen.line([(tx, ty), (tx + 38 * s, ty + 64 * s), (tx - 38 * s, ty + 64 * s), (tx, ty)], w=3.6, corners=True, over=3.0, again=0.0)
+    pen.line([(tx, ty + 24 * s), (tx + 0.5 * s, ty + 44 * s)], w=4.4, over=0.0, again=0.0, breaks=False)
+    pen.poly(arc(tx, ty + 53 * s, 3.8 * s, 3.5 * s, 0, 360, 10))
+    def fit(lines, size, room):  # as big as it can be, up to size, inside room
+        return size * min([1.0] + [room / (letters.width(t, "futural", size) + size * 0.12 * len(t)) for t in lines])
+    big = fit(title, 34 * s, 0.84 * w)
+    lettering(pen, title[0], cx, y0 + 150 * s, big, 4.2)
+    lettering(pen, title[1], cx, y0 + 197 * s, big, 4.2)
+    lettering(pen, message, cx, y0 + 242 * s, fit([message], 18 * s, 0.88 * w), 2.8)
+    yl = y0 + 274 * s  # the buttons
+    pen.line([(x0 + 4 * s, yl), (x1 - 4 * s, yl + 2 * s)], w=2.4, over=2.0, again=0.0, breaks=False)
+    pen.line([(cx, yl + 1 * s), (cx + 1 * s, y1 - 3 * s)], w=2.4, over=1.0, again=0.0, breaks=False)
+    lettering(pen, buttons[0], cx - w / 4, y0 + 330 * s, 22 * s, 3.4)
+    lettering(pen, buttons[1], cx + w / 4, y0 + 330 * s, 22 * s, 3.4)
+    ring = loop_pts(rng, cx - w / 4, y0 + 319 * s, 100 * s, 33 * s, -3)
+    n = int(len(ring) * circled)
+    if n > 1:
+        pen.line(ring[:n], w=3.4, over=0.0, breaks=False, drift=0.6, again=0.0)
 
 
 def person(pen, x, y, s, hair="short", look=(0.0, 0.0), mouth="smile", beard=False, tilt=0.0, rng=None):

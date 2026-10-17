@@ -42,6 +42,9 @@ cette référence.
   flèche.
 - Pas de gros trait entre le nez et la bouche (« bizarre ») : la moustache est faite de petits traits.
 - Pas de décor chargé (fenêtre, étagère, plante, tasse : « ça fait trop »).
+- Ne pas reprendre l'accroche d'un autre (le faux écran « contenu sensible » du reel de référence, sa phrase) :
+  « ça va faire copieur ». On garde le principe — une image qui intrigue dès la première seconde — mais avec son
+  histoire à lui et la niche de RISE (« dans notre contexte ou peut-être notre niche »).
 
 ## Le texte
 
@@ -50,7 +53,8 @@ listes `SCRIPT` des anciens `tools/episode1_v*.py`.
 
 ## Animation
 
-`tools/film.py` → `renders/film_v1.mp4` : les dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze
+`tools/film.py` → `renders/film_v2.mp4` (il s'ouvre sur l'alerte qu'il a dans la tête, voir `SCRIPT.md` ; la v1
+s'ouvrait sur le premier dessin et ses bulles) : les dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze
 dessins par seconde, chacun tenu deux images, l'encre qui « vibre » un peu (la main repasse les traits ; ce qui est
 aléatoire — les poils, les rayons, le gribouillis — reste en place d'un dessin à l'autre) ; peu de choses bougent à
 la fois ; les scènes s'enchaînent par des mouvements de caméra, pas par des coupes. Tant que sa voix n'est pas
