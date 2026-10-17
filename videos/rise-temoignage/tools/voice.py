@@ -37,7 +37,7 @@ LINES = [  # each line as he says it, and the pause before it (s)
     ("…ou par peur de déranger.", 0.3),
     ("J'ai souvent été rabaissé.", 0.6),
     ("Par des amis, par des proches, même par des profs…", 0.35),
-    ("À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières.", 0.5),
+    ("À force d'entendre ce genre de paroles, j'ai fini par me créer des barrières.", 2.5),  # (time to read his report)
     ("J'avais peur du jugement, du regard des autres.", 0.35),
     ("Aller vers les gens était devenu difficile.", 0.35),
     ("Et aujourd'hui encore, ça me freine dans ma foi.", 0.5),
@@ -45,7 +45,7 @@ LINES = [  # each line as he says it, and the pause before it (s)
     ("C'est justement pour ça que j'ai créé RISE.", 0.8),
     ("Pour offrir une communauté à ceux qui, comme moi, n'osent pas toujours aller vers les autres.", 0.6),
     ("Un endroit où partager leurs témoignages, poser leurs questions, demander de la prière et rejoindre des groupes.", 0.35),
-    ("Parce que je voulais créer l'espace dont j'ai moi-même besoin pour grandir dans ma foi.", 0.7),
+    ("Parce que je voulais créer l'espace dont j'ai moi-même besoin pour grandir dans ma foi.", 1.3),  # (time for the hug)
 ]
 
 

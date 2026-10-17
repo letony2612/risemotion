@@ -9,7 +9,8 @@ cette référence.
 ## À garder
 
 - **Fond blanc papier** (250, 248, 243), **encre noire** (24, 22, 22). Une seule couleur : l'orange RISE
-  (255, 109, 0), pour la flamme du logo.
+  (255, 109, 0), pour la flamme du logo — et le rouge du stylo du prof (206, 32, 38), pour son commentaire sur le
+  bulletin (« il faudrait l'écrire en rouge »).
 - **Trait à main levée, « sans retouche, sans outils »** (ni règle ni compas) : le trait ondule un peu, s'épaissit
   là où le feutre se pose et s'affine quand il se lève, dépasse un peu à ses bouts, est parfois fait en deux fois ou
   repassé à côté de lui-même ; un cercle ne se referme jamais parfaitement ; les hachures sont parallèles et
@@ -58,23 +59,38 @@ Tony a fait sa voix avec ElevenLabs (le bloc `[bored]` de `SCRIPT.md`), en une p
 `dtw_align`, repris de `rise-presentation`), raccourcit les silences trop longs (« n'hésite pas à cut si besoin pour
 rendre certaines phrases plus impactantes ») sans toucher aux mots ni à leur vitesse, garde un temps avant « C'est
 justement pour ça que j'ai créé RISE », et donne `assets/voice/voice.wav` et `assets/voice/take.json` (l'heure de
-chaque mot). Les pauses entre les phrases se règlent dans `LINES` de `tools/voice.py`.
+chaque mot). Les pauses entre les phrases se règlent dans `LINES` de `tools/voice.py` (une pause après « même par des
+profs… », le temps de lire le bulletin : « on coupe un peu après qu'on dit par les profs » ; une avant la dernière
+phrase, le temps du câlin collectif).
 
 ## Animation
 
-`tools/film.py` → `renders/film_v4.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
+`tools/film.py` → `renders/film_v5.mp4` : tout le film, sur sa voix, chaque mouvement calé sur un de ses mots. Les
 dessins de `sketch.py` animés comme le reel qu'il a envoyé — douze dessins par seconde, chacun tenu deux images,
 l'encre qui « vibre » un peu (la main repasse les traits ; ce qui est aléatoire — les poils, les rayons, le gribouillis
 — reste en place d'un dessin à l'autre) ; peu de choses bougent à la fois ; les scènes s'enchaînent par des mouvements
-de caméra, pas par des coupes (un défilement vers la page suivante quand le lieu change). La phrase qu'il dit s'écrit
-en haut, mot à mot quand il le dit. On reprend la technique du reel, jamais les motifs propres à cet artiste (pas
-d'yeux qui flottent : « le regard des autres », ce sont des gens tournés vers lui).
+de caméra, pas par des coupes (un défilement vers la page suivante quand le lieu change). On reprend la technique du
+reel, jamais les motifs propres à cet artiste (pas d'yeux qui flottent : « le regard des autres », ce sont des gens
+tournés vers lui).
 
-Les scènes, dans l'ordre (le storyboard en 16 images validé avec Tony) : l'alerte dans sa tête (« Annuler » entouré),
-le recul, son téléphone qui s'allume ; « Moi c'est Tony » ; renfermé, seul dans un coin ; le « ? » coincé ; la bulle
-gribouillée ; le groupe qui parle sans lui ; ces trois-là qui deviennent de grandes silhouettes au-dessus de lui
-(amis, proches, profs) et son bulletin avec « Tony se complaît dans sa médiocrité » écrit à la main (sans notes :
-elles étaient inventées) ; les paroles illisibles qui tombent dans un mur de briques ; les gens tournés vers lui ;
-le long chemin vers eux, qui sont à l'église ; une table de frères et sœurs avec une chaise vide ; le grand téléphone
-RISE ; la communauté autour, lui compris ; ce qu'on y fait (témoignages, questions, l'alerte du début avec cette fois
-« Demander » entouré, groupes) ; lui à sa table qui sourit un peu, et le logo RISE.
+- **Pas de sous-titres** (« pour que les gens soient plus concentrés sur la vidéo ») : des mots clés s'écrivent à la
+  main dans l'image, là où ils vont, quand il les dit (RENFERMÉ, AMIS / PROCHES / PROFS, BARRIÈRES, JUGEMENT,
+  DIFFICILE, MA FOI, APPRENDRE / PARTAGER / AVEC DIEU, UNE COMMUNAUTÉ, GRANDIR DANS MA FOI…).
+- **Un maximum de détails sur chaque parole** (« mettre un maximum de détails sur chaque parole »).
+- **Rien d'important sous l'interface de TikTok** : les onglets en haut (200 px), la colonne de boutons à droite (x > 930,
+  de 640 à 1560), le nom et la description en bas (les 440 derniers px). `python3 tools/film.py --safe T1 T2…` montre
+  ces zones sur les images.
+- Son téléphone sur la table affiche **RISE** (le logo entier), pas seulement la flamme.
+
+Les scènes, dans l'ordre (le storyboard en 16 images validé avec Tony, puis ses retours) : l'alerte dans sa tête
+(« Annuler » entouré), le recul, son téléphone qui s'allume ; « Moi c'est Tony » ; renfermé, seul dans un coin ; le
+« ? » coincé ; la bulle gribouillée ; le groupe qui parle sans lui ; ces trois-là qui deviennent de grandes silhouettes
+au-dessus de lui, leurs noms sur leur banc (amis, proches, profs) ; son bulletin, qui vient en grand, avec « Tony se
+complaît dans sa médiocrité » écrit en rouge (sans notes : elles étaient inventées), le temps de le lire (une pause
+dans sa voix après « profs ») ; les paroles illisibles qui tombent dans un mur de briques ; « jugement » : une bulle qui
+se moque (« Haha, n'importe quoi… », qui reprend sa peur de dire n'importe quoi) ; « regard » : les gens qui rient de
+lui ; « difficile » : eux au loin, et un cadenas sur le chemin ; « ça me freine dans ma foi » : l'église autour d'eux,
+et des barrières tout le long du chemin ; une table de frères et sœurs avec une chaise vide, qu'ils regardent sur
+« autour de nous » ; le grand téléphone RISE ; la communauté autour, lui compris, chacun avec ses « … » ; ce qu'on y
+fait (témoignages, questions, l'alerte du début avec cette fois « Demander » entouré, et « groupes » : un câlin
+collectif, en entrant dans l'écran) ; lui à sa table qui sourit un peu, sa bulle de foi qui grandit, et le logo RISE.

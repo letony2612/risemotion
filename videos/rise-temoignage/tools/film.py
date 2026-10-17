@@ -2,29 +2,31 @@
 drawing he validated (sketch.py), played the way the reel he sent plays: held drawings redrawn twelve times a second
 so the ink boils a little, a few things moving at once, the scenes joined by camera moves rather than cuts (a scroll
 to the next page where the place changes). What is random in a drawing (where the hairs, the rays, the tangle are)
-stays put from one drawing to the next; only the hand that traces them changes. Every move is keyed to his words.
+stays put from one drawing to the next; only the hand that traces them changes. Every move is keyed to his words,
+and so are the key words written into the picture where they belong: no subtitles (« pour que les gens soient plus
+concentrés sur la vidéo »).
+What matters stays clear of TikTok's own buttons and text (SAFE: the tabs at the top, the column of buttons on the
+right, the name and description at the bottom).
 It opens on what goes on in his head when he wants to reach out to someone, drawn as his phone's alert (« Demander de
 la prière ? Tu risques de déranger. »), « Annuler » circled; near the end the same alert is on RISE, and this time
-« Demander » gets circled. It closes on him at his table, smiling a little, and RISE's logo. The line he is saying is
-written at the top, word by word as he says it.
-Usage: python3 tools/film.py [--until SECONDS]  -> renders/film_v4.mp4
-       python3 tools/film.py T1 T2 ...         -> renders/film_T.png (the drawing at those times)
+« Demander » gets circled. It closes on him at his table, smiling a little, and RISE's logo.
+Usage: python3 tools/film.py [--until SECONDS]    -> renders/film_v5.mp4
+       python3 tools/film.py [--safe] T1 T2 ...    -> renders/film_T.png (the drawing at those times; --safe: with
+                                                     TikTok's buttons and text shaded over it)
 """
 import json
 import math
 import subprocess
 import sys
 import tempfile
-import zlib
 from multiprocessing import Pool
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageOps
 
-import letters
-from sketch import (S, H, W, Hand, alert, back_table, big_phone, body, bricks, bubble, bulletin, chair, church, dashes, finish, framed,
-                    head, loop_pts, person, phone_on_table, rise_logo, scrawl, speech, table)
+from sketch import (S, H, W, Hand, alert, back_table, barrier, big_phone, body, bricks, bubble, bulletin, chair, church, dashes, finish,
+                    framed, handwritten, head, hug, loop_pts, padlock, person, phone_on_table, rise_logo, scrawl, spline, speech, table)
 
 ROOT = Path(__file__).resolve().parents[1]
 FPS, DRAWINGS = 24, 12  # twelve drawings a second, each held two frames
@@ -34,7 +36,7 @@ LINES = [line["text"] for line in TAKE["lines"]]
 WORDS = [line["words"] for line in TAKE["lines"]]
 T = [line["start"] for line in TAKE["lines"]] + [TAKE["duration"]]  # when each line starts; T[-1]: the end of his voice
 END = TAKE["duration"] + 1.7  # and RISE's logo, held after his last word
-CAP = dict(font="futural", size=32, line=52, top=128, width=960)
+SAFE = [(0, 0, 1080, 200), (930, 640, 1080, 1560), (0, 1480, 1080, 1920)]  # what TikTok covers: tabs, buttons, name and text
 
 
 def said(i, start):
@@ -46,27 +48,30 @@ def said(i, start):
 
 
 # where the camera is on his page: zoom, and where his head lands (it is at 620, 962 in the drawing)
-BASE, CORNER, GROUP = (1.0, 620.0, 962.0), (0.42, 790.0, 1481.0), (0.92, 330.0, 1143.0)
-LOW, WALL, FAR = (0.42, 540.0, 1560.0), (0.75, 560.0, 1180.0), (0.3, 260.0, 1640.0)
-ALERT = (300.0, 385.0)  # the alert in his head: where it is on the page, over him
+BASE, CORNER, GROUP = (0.9, 620.0, 880.0), (0.42, 300.0, 560.0), (0.92, 300.0, 1100.0)
+LOW, WALL, FAR = (0.42, 540.0, 1330.0), (0.75, 560.0, 1000.0), (0.3, 300.0, 1300.0)
+ALERT, A_S = (300.0, 520.0), 0.75  # the alert in his head: where it is on his page, and its size there
+TRAIL = [(470, 732, 10), (432, 706, 15), (390, 678, 21)]  # little bubbles, from his head up to it
+RING = (601.0, 1231.0)  # the bubble he is shut in, round him and his table, on his page
 
 
 def close(z):
-    """Close on the alert, at zoom z: it fills the page, a little above the middle."""
-    return (z, 540.0 + (620.0 - ALERT[0]) * z, 900.0 + (962.0 - ALERT[1]) * z)
+    """Close on the alert, at zoom z: it fills the page, a little above the middle and left of TikTok's buttons."""
+    return (z, 505.0 + (620.0 - ALERT[0]) * z, 900.0 + (962.0 - ALERT[1]) * z)
 
 
 CIRCLED = (said(1, "Moi"), said(1, "Moi") + 0.55)  # « Annuler » circled
 PULL = (T[2] - 0.1, said(2, "j'ai") + 0.3)  # the camera pulls back: it is a thought over him
 LIGHT = (said(2, "réseau") - 0.05, said(2, "réseau") + 0.3)  # his phone lights up
-CAMERA = [(0.0, close(2.0)), (PULL[0], close(2.12)), (PULL[1], BASE),
+CAMERA = [(0.0, close(2.3)), (PULL[0], close(2.42)), (PULL[1], BASE),
           (T[4], BASE), (T[4] + 0.8, CORNER), (T[5], CORNER), (T[5] + 0.55, BASE),  # « renfermé »: far off, in a corner
           (T[7], BASE), (T[7] + 0.7, GROUP),  # « …ou par peur de déranger »: the others, at their table
           (T[8] - 0.1, GROUP), (T[8] + 0.6, LOW),  # « rabaissé »: small, under them
           (T[10], LOW), (T[10] + 0.8, WALL),  # « …des barrières »: his wall
           (T[12], WALL), (T[12] + 0.9, FAR)]  # « Aller vers les gens… »: far from them
-# his face: where he looks (across, down), how open his lids are, his smile, his worry
+PROFS = said(9, "profs")
 q_up = said(5, "n'osait")
+# his face: where he looks (across, down), how open his lids are, his smile, his worry
 FACE = [(0.0, (0.0, 1.0, 12.0, 0.0, 0.0)), (T[3] + 0.05, (0.0, 1.0, 12.0, 0.0, 0.0)), (T[3] + 0.3, (0.12, -0.3, 13.5, 0.0, 0.0)),
         (T[3] + 0.45, (0.12, -0.3, 13.5, 0.0, 0.0)), (T[3] + 0.75, (0.12, -0.3, 13.5, 0.3, 0.0)), (T[4], (0.12, -0.3, 13.5, 0.3, 0.0)),
         (T[4] + 0.25, (0.0, 1.0, 12.0, 0.0, 0.1)), (T[4] + 0.7, (0.0, 1.0, 12.0, 0.0, 0.35)), (q_up, (0.0, 1.0, 12.0, 0.0, 0.35)),
@@ -75,22 +80,25 @@ FACE = [(0.0, (0.0, 1.0, 12.0, 0.0, 0.0)), (T[3] + 0.05, (0.0, 1.0, 12.0, 0.0, 0
         (T[8], (0.95, -0.6, 13.0, -0.15, 0.4)), (T[8] + 0.4, (0.0, -1.2, 13.5, -0.3, 0.7)),  # up at them
         (said(9, "amis") - 0.1, (0.0, -1.2, 13.5, -0.3, 0.7)), (said(9, "amis") + 0.15, (-0.8, -1.0, 13.5, -0.3, 0.7)),
         (said(9, "proches") - 0.1, (-0.8, -1.0, 13.5, -0.3, 0.7)), (said(9, "proches") + 0.15, (0.0, -1.2, 13.5, -0.3, 0.75)),
-        (said(9, "profs") - 0.1, (0.0, -1.2, 13.5, -0.3, 0.75)), (said(9, "profs") + 0.15, (0.8, -1.0, 13.5, -0.35, 0.8)),
-        (T[10] + 0.2, (0.8, -1.0, 13.5, -0.35, 0.8)), (T[10] + 0.7, (0.0, 0.8, 12.0, -0.2, 0.5)),  # down, behind his wall
-        (said(11, "jugement") - 0.1, (0.0, 0.8, 12.0, -0.2, 0.5)), (said(11, "jugement") + 0.1, (-0.9, -0.3, 13.5, -0.3, 0.7)),
-        (said(11, "regard") - 0.1, (-0.9, -0.3, 13.5, -0.3, 0.7)), (said(11, "regard") + 0.1, (0.9, -0.3, 13.5, -0.3, 0.7)),
-        (said(11, "autres") - 0.1, (0.9, -0.3, 13.5, -0.3, 0.7)), (said(11, "autres") + 0.1, (0.0, -0.9, 13.5, -0.3, 0.7)),
-        (T[12] + 0.5, (0.0, -0.9, 13.5, -0.3, 0.7)), (T[12] + 1.0, (0.7, -0.9, 12.5, -0.2, 0.5))]  # over to them, far off
+        (PROFS - 0.1, (0.0, -1.2, 13.5, -0.3, 0.75)), (PROFS + 0.15, (0.8, -1.0, 13.5, -0.35, 0.8)),
+        (PROFS + 0.5, (0.8, -1.0, 13.5, -0.35, 0.8)), (PROFS + 0.8, (0.0, -1.2, 12.5, -0.4, 0.8)),  # up at his report
+        (T[10] + 0.2, (0.0, -1.2, 12.5, -0.4, 0.8)), (T[10] + 0.7, (0.0, 0.8, 12.0, -0.2, 0.5)),  # down, behind his wall
+        (said(11, "jugement") - 0.1, (0.0, 0.8, 12.0, -0.2, 0.5)), (said(11, "jugement") + 0.1, (-0.9, -0.7, 13.5, -0.3, 0.7)),
+        (said(11, "regard") - 0.1, (-0.9, -0.7, 13.5, -0.3, 0.7)), (said(11, "regard") + 0.1, (0.9, -0.3, 13.5, -0.35, 0.8)),
+        (said(11, "autres") - 0.1, (0.9, -0.3, 13.5, -0.35, 0.8)), (said(11, "autres") + 0.1, (-0.9, -0.2, 13.5, -0.35, 0.8)),
+        (T[12] + 0.5, (-0.9, -0.2, 13.5, -0.35, 0.8)), (T[12] + 1.0, (0.7, -0.9, 12.5, -0.2, 0.5))]  # over to them, far off
 BLINKS = [LIGHT[1] + 0.15, T[5] - 0.25, T[9] + 0.3, T[11] - 0.2, T[13] + 0.7, T[18] + 0.6, T[18] + 2.4]
-TRAIL = [(456, 724, 12), (414, 692, 22), (345, 625, 50)]  # the first drawing's little bubbles, from his head up to a thought
-GROUP_PEOPLE = [(850, 770, 0.5, "short", (-0.6, 0.2), "talk", True), (690, 800, 0.5, "long", (0.8, 0.1), "smile", False),
-                (1004, 815, 0.5, "curly", (-0.9, 0.1), "smile", False)]
-GIANTS = [(190, 520), (540, 430), (890, 520)]  # where they loom, over him (the same three, left to right as they sat)
-JUDGES = [(120, 420, "short", True), (960, 450, "long", False), (540, 250, "curly", False)]  # « …du regard des autres »
-FAR_GROUP = [(690, 704), (762, 698), (834, 704)]  # the same three, far off: at the church
-SCRAWLS = [(80, 640, 260), (720, 700, 280), (160, 900, 220), (760, 940, 240)]  # the words he heard, round him
-FAMILY = [(150, "short", "talk", False), (360, "long", "smile", False), (720, "curly", "smile", False), (930, "short", "talk", True)]
-COMMUNITY = [(160, 1300, "long"), (920, 1300, "short"), (300, 1620, "curly")]
+GROUP_PEOPLE = [(700, 730, 0.46, "short", (-0.6, 0.2), "talk", True), (560, 760, 0.46, "long", (0.8, 0.1), "smile", False),
+                (840, 775, 0.46, "curly", (-0.9, 0.1), "smile", False)]
+GIANTS = [(215, 560), (540, 520), (850, 560)]  # where they loom over him (the same three, left to right as they sat)
+JUDGES = [(180, 400, "short", True), (820, 760, "long", False), (200, 800, "curly", False)]  # « …du regard des autres »
+LAUGHS = [(190, 250), (660, 700), (370, 720)]  # their « HA HA »
+FAR_GROUP = [(690, 770), (762, 764), (834, 770)]  # the same three, far off: at the church
+PATH = [(340, 1220), (420, 1130), (540, 1070), (640, 980), (740, 860)]  # from him to them
+SCRAWLS = [(80, 460, 260), (720, 520, 280), (160, 720, 220), (760, 760, 240)]  # the words he heard, round him
+FAMILY = [(190, "short", "talk", False), (375, "long", "smile", False), (705, "curly", "smile", False), (860, "short", "talk", True)]
+COMMUNITY = [(180, 1150, "long"), (860, 1150, "short"), (330, 1330, "curly")]
+ME = (700.0, 1290.0)  # him among them (where his head is)
 SCROLLS = [(T[14] - 0.35, T[14] + 0.1), (T[15] - 0.55, T[15] - 0.1), (T[18] - 0.5, T[18] - 0.05)]  # to the next page
 
 
@@ -161,13 +169,19 @@ def his(cam, shift):
     return framed([z, 620.0, 962.0, qx, qy - shift])
 
 
+def key(pen, text, x, y, at, t, size=44.0, gone=None):
+    """A key word of what he says, written by hand where it belongs in the picture, as he says it (at)."""
+    if t >= at and (gone is None or t < gone):
+        handwritten(pen, text, x, y, size, seg(t, at, at + 0.25 + 0.03 * len(text)))
+
+
 def tony(pen, orange, t, glow=0.9, lit=1.0, wide=True, **face):
-    """Tony at his table (the first drawing), through the camera in place."""
+    """Tony at his table (the first drawing), through the camera in place; RISE on his phone."""
     blink = any(b <= t < b + 2 / DRAWINGS for b in BLINKS)
     table(pen, wide=wide)
     body(pen)
     head(pen, steady(1), hx=620.0, hy=962.0, tilt=6.0, blink=blink, **face)
-    phone_on_table(pen, orange, glow=glow + 0.07 * math.sin(2 * math.pi * t / 1.6), rng=steady(2), lit=lit)
+    phone_on_table(pen, orange, glow=glow + 0.07 * math.sin(2 * math.pi * t / 1.6), rng=steady(2), lit=lit, logo=True)
 
 
 def eyes_on(x, y, at):
@@ -177,8 +191,16 @@ def eyes_on(x, y, at):
     return (max(-1.0, min(1.0, 1.3 * dx / d)), max(-1.0, min(1.0, 1.3 * dy / d)))
 
 
-# --- his page: from the alert in his head to the church far off (scenes 1 to 12)
-def his_page(pen, orange, t, shift):
+def along(pts, f):
+    """The point at f (0..1) of the way along a smooth curve through pts."""
+    path = np.array(spline(pts, 10), float)
+    d = np.r_[0, np.cumsum(np.hypot(*np.diff(path, axis=0).T))]
+    i = min(len(path) - 1, int(np.searchsorted(d, f * d[-1])))
+    return tuple(path[i])
+
+
+# --- his page: from the alert in his head to the church far off
+def his_page(pen, orange, red, t, shift):
     z, qx, qy = camera(t)
     lx, ly, lids, smile, worry = keyed(FACE, t)
     built = seg(t, said(10, "barrières") - 0.3, said(10, "barrières") + 0.7)  # his wall, row by row
@@ -189,59 +211,106 @@ def his_page(pen, orange, t, shift):
         e = ease(seg(t, T[8] - 0.1, T[8] + 0.6))
         gone = 1400 * ease(seg(t, T[10], T[10] + 0.8))
         order = sorted(range(3), key=lambda k: GROUP_PEOPLE[k][0])  # each to its place, without crossing
-        nudge = {order[0]: bump(t, said(9, "amis") - 0.05), order[1]: bump(t, said(9, "proches") - 0.05), order[2]: bump(t, said(9, "profs") - 0.05)}
+        names = [(said(9, "amis"), "AMIS"), (said(9, "proches"), "PROCHES"), (PROFS, "PROFS")]
         with page(shift):
             for k, (x, y, s, hair, look, mouth, beard) in enumerate(GROUP_PEOPLE):
-                gx, gy = GIANTS[order.index(k)]
+                j = order.index(k)
+                gx, gy = GIANTS[j]
                 if k == 0 and t >= T[7] + 0.7 and e == 0 and int((t - T[7]) * 4) % 2:
                     mouth = "flat"  # he talks
-                sz = lerp(s, 1.0, e) * (1 + 0.07 * nudge.get(k, 0.0))
-                px, py = lerp(x + dx, gx, e), lerp(y, gy, e) + 30 * nudge.get(k, 0.0) - gone
+                nudge = bump(t, names[j][0] - 0.05)
+                sz = lerp(s, 0.8, e) * (1 + 0.07 * nudge)
+                px, py = lerp(x + dx, gx, e), lerp(y, gy, e) + 30 * nudge - gone
                 lk = (lerp(look[0], (540 - gx) / 900, e), lerp(look[1], 1.0, e))
                 person(pen, px, py, sz, hair, lk, mouth if e < 0.5 else "flat", beard, rng=steady(30 + k), brow=0.8 * e, shade=e > 0.6)
-            back_table(pen, lerp(1012, 1080, e) - gone, lerp(560 + dx, -40, e), 1120)
+            back_table(pen, lerp(960, 1080, e) - gone, lerp(460 + dx, -40, e), 1120, h=lerp(150, 100, e))
+            for j, (at, name) in enumerate(names):  # their names on the bench, as he says them
+                key(pen, name, GIANTS[j][0], 1150 - gone, at, t, 40)
+            key(pen, "RABAISSÉ", 820, 1420 - gone, said(8, "rabaissé"), t, 46)
             if e == 0:
                 b = pop(seg(t, T[7] + 0.7, T[7] + 1.0)) * (1 - ease(seg(t, T[8] - 0.2, T[8])))
                 if b > 0.05:
-                    speech(pen, 852 + dx, 560, 108 * b, 66 * b, grown(852 + dx, 560, (846 + dx, 650), b), "talk", rng=steady(40))
-            b = pop(seg(t, said(9, "profs") - 0.1, said(9, "profs") + 0.3))  # his school report, the teacher's comment on it
+                    speech(pen, 700 + dx, 500, 100 * b, 60 * b, grown(700 + dx, 500, (695 + dx, 590), b), "talk", rng=steady(40))
+                key(pen, "DÉRANGER", 540, 330, said(7, "déranger"), t, 46, gone=T[8] - 0.1)
+            b = pop(seg(t, PROFS - 0.1, PROFS + 0.3))  # his school report, then big, the teacher's comment written on it in red
             if b > 0:
-                bulletin(pen, 760, lerp(2400, 830, b) - gone, 0.62, comment=seg(t, said(9, "profs") + 0.2, said(9, "profs") + 1.4), rng=steady(90))
+                g = ease(seg(t, PROFS + 0.4, PROFS + 0.9))
+                bulletin(pen, lerp(760, 540, g), lerp(lerp(2400, 830, b), 780, g) - gone, lerp(0.55, 1.1, g), tilt=lerp(-5, -3, g),
+                         comment=seg(t, PROFS + 0.6, PROFS + 1.8), rng=steady(90), red=red)
 
-    # « Pendant longtemps, j'ai été quelqu'un de renfermé »: seen from far off, he is shut in his own bubble
-    clip = None
-    if T[4] + 0.6 <= t < T[5]:
-        k = 2.4 + (1.0 - 2.4) * ease(seg(t, T[4] + 0.6, T[4] + 1.2))
-        if k < 2.3:
-            clip = k
-
-    # « J'avais peur du jugement, du regard des autres »: all round him, all looking at him; « Aller vers les gens… »:
-    # they go far off, a long way from him; « …dans ma foi »: they are at church
+    # « J'avais peur du jugement… »: someone mocks him; « …du regard des autres »: they all laugh at him;
+    # « Aller vers les gens était devenu difficile »: far off, a long way from him, and the way is locked;
+    # « Et aujourd'hui encore, ça me freine dans ma foi »: they are at church, and barriers stand all along the way
     near = ease(seg(t, T[12], T[12] + 0.9))
     if T[11] <= t < T[14] + 0.2:
+        J, R, A = said(11, "jugement"), said(11, "regard"), said(11, "autres")
         with page(shift):
             p = seg(t, T[13] + 0.1, said(13, "foi") + 0.15)
             if p > 0:  # (drawn first: they stand in its door)
-                church(pen, 762, 760, 0.62, p, rng=steady(100))
-            at = (560, 1180)  # his head, from the camera on his wall
+                church(pen, 762, 830, 0.62, p, rng=steady(100))
+            at = (560, 1000)  # his head, from the camera on his wall
             for k, (x, y, hair, beard) in enumerate(JUDGES):
-                w = (said(11, "jugement"), said(11, "regard"), said(11, "autres"))[k]
-                b = pop(seg(t, w - 0.15, w + 0.2))
+                b = pop(seg(t, (J, R, A)[k] - 0.15, (J, R, A)[k] + 0.2))
                 if b <= 0.05:
                     continue
                 fx, fy = FAR_GROUP[k]
                 px, py, sz = lerp(x, fx, near), lerp(y, fy, near), lerp(0.45, 0.12, near) * b
-                mouth = "flat" if near < 0.5 else ("talk" if k == 0 and int(t * 4) % 2 else "smile")
-                person(pen, px, py, sz, hair, eyes_on(px, py, at) if near < 0.5 else (0.0, 0.2), mouth, beard, rng=steady(50 + k), brow=0.6 * (1 - near))
+                if near >= 0.5:
+                    mouth = "talk" if k == 0 and int(t * 4) % 2 else "smile"
+                elif t >= R:
+                    mouth = "laugh"
+                else:
+                    mouth = "talk" if k == 0 and int(t * 5) % 2 else "flat"
+                person(pen, px, py, sz, hair, eyes_on(px, py, at) if near < 0.5 else (0.0, 0.2), mouth, beard, rng=steady(50 + k),
+                       brow=0.6 * (1 - near))
                 back_table(pen, py + 400 * sz, px - 430 * sz, px + 430 * sz, h=300 * sz, vanish=px)
+            if T[11] <= t < T[12] + 0.15:
+                out = 1 - ease(seg(t, T[12], T[12] + 0.15))
+                b = pop(seg(t, J - 0.05, J + 0.25)) * out
+                if b > 0.05:  # what they say: a mockery, written as it is said
+                    speech(pen, 590, 430, 230 * b, 95 * b, grown(590, 430, (330, 470), b), "text", p=seg(t, J + 0.2, J + 1.1), rng=steady(55),
+                           text="Haha, n'importe quoi…")
+                if t >= R:
+                    for k, (hx_, hy_) in enumerate(LAUGHS):
+                        if t >= (J, R, A)[k] and out > 0.5:
+                            handwritten(pen, "HA HA", hx_ + (3 if int(t * 8) % 2 else -3), hy_, 30, seg(t, max(R, (J, R, A)[k]), max(R, (J, R, A)[k]) + 0.3))
+                if out > 0.5:
+                    key(pen, "JUGEMENT", 590, 290, J, t, 44)
+                    key(pen, "REGARD DES AUTRES", 590, 600, R, t, 40)
             if near > 0.6:
-                dashes(pen, [(330, 1560), (420, 1300), (600, 1180), (660, 980), (740, 800)], seg(t, T[12] + 0.7, said(12, "difficile") + 0.3))
+                dashes(pen, PATH, seg(t, T[12] + 0.7, said(12, "difficile") + 0.3))
+                D = said(12, "difficile")
+                b = pop(seg(t, D - 0.1, D + 0.25))
+                if b > 0.05:  # the way to them: locked
+                    shake = 3 * math.sin(40 * (t - D)) if D + 0.45 <= t < D + 0.8 else 0.0
+                    lx_, ly_ = along(PATH, 0.5)
+                    padlock(pen, lx_ + shake, ly_ - 30, 0.55 * b, shut=ease(seg(t, D + 0.2, D + 0.45)))
+                key(pen, "DIFFICILE", 770, 1160, D, t, 44)
+                F, Fo = said(13, "freine"), said(13, "foi")
+                for k, f in enumerate((0.2, 0.36, 0.66, 0.82)):  # barriers, one after the other, all along it
+                    b = pop(seg(t, F + k * (Fo - F) / 4, F + k * (Fo - F) / 4 + 0.25))
+                    if b > 0.05:
+                        bx, by = along(PATH, f)
+                        barrier(pen, bx, by + 20, 0.42 * b, tilt=-8 + 6 * k)
+                key(pen, "AUJOURD'HUI ENCORE", 540, 300, T[13] + 0.1, t, 44)
+                key(pen, "MA FOI", 760, 375, Fo, t, 44)
 
-    # Tony at his table, through the camera; his wall in front of him once built
+    # « À force d'entendre ce genre de paroles… »: the words he heard, round him; « …des barrières »: they fall into his wall
+    if T[10] + 0.3 <= t < said(10, "barrières") + 0.7:
+        with page(shift):
+            for k, (x, y, wd) in enumerate(SCRAWLS):
+                p = seg(t, T[10] + 0.3 + 0.3 * k, T[10] + 1.0 + 0.3 * k)
+                fall = y + 760 * ease(built)
+                if p > 0 and fall < 1260:  # (gone once into the wall, whose top is there)
+                    scrawl(pen, x, fall, wd, steady(60 + k), p=p, size=1.7, w=2.8)
+
+    # Tony at his table, through the camera; his wall in front of him once built; what is in his head, round him
     with his((z, qx, qy), shift):
         tony(pen, orange, t, lit=ease(seg(t, *LIGHT)), look=(lx, ly), lids=lids, smile=smile, worry=worry)
         if built > 0:
             bricks(pen, -420, 1660, 1950, 14, steady(70), p=built, h=44, length=120, orange=orange)
+            if t < T[12] + 0.3:
+                key(pen, "BARRIÈRES", 620, 1500, said(10, "barrières") + 0.2, t, 62)
 
         # « Toi aussi, t'as peur de déranger ? Moi, tout le temps. »: seen close, the alert in his head, « Annuler »
         # circled; « Et pourtant… »: the camera pulls back, it is a thought over him; « Moi c'est Tony »: it goes
@@ -249,24 +318,8 @@ def his_page(pen, orange, t, shift):
         if gone > 0.05:
             for k, (bx, by, r) in enumerate(TRAIL):
                 bubble(pen, bx, by, r * gone, None, rng=steady(10 + k))
-            alert(pen, *ALERT, s=gone, circled=seg(t, *CIRCLED), rng=steady(80))
+            alert(pen, *ALERT, s=A_S * gone, circled=seg(t, *CIRCLED), rng=steady(80))
 
-    if clip is not None:
-        inside = Image.new("L", pen.img.size, 0)
-        ImageDraw.Draw(inside).ellipse([(782 - 252 * clip) * S, (1594 - 274 * clip - shift) * S, (782 + 252 * clip) * S, (1594 + 274 * clip - shift) * S],
-                                       fill=255)
-        for layer in (pen.img, orange):
-            layer.paste(0, (0, 0), ImageOps.invert(inside))
-    if T[4] + 0.6 <= t < T[5]:
-        with page(shift):
-            ring = loop_pts(steady(20), 782, 1594, 262, 282)
-            n = int(len(ring) * ease(seg(t, T[4] + 0.6, T[4] + 1.2)))
-            if n > 1:
-                pen.line(ring[:n], w=3.4, over=0.0, breaks=False, drift=0.8, again=0.0)
-            if t >= T[4] + 1.2:
-                pen.line(loop_pts(steady(21), 782, 1594, 256, 290), w=1.8, over=0.0, breaks=False, drift=0.8, again=0.0)
-
-    with page(shift):
         # « Le genre de personne qui n'osait pas poser de questions »: a question comes up out of his head, gets stuck
         if q_up <= t < T[6] + 0.2:
             up = pop(seg(t, q_up, q_up + 0.35)) * (1 - ease(seg(t, T[6], T[6] + 0.2)))
@@ -284,71 +337,94 @@ def his_page(pen, orange, t, shift):
             b = pop(seg(t, T[6] + 0.15, T[6] + 0.45)) * (1 - ease(seg(t, T[7], T[7] + 0.2)))
             if b > 0.05:
                 speech(pen, 300, 560, 215 * b, 165 * b, grown(300, 560, (436, 900), b), "scribble", p=seg(t, T[6] + 0.4, T[7]), rng=steady(60))
+                key(pen, "N'IMPORTE QUOI", 300, 345, said(6, "n'importe"), t, 50)  # (over his bubble)
 
         # « …ou par peur de déranger »: his « … », that he keeps to himself
         if T[7] + 0.75 <= t < T[8] + 0.1:
             b = pop(seg(t, T[7] + 0.75, T[7] + 1.0)) * (1 - ease(seg(t, T[8] - 0.15, T[8] + 0.1)))
             if b > 0.05:
-                speech(pen, 562, 878, 62 * b, 44 * b, grown(562, 878, (480, 1000), b), "dots", p=seg(t, T[7] + 0.85, T[7] + 1.3), rng=steady(70))
+                speech(pen, 750, 690, 67 * b, 48 * b, grown(750, 690, (674, 842), b), "dots", p=seg(t, T[7] + 0.85, T[7] + 1.3), rng=steady(70))
 
-        # « À force d'entendre ce genre de paroles… »: the words he heard, round him; « …des barrières »: they fall into his wall
-        if T[10] + 0.3 <= t < said(10, "barrières") + 0.7:
-            for k, (x, y, wd) in enumerate(SCRAWLS):
-                p = seg(t, T[10] + 0.3 + 0.3 * k, T[10] + 1.0 + 0.3 * k)
-                fall = y + 760 * ease(built)
-                if p > 0 and fall < 1440:  # (gone once into the wall, whose top is there)
-                    scrawl(pen, x, fall, wd, steady(60 + k), p=p, size=1.7, w=2.8)
+    # « Pendant longtemps, j'ai été quelqu'un de renfermé »: seen from far off, he is shut in his own bubble
+    if T[4] + 0.6 <= t < T[5]:
+        k = 2.4 + (1.0 - 2.4) * ease(seg(t, T[4] + 0.6, T[4] + 1.2))
+        cx, cy = qx + (RING[0] - 620) * z, qy + (RING[1] - 962) * z - shift
+        if k < 2.3:
+            inside = Image.new("L", pen.img.size, 0)
+            ImageDraw.Draw(inside).ellipse([(cx - 600 * z * k) * S, (cy - 652 * z * k) * S, (cx + 600 * z * k) * S, (cy + 652 * z * k) * S], fill=255)
+            for layer in (pen.img, orange):
+                layer.paste(0, (0, 0), ImageOps.invert(inside))
+        with his((z, qx, qy), shift):
+            ring = loop_pts(steady(20), RING[0], RING[1], 624, 671)
+            n = int(len(ring) * ease(seg(t, T[4] + 0.6, T[4] + 1.2)))
+            if n > 1:
+                pen.line(ring[:n], w=3.4, over=0.0, breaks=False, drift=0.8, again=0.0)
+            if t >= T[4] + 1.2:
+                pen.line(loop_pts(steady(21), RING[0], RING[1], 610, 690), w=1.8, over=0.0, breaks=False, drift=0.8, again=0.0)
+        with page(shift):
+            key(pen, "RENFERMÉ", 720, 1040, said(4, "renfermé"), t, 56)
 
 
 # --- « Pourtant, je pense qu'on a tous besoin de frères et sœurs autour de nous… »: a table, and a place free for him
-def family_page(pen, orange, t, shift):
+def family_page(pen, orange, red, t, shift):
+    nous = said(14, "nous")
     with page(shift):
         for k, (x, hair, mouth, beard) in enumerate(FAMILY):
             if mouth == "talk" and int((t + 0.3 * k) * 4) % 2:
                 mouth = "flat"
-            person(pen, x, 900, 0.42, hair, (0.6 if x < 540 else -0.6, 0.1), mouth, beard, rng=steady(120 + k))
+            look = eyes_on(x, 900, (540, 1060)) if t >= nous else (0.6 if x < 540 else -0.6, 0.1)  # « …autour de nous »: the free place
+            person(pen, x, 900, 0.42, hair, look, mouth, beard, rng=steady(120 + k))
         chair(pen, 540, 1150, 0.8)
         back_table(pen, 1150, -40, 1120)
-        for at, draw in ((said(14, "apprendre"), lambda b: bubble(pen, 250, 560, 85 * b, "book", rng=steady(130))),
-                         (said(14, "partager"), lambda b: speech(pen, 540, 470, 110 * b, 70 * b, grown(540, 470, (520, 600), b), "talk", rng=steady(131))),
-                         (said(14, "Dieu"), lambda b: bubble(pen, 830, 560, 85 * b, "cross", rng=steady(132)))):
+        key(pen, "FRÈRES ET SŒURS", 540, 330, said(14, "frères"), t, 46)
+        for at, word, x, draw in ((said(14, "apprendre"), "APPRENDRE", 200, lambda b: bubble(pen, 200, 560, 85 * b, "book", rng=steady(130))),
+                                  (said(14, "partager"), "PARTAGER", 520,
+                                   lambda b: speech(pen, 520, 480, 110 * b, 70 * b, grown(520, 480, (500, 600), b), "talk", rng=steady(131))),
+                                  (said(14, "Dieu"), "AVEC DIEU", 810, lambda b: bubble(pen, 810, 560, 85 * b, "cross", rng=steady(132)))):
             b = pop(seg(t, at - 0.05, at + 0.25))
             if b > 0.05:
                 draw(b)
+                key(pen, word, x, 700, at, t, 26)
 
 
 # --- « C'est justement pour ça que j'ai créé RISE. » and what it is for
-def rise_page(pen, orange, t, shift):
+def rise_page(pen, orange, red, t, shift):
     flame = said(15, "RISE")
+    G = said(17, "groupes")
     e16 = ease(seg(t, T[16] - 0.2, T[16] + 0.5))  # « Pour offrir une communauté… »: up a little, the others round it
     e17 = ease(seg(t, T[17] - 0.2, T[17] + 0.4))  # « Un endroit où… »: big again, for what is on it
-    k = lerp(lerp(1.0, 0.6, e16), 0.92, e17) * pop(seg(t, T[15] - 0.15, T[15] + 0.25))
-    cy = lerp(lerp(980, 700, e16), 940, e17)
-    me = pop(seg(t, said(16, "moi") - 0.1, said(16, "moi") + 0.25))  # « …comme moi »: he is one of them
+    into = ease(seg(t, G + 0.15, G + 0.55))  # « …rejoindre des groupes »: into it
+    k = lerp(lerp(lerp(1.0, 0.58, e16), 0.9, e17), 2.3, into) * pop(seg(t, T[15] - 0.15, T[15] + 0.25))
+    cy = lerp(lerp(lerp(950, 640, e16), 900, e17), 104, into)  # (into it: up, so that the people in it are in the middle)
     down = 900 * e17
+    me = pop(seg(t, said(16, "moi") - 0.1, said(16, "moi") + 0.25))  # « …comme moi »: he is one of them
+    shy, toward = said(16, "n'osent"), said(16, "autres")
     if me > 0.05 and down < 880:
-        with his((0.26 * me, 720.0, 1560.0 + down), shift):
+        with his((0.26 * me, ME[0], ME[1] + down), shift):
             tony(pen, orange, t, wide=False, look=(-0.3, -1.0), lids=13.5, smile=0.2)
     with page(shift):
         for j, (x, y, hair) in enumerate(COMMUNITY):  # those who, like him, don't dare go to others
             b = pop(seg(t, said(16, "communauté") + 0.12 * j, said(16, "communauté") + 0.12 * j + 0.3))
             if b > 0.05 and down < 880:
-                if b >= 1:
-                    dashes(pen, [(x, y - 150), (lerp(x, 540, 0.5), lerp(y - 150, cy + 300 * k, 0.6)), (540, cy + 300 * k)],
-                           seg(t, said(16, "communauté") + 0.4, said(16, "communauté") + 0.9))
+                if b >= 1 and t >= toward:  # « …aller vers les autres »: through it, they do
+                    dashes(pen, [(x, y - 150), (lerp(x, 540, 0.5), lerp(y - 150, cy + 290 * k, 0.6)), (540, cy + 290 * k)], seg(t, toward, toward + 0.5))
                 person(pen, x, y + down, 0.3 * b, hair, eyes_on(x, y, (540, cy)), "smile", False, rng=steady(140 + j))
-                back_table(pen, y + down + 100 * b, x - 130 * b, x + 130 * b)
+                back_table(pen, y + down + 100 * b, x - 130 * b, x + 130 * b, h=90 * b, vanish=x)
+                h = pop(seg(t, shy + 0.1 * j, shy + 0.1 * j + 0.25)) * (1 - ease(seg(t, toward, toward + 0.2)))
+                if h > 0.05:  # « …n'osent pas »: each their « … »
+                    speech(pen, x + 70, y - 120 + down, 46 * h, 32 * h, grown(x + 70, y - 120 + down, (x + 30, y - 70 + down), h), "dots", rng=steady(145 + j))
+        key(pen, "UNE COMMUNAUTÉ", 540, 1010, said(16, "communauté"), t, 46, gone=T[17] - 0.2)
         if k <= 0.05:
             return
         x0, y0, x1, y1 = big_phone(pen, 540, cy, k, glow=0.8 * ease(seg(t, flame, flame + 0.4)), rng=steady(140))
         scx, scy = (x0 + x1) / 2, (y0 + y1) / 2
-        shows = [(said(17, "témoignages") - 0.1, "talk"), (said(17, "questions") - 0.1, "?"), (said(17, "demander") - 0.1, "alert"),
-                 (said(17, "groupes") - 0.1, "groups")]
-        now = [(at, what) for at, what in shows if t >= at]
+        shows = [(said(17, "témoignages") - 0.1, "talk", "TÉMOIGNAGES"), (said(17, "questions") - 0.1, "?", "QUESTIONS"),
+                 (said(17, "demander") - 0.1, "alert", "PRIÈRE"), (G - 0.1, "groups", "GROUPES")]
+        now = [s_ for s_ in shows if t >= s_[0]]
         if not now:
             rise_logo(pen, orange, scx, scy - 40 * k, 400 * k, p=ease(seg(t, flame - 0.05, flame + 0.3)))
             return
-        at, what = now[-1]
+        at, what, word = now[-1]
         b = pop(seg(t, at, at + 0.3))
         if what == "talk":
             speech(pen, scx, scy - 30 * k, 170 * k * b, 110 * k * b, grown(scx, scy - 30 * k, (scx - 60 * k, scy + 150 * k), b), "talk", rng=steady(150))
@@ -356,28 +432,31 @@ def rise_page(pen, orange, t, shift):
             bubble(pen, scx, scy, 150 * k * b, "?", rng=steady(151))
         elif what == "alert":  # the alert of the first image: on RISE, he asks
             alert(pen, scx, scy, 0.88 * k * b, circled=seg(t, said(17, "prière"), said(17, "prière") + 0.5), rng=steady(152), pick=1)
-        else:
-            for j, (dx, hair) in enumerate(((-120, "short"), (0, "long"), (120, "curly"))):
-                person(pen, scx + dx * k, scy - 30 * k, 0.17 * k * b, hair, (-dx / 150, 0.1), "smile", False, rng=steady(160 + j))
-            back_table(pen, scy + 25 * k, x0 + 10, x1 - 10)
+        else:  # « …rejoindre des groupes »: people holding each other close
+            hug(pen, scx, y1 - 12 * k * b, 0.3 * k * b, rng=steady(160))  # (their busts cut at its bottom edge)
+            pen.line([(x0 + 6, y1), (x1 - 6, y1)], w=2.2, over=0.0, again=0.0)
+        handwritten(pen, word, 540, 380, 46, seg(t, at, at + 0.5))
 
 
 # --- « Parce que je voulais créer l'espace dont j'ai moi-même besoin pour grandir dans ma foi. »: at his table again,
-# no wall, his thoughts over him (the first drawing), a smile; then RISE
-def last_page(pen, orange, t, shift):
+# no wall, his thoughts over him (the first drawing), a smile; « grandir »: his faith grows; then RISE
+def last_page(pen, orange, red, t, shift):
     face = keyed([(T[18], (0.0, 1.0, 12.0, 0.0, 0.0)), (T[18] + 0.5, (0.0, 1.0, 12.0, 0.1, 0.0)), (said(18, "besoin"), (0.0, 1.0, 12.0, 0.1, 0.0)),
                   (said(18, "besoin") + 0.35, (0.12, -0.3, 13.5, 0.35, 0.0))], t)
     lx, ly, lids, smile, worry = face
+    grow = pop(seg(t, said(18, "grandir") - 0.05, said(18, "grandir") + 0.4))
+    gone = 1 - ease(seg(t, T[-1] - 0.3, T[-1]))
     with his(BASE, shift):
         tony(pen, orange, t, look=(lx, ly), lids=lids, smile=smile, worry=worry)
-    logo = pop(seg(t, T[-1] - 0.1, T[-1] + 0.3))
-    with page(shift):
-        gone = 1 - ease(seg(t, T[-1] - 0.3, T[-1]))
         for j, ((bx, by, r, sym), at) in enumerate((((456, 724, 12, None), 0.0), ((414, 692, 22, None), 0.1), ((345, 625, 50, None), 0.2),
                                                    ((250, 470, 120, "?"), 0.4), ((420, 330, 95, "chat"), 0.7), ((165, 720, 82, "cross"), 1.0))):
             b = pop(seg(t, said(18, "l'espace") + at, said(18, "l'espace") + at + 0.3)) * gone
             if b > 0.05:
-                bubble(pen, bx, by, r * b, sym, rng=steady(10 + j))
+                bubble(pen, bx, by, r * b * (1 + 0.45 * grow if sym == "cross" else 1), sym, rng=steady(10 + j))
+    logo = pop(seg(t, T[-1] - 0.1, T[-1] + 0.3))
+    with page(shift):
+        if gone > 0.5:
+            key(pen, "GRANDIR DANS MA FOI", 540, 300, said(18, "grandir"), t, 44)
         if logo > 0.05:
             rise_logo(pen, orange, 540, 470, 760 * logo, p=ease(seg(t, T[-1] + 0.1, T[-1] + 0.5)))
 
@@ -385,89 +464,30 @@ def last_page(pen, orange, t, shift):
 PAGES = [his_page, family_page, rise_page, last_page]
 
 
-def spaced_width(ln):
-    return letters.width(ln, CAP["font"], CAP["size"]) + CAP["size"] * 0.12 * len(ln)
-
-
-def chunks(words, most=7):
-    """A line cut where he pauses (after « … », a comma, the end of a sentence) or where it would run too long: each
-    piece is written on its own, as he says it."""
-    out, cur = [], []
-    for i, w in enumerate(words):
-        cur.append(i)
-        if w["w"].endswith(("…", ".", "?", "!", ",")) and len(cur) >= 3 or len(cur) >= most:
-            out.append(cur)
-            cur = []
-    if cur:
-        if out and len(cur) < 3 and len(out[-1]) + len(cur) <= most + 2:
-            out[-1] += cur
-        else:
-            out.append(cur)
-    return out
-
-
-def balanced(text):
-    """The text in as few lines as fit, split so that they are as even as can be (no word left alone below)."""
-    from itertools import combinations
-    words = text.split(" ")
-    n = len(letters.wrap(text, CAP["font"], CAP["size"], CAP["width"]))
-    best = None
-    for cuts in combinations(range(1, len(words)), n - 1):
-        lines = [" ".join(words[a:b]) for a, b in zip((0,) + cuts, cuts + (len(words),))]
-        widest = max(spaced_width(ln) for ln in lines)
-        if best is None or widest < best[0]:
-            best = (widest, lines)
-    return best[1]
-
-
-def caption(pen, t):
-    """The line he is saying, written by hand at the top, word by word as he says it, a piece at a time."""
-    if t < 0.25 or t > T[-1] - 0.1:
-        return  # the very first image: the alert alone; and the logo, at the end, alone
-    i = max(k for k in range(len(LINES)) if T[k] <= t)
-    words = WORDS[i]
-    pieces = chunks(words)
-    heard = [j for j, w in enumerate(words) if w["start"] <= t + 0.04] or [0]
-    piece = next((p for p in pieces if heard[-1] in p), pieces[-1])
-    shown = [words[j]["w"].upper() for j in piece if j <= heard[-1]]
-    text = " ".join(words[j]["w"].upper() for j in piece)
-    n, said_ = 0, len(" ".join(shown).split(" "))
-    for li, ln in enumerate(balanced(text)):
-        gap = CAP["size"] * 0.12
-        x = 540 - spaced_width(ln) / 2
-        y = CAP["top"] + li * CAP["line"]
-        for word in ln.split(" "):
-            if n >= said_:
-                return
-            strokes, xx = [], x
-            for ch in word:  # spaced capitals
-                st, _ = letters.layout(ch, CAP["font"], CAP["size"], hand=0.9, seed=zlib.crc32(word.encode()) + len(strokes))
-                strokes += [[(xx + a, y + b) for a, b in s] for s in st]
-                xx += letters.width(ch, CAP["font"], CAP["size"]) + gap
-            for s in strokes:  # a margin of paper round the letters, then the letters
-                if len(s) > 1:
-                    pen.line(s, w=12, fill=0, amp=0.4, again=0.0, over=0.0, drift=0.0, breaks=False, taper=0.0)
-            for s in strokes:
-                if len(s) > 1:
-                    pen.line(s, w=3.8, amp=0.4, again=0.0, over=0.0, drift=0.0, breaks=False, taper=0.2)
-            x = xx + letters.width(" ", CAP["font"], CAP["size"]) + gap
-            n += 1
-
-
 def frame_at(t, v):
     img = Image.new("L", (W * S, H * S), 0)
     orange = Image.new("L", (W * S, H * S), 0)
+    red_ink = Image.new("L", (W * S, H * S), 0)
     pen = Hand(img, np.random.default_rng(100 + v))  # the hand: a little different in each drawing
+    red = Hand(red_ink, np.random.default_rng(300 + v))  # the teacher's pen
     k = sum(1 for a, _ in SCROLLS if t >= a)  # the page we are on (or leaving, while it scrolls up)
     if k and t < SCROLLS[k - 1][1]:
         a, b = SCROLLS[k - 1]
         up = H * ease(seg(t, a, b))
-        PAGES[k - 1](pen, orange, t, up)
-        PAGES[k](pen, orange, t, up - H)
+        PAGES[k - 1](pen, orange, red, t, up)
+        PAGES[k](pen, orange, red, t, up - H)
     else:
-        PAGES[k](pen, orange, t, 0.0)
-    caption(pen, t)
-    return finish(img, orange, v)
+        PAGES[k](pen, orange, red, t, 0.0)
+    return finish(img, orange, v, red_ink)
+
+
+def shaded(im):
+    """The drawing with what TikTok puts over it shaded, to see what it hides."""
+    over = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(over)
+    for box in SAFE:
+        d.rectangle(box, fill=(255, 0, 60, 70))
+    return Image.alpha_composite(im.convert("RGBA"), over).convert("RGB")
 
 
 def _render(args):
@@ -477,7 +497,7 @@ def _render(args):
 
 
 def main(until=END):
-    out = ROOT / "renders" / "film_v4.mp4"
+    out = ROOT / "renders" / "film_v5.mp4"
     out.parent.mkdir(exist_ok=True)
     n = int(min(until, END) * DRAWINGS)
     with tempfile.TemporaryDirectory() as d:
@@ -492,11 +512,15 @@ def main(until=END):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 2 and sys.argv[1] == "--until":
-        main(float(sys.argv[2]))
-    elif len(sys.argv) > 1:
-        for s_ in sys.argv[1:]:
+    args = sys.argv[1:]
+    safe = "--safe" in args
+    args = [a for a in args if a != "--safe"]
+    if len(args) > 1 and args[0] == "--until":
+        main(float(args[1]))
+    elif args:
+        for s_ in args:
             g = int(float(s_) * DRAWINGS)
-            frame_at(g / DRAWINGS, g % 3).save(ROOT / "renders" / f"film_{s_}.png")
+            im = frame_at(g / DRAWINGS, g % 3)
+            (shaded(im) if safe else im).save(ROOT / "renders" / f"film_{s_}.png")
     else:
         main()
